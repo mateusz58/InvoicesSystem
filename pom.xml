@@ -67,13 +67,6 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.4</version>
                 <configuration>
-                    <excludes>
-                        <exclude>/pl/coderstrust//HelloWorld.class</exclude>
-                        <exclude>/pl/coderstrust/model/*.class</exclude>
-                        <exclude>/pl/coderstrust/database/Database.class</exclude>
-                        <exclude>/pl/coderstrust/database/DatabaseOperationException.class</exclude>
-                        <exclude>/pl/coderstrust/service/ServiceOperationException.class</exclude>
-                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
@@ -143,16 +136,6 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.4.2</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>28.0-jre</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
         </dependency>
     </dependencies>
 </project>
