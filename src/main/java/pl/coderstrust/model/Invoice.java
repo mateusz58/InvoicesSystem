@@ -6,13 +6,13 @@ import java.util.Objects;
 
 public final class Invoice {
 
-    private Long id;
-    private String number;
-    private LocalDate issuedDate;
-    private LocalDate dueDate;
-    private Company seller;
-    private Company buyer;
-    private List<InvoiceEntry> entries;
+    private final Long id;
+    private final String number;
+    private final LocalDate issuedDate;
+    private final LocalDate dueDate;
+    private final Company seller;
+    private final Company buyer;
+    private final List<InvoiceEntry> entries;
 
     public Invoice(Long id, String number, LocalDate issuedDate, LocalDate dueDate, Company seller, Company buyer, List<InvoiceEntry> entries) {
         this.id = id;
@@ -50,34 +50,6 @@ public final class Invoice {
 
     public List<InvoiceEntry> getEntries() {
         return entries;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public void setIssuedDate(LocalDate issuedDate) {
-        this.issuedDate = issuedDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
-    public void setSeller(Company seller) {
-        this.seller = seller;
-    }
-
-    public void setBuyer(Company buyer) {
-        this.buyer = buyer;
-    }
-
-    public void setEntries(List<InvoiceEntry> entries) {
-        this.entries = entries;
     }
 
     @Override

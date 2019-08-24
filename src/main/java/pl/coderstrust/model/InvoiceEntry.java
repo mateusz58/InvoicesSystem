@@ -5,13 +5,13 @@ import java.util.Objects;
 
 public final class InvoiceEntry {
 
-    private Long id;
-    private String description;
-    private BigDecimal quantity;
-    private BigDecimal price;
-    private BigDecimal netValue;
-    private BigDecimal grossValue;
-    private BigDecimal vatRate;
+    private final Long id;
+    private final String description;
+    private final BigDecimal quantity;
+    private final BigDecimal price;
+    private final BigDecimal netValue;
+    private final BigDecimal grossValue;
+    private final BigDecimal vatRate;
 
     public InvoiceEntry(Long id, String description, BigDecimal quantity, BigDecimal price, BigDecimal netValue, BigDecimal grossValue, BigDecimal vatRate) {
         this.id = id;
@@ -49,34 +49,6 @@ public final class InvoiceEntry {
 
     public BigDecimal getVatRate() {
         return vatRate;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setQuantity(BigDecimal quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setNetValue(BigDecimal netValue) {
-        this.netValue = netValue;
-    }
-
-    public void setGrossValue(BigDecimal grossValue) {
-        this.grossValue = grossValue;
-    }
-
-    public void setVatRate(BigDecimal vatRate) {
-        this.vatRate = vatRate;
     }
 
     @Override
