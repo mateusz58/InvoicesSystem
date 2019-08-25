@@ -1,6 +1,7 @@
 package pl.coderstrust.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,7 +50,7 @@ public final class Invoice {
     }
 
     public List<InvoiceEntry> getEntries() {
-        return entries;
+        return entries != null ? new ArrayList(entries) : new ArrayList();
     }
 
     @Override

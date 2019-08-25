@@ -7,13 +7,13 @@ public final class InvoiceEntry {
 
     private final Long id;
     private final String description;
-    private final BigDecimal quantity;
+    private final Long quantity;
     private final BigDecimal price;
     private final BigDecimal netValue;
     private final BigDecimal grossValue;
-    private final BigDecimal vatRate;
+    private final Vat vatRate;
 
-    public InvoiceEntry(Long id, String description, BigDecimal quantity, BigDecimal price, BigDecimal netValue, BigDecimal grossValue, BigDecimal vatRate) {
+    public InvoiceEntry(Long id, String description, Long quantity, BigDecimal price, BigDecimal netValue, BigDecimal grossValue, Vat vatRate) {
         this.id = id;
         this.description = description;
         this.quantity = quantity;
@@ -31,7 +31,7 @@ public final class InvoiceEntry {
         return description;
     }
 
-    public BigDecimal getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
@@ -47,7 +47,7 @@ public final class InvoiceEntry {
         return grossValue;
     }
 
-    public BigDecimal getVatRate() {
+    public Vat getVatRate() {
         return vatRate;
     }
 

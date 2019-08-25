@@ -1,21 +1,19 @@
 package pl.coderstrust.model;
 
-import java.math.BigDecimal;
-
 public enum Vat {
 
-    VAT_0(new BigDecimal("0.00")),
-    VAT_5(new BigDecimal("0.05")),
-    VAT_8(new BigDecimal("0.08")),
-    VAT_23(new BigDecimal("0.23"));
+    VAT_0(0.00f),
+    VAT_5(0.05f),
+    VAT_8(0.08f),
+    VAT_23(0.23f);
 
-    private final BigDecimal value;
+    private final float value;
 
-    Vat(BigDecimal value) {
+    Vat(float value) {
         this.value = value;
     }
 
-    public BigDecimal getValue() {
+    public float getValue() {
         return value;
     }
 
