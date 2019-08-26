@@ -7,13 +7,27 @@ import java.util.Objects;
 
 public final class Invoice {
 
-    private Long id;
-    private String number;
-    private LocalDate issuedDate;
-    private LocalDate dueDate;
-    private Company seller;
-    private Company buyer;
-    private List<InvoiceEntry> entries;
+    private final Long id;
+    private final String number;
+    private final LocalDate issuedDate;
+    private final LocalDate dueDate;
+    private final Company seller;
+    private final Company buyer;
+    private final List<InvoiceEntry> entries;
+
+    private Invoice(Builder builder) {
+        id = builder.id;
+        number = builder.number;
+        issuedDate = builder.issuedDate;
+        dueDate = builder.dueDate;
+        seller = builder.seller;
+        buyer = builder.buyer;
+        entries = builder.entries;
+    }
+
+    public static Invoice.Builder builder() {
+        return new Invoice.Builder();
+    }
 
     public static class Builder {
 
@@ -25,51 +39,43 @@ public final class Invoice {
         private Company buyer;
         private List<InvoiceEntry> entries;
 
-        public Builder id(Long id) {
+        public Builder withId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder number(String number) {
+        public Builder withNumber(String number) {
             this.number = number;
             return this;
         }
 
-        public Builder issuedDate(LocalDate issuedDate) {
+        public Builder withIssuedDate(LocalDate issuedDate) {
             this.issuedDate = issuedDate;
             return this;
         }
 
-        public Builder dueDate(LocalDate dueDate) {
+        public Builder withDueDate(LocalDate dueDate) {
             this.dueDate = dueDate;
             return this;
         }
 
-        public Builder seller(Company seller) {
+        public Builder withSeller(Company seller) {
             this.seller = seller;
             return this;
         }
 
-        public Builder buyer(Company buyer) {
+        public Builder withBuyer(Company buyer) {
             this.buyer = buyer;
             return this;
         }
 
-        public Builder entries(List<InvoiceEntry> entries) {
+        public Builder withEntries(List<InvoiceEntry> entries) {
             this.entries = entries;
             return this;
         }
 
         public Invoice build() {
-            Invoice invoice = new Invoice();
-            invoice.id = this.id;
-            invoice.number = this.number;
-            invoice.issuedDate = this.issuedDate;
-            invoice.dueDate = this.dueDate;
-            invoice.seller = this.seller;
-            invoice.buyer = this.buyer;
-            invoice.entries = this.entries;
-            return invoice;
+            return new Invoice(this);
         }
     }
 

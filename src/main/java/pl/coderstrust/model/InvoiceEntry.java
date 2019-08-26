@@ -1,19 +1,32 @@
 package pl.coderstrust.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 public final class InvoiceEntry {
 
-    private Long id;
-    private String description;
-    private Long quantity;
-    private BigDecimal price;
-    private BigDecimal netValue;
-    private BigDecimal grossValue;
-    private Vat vatRate;
+    private final Long id;
+    private final String description;
+    private final Long quantity;
+    private final BigDecimal price;
+    private final BigDecimal netValue;
+    private final BigDecimal grossValue;
+    private final Vat vatRate;
+
+    private InvoiceEntry(Builder builder) {
+
+        id = builder.id;
+        description = builder.description;
+        quantity = builder.quantity;
+        price = builder.price;
+        netValue = builder.netValue;
+        grossValue = builder.grossValue;
+        vatRate = builder.vatRate;
+    }
+
+    public static Invoice.Builder builder() {
+        return new Invoice.Builder();
+    }
 
     public static class Builder {
 
@@ -25,51 +38,43 @@ public final class InvoiceEntry {
         private BigDecimal grossValue;
         private Vat vatRate;
 
-        public Builder id(Long id) {
+        public Builder wthId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder number(String description) {
+        public Builder withNumber(String description) {
             this.description = description;
             return this;
         }
 
-        public Builder quantity(Long quantity) {
+        public Builder withQuantity(Long quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public Builder price(BigDecimal price) {
+        public Builder withPrice(BigDecimal price) {
             this.price = price;
             return this;
         }
 
-        public Builder netValue(BigDecimal netValue) {
+        public Builder withNetValue(BigDecimal netValue) {
             this.netValue = netValue;
             return this;
         }
 
-        public Builder grossValue(BigDecimal grossValue) {
+        public Builder withGrossValue(BigDecimal grossValue) {
             this.grossValue = grossValue;
             return this;
         }
 
-        public Builder vatRate(Vat vatRate) {
+        public Builder withVatRate(Vat vatRate) {
             this.vatRate = vatRate;
             return this;
         }
 
         public InvoiceEntry build() {
-            InvoiceEntry invoiceEntry = new InvoiceEntry();
-            invoiceEntry.id = this.id;
-            invoiceEntry.description = this.description;
-            invoiceEntry.quantity = this.quantity;
-            invoiceEntry.price = this.price;
-            invoiceEntry.netValue = this.netValue;
-            invoiceEntry.grossValue = this.grossValue;
-            invoiceEntry.vatRate = this.vatRate;
-            return invoiceEntry;
+            return new InvoiceEntry(this);
         }
     }
 
