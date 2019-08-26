@@ -7,22 +7,70 @@ import java.util.Objects;
 
 public final class Invoice {
 
-    private final Long id;
-    private final String number;
-    private final LocalDate issuedDate;
-    private final LocalDate dueDate;
-    private final Company seller;
-    private final Company buyer;
-    private final List<InvoiceEntry> entries;
+    private Long id;
+    private String number;
+    private LocalDate issuedDate;
+    private LocalDate dueDate;
+    private Company seller;
+    private Company buyer;
+    private List<InvoiceEntry> entries;
 
-    public Invoice(Long id, String number, LocalDate issuedDate, LocalDate dueDate, Company seller, Company buyer, List<InvoiceEntry> entries) {
-        this.id = id;
-        this.number = number;
-        this.issuedDate = issuedDate;
-        this.dueDate = dueDate;
-        this.seller = seller;
-        this.buyer = buyer;
-        this.entries = entries;
+    public static class Builder {
+
+        private Long id;
+        private String number;
+        private LocalDate issuedDate;
+        private LocalDate dueDate;
+        private Company seller;
+        private Company buyer;
+        private List<InvoiceEntry> entries;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder number(String number) {
+            this.number = number;
+            return this;
+        }
+
+        public Builder issuedDate(LocalDate issuedDate) {
+            this.issuedDate = issuedDate;
+            return this;
+        }
+
+        public Builder dueDate(LocalDate dueDate) {
+            this.dueDate = dueDate;
+            return this;
+        }
+
+        public Builder seller(Company seller) {
+            this.seller = seller;
+            return this;
+        }
+
+        public Builder buyer(Company buyer) {
+            this.buyer = buyer;
+            return this;
+        }
+
+        public Builder entries(List<InvoiceEntry> entries) {
+            this.entries = entries;
+            return this;
+        }
+
+        public Invoice build() {
+            Invoice invoice = new Invoice();
+            invoice.id = this.id;
+            invoice.number = this.number;
+            invoice.issuedDate = this.issuedDate;
+            invoice.dueDate = this.dueDate;
+            invoice.seller = this.seller;
+            invoice.buyer = this.buyer;
+            invoice.entries = this.entries;
+            return invoice;
+        }
     }
 
     public Long getId() {

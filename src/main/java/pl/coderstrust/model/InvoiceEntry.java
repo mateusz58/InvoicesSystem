@@ -1,26 +1,76 @@
 package pl.coderstrust.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public final class InvoiceEntry {
 
-    private final Long id;
-    private final String description;
-    private final Long quantity;
-    private final BigDecimal price;
-    private final BigDecimal netValue;
-    private final BigDecimal grossValue;
-    private final Vat vatRate;
+    private Long id;
+    private String description;
+    private Long quantity;
+    private BigDecimal price;
+    private BigDecimal netValue;
+    private BigDecimal grossValue;
+    private Vat vatRate;
 
-    public InvoiceEntry(Long id, String description, Long quantity, BigDecimal price, BigDecimal netValue, BigDecimal grossValue, Vat vatRate) {
-        this.id = id;
-        this.description = description;
-        this.quantity = quantity;
-        this.price = price;
-        this.netValue = netValue;
-        this.grossValue = grossValue;
-        this.vatRate = vatRate;
+    public static class Builder {
+
+        private Long id;
+        private String description;
+        private Long quantity;
+        private BigDecimal price;
+        private BigDecimal netValue;
+        private BigDecimal grossValue;
+        private Vat vatRate;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder number(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder quantity(Long quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public Builder price(BigDecimal price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder netValue(BigDecimal netValue) {
+            this.netValue = netValue;
+            return this;
+        }
+
+        public Builder grossValue(BigDecimal grossValue) {
+            this.grossValue = grossValue;
+            return this;
+        }
+
+        public Builder vatRate(Vat vatRate) {
+            this.vatRate = vatRate;
+            return this;
+        }
+
+        public InvoiceEntry build() {
+            InvoiceEntry invoiceEntry = new InvoiceEntry();
+            invoiceEntry.id = this.id;
+            invoiceEntry.description = this.description;
+            invoiceEntry.quantity = this.quantity;
+            invoiceEntry.price = this.price;
+            invoiceEntry.netValue = this.netValue;
+            invoiceEntry.grossValue = this.grossValue;
+            invoiceEntry.vatRate = this.vatRate;
+            return invoiceEntry;
+        }
     }
 
     public Long getId() {
