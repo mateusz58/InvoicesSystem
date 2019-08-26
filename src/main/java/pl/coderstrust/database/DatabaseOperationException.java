@@ -1,4 +1,4 @@
-package pl.coderstrust.exception;
+package pl.coderstrust.database;
 
 public class DatabaseOperationException extends Exception {
 

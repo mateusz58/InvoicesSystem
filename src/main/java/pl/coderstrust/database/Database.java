@@ -1,6 +1,5 @@
 package pl.coderstrust.database;
 
-import pl.coderstrust.exception.DatabaseOperationException;
 import pl.coderstrust.model.Invoice;
 
 import java.util.Collection;
