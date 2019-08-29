@@ -45,7 +45,7 @@ public class InvoiceService {
 
     public void deleteById(Long id) throws ServiceOperationException {
         if (id == null) {
-            throw new IllegalArgumentException("Invoice id cannot be null");
+            throw new IllegalArgumentException("Id cannot be null");
         }
         try {
             if (!database.exists(id)) {
@@ -59,7 +59,7 @@ public class InvoiceService {
 
     public Optional<Invoice> getById(Long id) throws ServiceOperationException {
         if (id == null) {
-            throw new IllegalArgumentException("Invoice id cannot be null");
+            throw new IllegalArgumentException("Id cannot be null");
         }
         try {
             if (!database.exists(id)) {
@@ -67,18 +67,18 @@ public class InvoiceService {
             }
             return database.getById(id);
         } catch (DatabaseOperationException e) {
-            throw new ServiceOperationException("An error occurred during getting invoice", e);
+            throw new ServiceOperationException("An error occurred during getting invoice by id", e);
         }
     }
 
     public Optional<Invoice> getByNumber(String number) throws ServiceOperationException {
         if (number == null) {
-            throw new IllegalArgumentException("Invoice number cannot be null");
+            throw new IllegalArgumentException("Number cannot be null");
         }
         try {
             return database.getByNumber(number);
         } catch (DatabaseOperationException e) {
-            throw new ServiceOperationException("An error occurred during getting invoice", e);
+            throw new ServiceOperationException("An error occurred during getting invoice by number", e);
         }
     }
 
@@ -86,7 +86,7 @@ public class InvoiceService {
         try {
             return database.getAll();
         } catch (DatabaseOperationException e) {
-            throw new ServiceOperationException("An error occurred during getting invoices", e);
+            throw new ServiceOperationException("An error occurred during getting all invoices", e);
         }
     }
 
@@ -94,7 +94,7 @@ public class InvoiceService {
         try {
             database.deleteAll();
         } catch (DatabaseOperationException e) {
-            throw new ServiceOperationException("An error occurred during deleting invoices", e);
+            throw new ServiceOperationException("An error occurred during deleting all invoices", e);
         }
     }
 
