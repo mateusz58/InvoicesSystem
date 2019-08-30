@@ -142,7 +142,7 @@ class InMemoryDatabaseTest {
 
         for (int i = 0; i < 10; i++) {
             Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-            storage.put(invoice.getId(), InvoiceGenerator.generateRandomInvoice());
+            storage.put(invoice.getId(), invoice);
         }
 
         assertEquals(storage.values(), database.getAll());
@@ -173,7 +173,7 @@ class InMemoryDatabaseTest {
     void shouldCheckIfNotExists() {
         for (int i = 0; i < 10; i++) {
             Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-            storage.put(invoice.getId(), InvoiceGenerator.generateRandomInvoice());
+            storage.put(invoice.getId(), invoice);
         }
 
         assertFalse(database.exists(666L));
@@ -189,7 +189,7 @@ class InMemoryDatabaseTest {
 
         for (int i = 0; i < 10; i++) {
             Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-            storage.put(invoice.getId(), InvoiceGenerator.generateRandomInvoice());
+            storage.put(invoice.getId(), invoice);
         }
 
         assertEquals(10, database.count());
