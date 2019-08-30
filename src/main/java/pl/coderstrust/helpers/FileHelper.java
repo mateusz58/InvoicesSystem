@@ -1,94 +1,118 @@
 package pl.coderstrust.helpers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.input.ReversedLinesFileReader;
+import java.util.stream.Collectors;
 
 public class FileHelper {
 
-    private static final String ENCODING = "UTF-8";
-
-    public void createFile(String filePath) throws IOException {
+    void createFile(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
         Files.createFile(Paths.get(filePath));
     }
 
-    public void delete(String filePath) throws IOException {
+
+    void delete(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
         Files.delete(Paths.get(filePath));
     }
 
-    public boolean exists(String filePath) {
+    boolean exists(String filePath) {
+
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
         return Files.exists(Paths.get(filePath));
     }
 
-    public boolean isEmpty(String filePath) throws IOException {
+    boolean isEmpty(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
-        if (!Files.exists(Paths.get(filePath))) {
-            throw new FileNotFoundException("File does not exist.");
-        }
-        return (new File(filePath).length() == 0);
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        return br.readLine() == null;
     }
 
-    public void clear(String filePath) throws IOException {
+    void clear(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
-        FileUtils.write(new File(filePath), "", ENCODING);
+
+        Files.newBufferedWriter(Paths.get(filePath), StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    public void writeLine(String filePath, String line) throws IOException {
+    void writeLine(String filePath, String Line) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
-        if (line == null) {
-            throw new IllegalArgumentException("Line cannot be null");
-        }
-        FileUtils.writeLines(new File(filePath), ENCODING, Collections.singleton(line), true);
+
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8));
+        writer.write(Line);
+        writer.close();
     }
 
-    public List<String> readLines(String filePath) throws IOException {
+    List<String> readLines(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
-        return FileUtils.readLines(new File(filePath), ENCODING);
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(filePath), StandardCharsets.UTF_8));
+
+        return reader.lines().collect(Collectors.toList());
     }
 
-    public String readLastLine(String filePath) throws IOException {
+    String readLastLine(String filePath) throws IOException {
         if (filePath == null) {
-            throw new IllegalArgumentException("File's path cannot be null.");
+            throw new IllegalArgumentException("Path of the file cannot be null");
         }
-        try (ReversedLinesFileReader reader = new ReversedLinesFileReader(new File(filePath), Charset.defaultCharset())) {
-            return reader.readLine();
-        }
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(filePath), StandardCharsets.UTF_8));
+        return reader.lines().reduce((first, second) -> second).orElse(null);
+
     }
 
-    public void removeLine(String filePath, int lineNumber) throws IOException {
+    void removeLine(String filePath, int lineNumber) throws IOException {
+
+        String tempFile = "src/test/resources/helpers/temp.txt";
+
         if (filePath == null) {
-            throw new IllegalArgumentException("File's path cannot be null.");
+            throw new IllegalArgumentException("Path of the file cannot be null");
         }
-        if (lineNumber < 1) {
-            throw new IllegalArgumentException("Line number cannot be lower than one.");
+        if (lineNumber < 0) {
+            throw new IllegalArgumentException("Line number cannot be lower than 0");
         }
-        File file = new File(filePath);
-        List<String> lines = FileUtils.readLines(file, ENCODING);
-        lines.remove(lineNumber - 1);
-        FileUtils.writeLines(file, ENCODING, lines, false);
+        BufferedReader reader = Files.newBufferedReader(Paths.get(filePath));
+        BufferedWriter writer = Files.newBufferedWriter(Paths.get(tempFile));
+
+
+        String currentLine;
+        int i = 1;
+        while ((currentLine = reader.readLine()) != null) {
+
+            if (i == lineNumber) {
+                i++;
+                continue;
+            }
+            writer.write(currentLine + System.getProperty("line.separator"));
+            i++;
+        }
+        writer.close();
+        reader.close();
+        Files.delete(Paths.get(filePath));
+        Files.move(Paths.get(tempFile), Paths.get(filePath));
+
     }
+
 }
