@@ -29,56 +29,6 @@ public final class Invoice {
         return new Invoice.Builder();
     }
 
-    public static class Builder {
-
-        private Long id;
-        private String number;
-        private LocalDate issuedDate;
-        private LocalDate dueDate;
-        private Company seller;
-        private Company buyer;
-        private List<InvoiceEntry> entries;
-
-        public Builder withId(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder withNumber(String number) {
-            this.number = number;
-            return this;
-        }
-
-        public Builder withIssuedDate(LocalDate issuedDate) {
-            this.issuedDate = issuedDate;
-            return this;
-        }
-
-        public Builder withDueDate(LocalDate dueDate) {
-            this.dueDate = dueDate;
-            return this;
-        }
-
-        public Builder withSeller(Company seller) {
-            this.seller = seller;
-            return this;
-        }
-
-        public Builder withBuyer(Company buyer) {
-            this.buyer = buyer;
-            return this;
-        }
-
-        public Builder withEntries(List<InvoiceEntry> entries) {
-            this.entries = entries;
-            return this;
-        }
-
-        public Invoice build() {
-            return new Invoice(this);
-        }
-    }
-
     public Long getId() {
         return id;
     }
@@ -141,5 +91,67 @@ public final class Invoice {
                 ", buyer=" + buyer +
                 ", entries=" + entries +
                 '}';
+    }
+
+    public static class Builder {
+
+        private Long id;
+        private String number;
+        private LocalDate issuedDate;
+        private LocalDate dueDate;
+        private Company seller;
+        private Company buyer;
+        private List<InvoiceEntry> entries;
+
+        public Builder withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withNumber(String number) {
+            this.number = number;
+            return this;
+        }
+
+        public Builder withIssuedDate(LocalDate issuedDate) {
+            this.issuedDate = issuedDate;
+            return this;
+        }
+
+        public Builder withDueDate(LocalDate dueDate) {
+            this.dueDate = dueDate;
+            return this;
+        }
+
+        public Builder withSeller(Company seller) {
+            this.seller = seller;
+            return this;
+        }
+
+        public Builder withBuyer(Company buyer) {
+            this.buyer = buyer;
+            return this;
+        }
+
+        public Builder withInvoice(Invoice invoice) {
+            this.id = invoice.id;
+            this.dueDate = invoice.dueDate;
+            this.issuedDate = invoice.issuedDate;
+            this.dueDate = invoice.dueDate;
+            this.seller = invoice.seller;
+            this.buyer = invoice.buyer;
+            this.entries = invoice.entries;
+
+            return this;
+        }
+
+        public Builder withEntries(List<InvoiceEntry> entries) {
+            this.entries = entries;
+            return this;
+        }
+
+        public Invoice build() {
+            return new Invoice(this);
+        }
     }
 }

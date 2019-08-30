@@ -7,9 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
-
 public class InMemoryDatabase implements Database {
-
 
     private Map<Long, Invoice> database;
     private AtomicLong nextId = new AtomicLong(0);
@@ -35,13 +33,7 @@ public class InMemoryDatabase implements Database {
     private Invoice insertInvoice(Invoice invoice) {
         Long id = nextId.incrementAndGet();
         Invoice insertedInvoice = Invoice.builder()
-                .withId(id)
-                .withNumber(invoice.getNumber())
-                .withIssuedDate(invoice.getIssuedDate())
-                .withDueDate(invoice.getDueDate())
-                .withSeller(invoice.getSeller())
-                .withBuyer(invoice.getBuyer())
-                .withEntries(invoice.getEntries())
+                .withInvoice(invoice)
                 .build();
 
         database.put(id, insertedInvoice);
@@ -50,13 +42,7 @@ public class InMemoryDatabase implements Database {
 
     private Invoice updateInvoice(Invoice invoice) {
         Invoice updatedInvoice = Invoice.builder()
-                .withId(invoice.getId())
-                .withNumber(invoice.getNumber())
-                .withIssuedDate(invoice.getIssuedDate())
-                .withDueDate(invoice.getDueDate())
-                .withSeller(invoice.getSeller())
-                .withBuyer(invoice.getBuyer())
-                .withEntries(invoice.getEntries())
+                .withInvoice(invoice)
                 .build();
 
         database.put(invoice.getId(), updatedInvoice);
