@@ -1,11 +1,10 @@
 package pl.coderstrust.database;
 
-import pl.coderstrust.model.Invoice;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import pl.coderstrust.model.Invoice;
 
 public class InMemoryDatabase implements Database {
 
@@ -33,9 +32,9 @@ public class InMemoryDatabase implements Database {
     private Invoice insertInvoice(Invoice invoice) {
         Long id = nextId.incrementAndGet();
         Invoice insertedInvoice = Invoice.builder()
-                .withInvoice(invoice)
-                .withId(id)
-                .build();
+            .withInvoice(invoice)
+            .withId(id)
+            .build();
 
         database.put(id, insertedInvoice);
         return insertedInvoice;
@@ -43,8 +42,8 @@ public class InMemoryDatabase implements Database {
 
     private Invoice updateInvoice(Invoice invoice) {
         Invoice updatedInvoice = Invoice.builder()
-                .withInvoice(invoice)
-                .build();
+            .withInvoice(invoice)
+            .build();
 
         database.put(invoice.getId(), updatedInvoice);
         return updatedInvoice;
@@ -75,9 +74,9 @@ public class InMemoryDatabase implements Database {
             throw new IllegalArgumentException("Invoice number cannot be null");
         }
         return database.values()
-                .stream()
-                .filter(invoice -> invoice.getNumber().equals(number))
-                .findFirst();
+            .stream()
+            .filter(invoice -> invoice.getNumber().equals(number))
+            .findFirst();
     }
 
     @Override

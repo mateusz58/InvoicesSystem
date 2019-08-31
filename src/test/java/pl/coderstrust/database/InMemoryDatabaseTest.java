@@ -1,15 +1,18 @@
 package pl.coderstrust.database;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import pl.coderstrust.generators.InvoiceGenerator;
-import pl.coderstrust.model.Invoice;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import pl.coderstrust.generators.InvoiceGenerator;
+import pl.coderstrust.model.Invoice;
 
 class InMemoryDatabaseTest {
 
@@ -30,13 +33,11 @@ class InMemoryDatabaseTest {
     @Test
     void shouldAddInvoice() {
 
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoice());
 
-        Invoice addedInvoice = database.save(invoice);
-        storage.put(invoice.getId(), invoice);
-
-        assertNotNull(invoice.getId());
-        assertEquals(storage.get(invoice.getId()), invoice);
+        assertNotNull(addedInvoice.getId());
+        assertEquals(1, (long) addedInvoice.getId());
+        assertEquals(storage.get(addedInvoice.getId()), addedInvoice);
 
     }
 
