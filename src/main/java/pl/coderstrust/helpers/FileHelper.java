@@ -120,5 +120,4 @@ public class FileHelper {
         Files.move(Paths.get(tempFile), Paths.get(filePath));
 
     }
-
 }
