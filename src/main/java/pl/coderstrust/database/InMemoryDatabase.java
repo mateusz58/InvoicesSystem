@@ -34,6 +34,7 @@ public class InMemoryDatabase implements Database {
         Long id = nextId.incrementAndGet();
         Invoice insertedInvoice = Invoice.builder()
                 .withInvoice(invoice)
+                .withId(id)
                 .build();
 
         database.put(id, insertedInvoice);
