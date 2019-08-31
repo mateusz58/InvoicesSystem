@@ -32,7 +32,7 @@ class InMemoryDatabaseTest {
 
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
 
-        database.save(invoice);
+        Invoice addedInvoice = database.save(invoice);
         storage.put(invoice.getId(), invoice);
 
         assertNotNull(invoice.getId());
