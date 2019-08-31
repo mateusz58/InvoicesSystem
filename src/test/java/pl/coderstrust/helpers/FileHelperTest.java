@@ -19,11 +19,13 @@ class FileHelperTest {
     private File inputFile;
 
     @BeforeEach
-    void setUp() {
+    void beforeEach() {
         filehelper = new FileHelper();
-        if (Files.exists(Paths.get(filePathInput))) {
+        inputFile = new File(filePathInput);
+        if (inputFile.exists()) {
             inputFile.delete();
         }
+
     }
 
     @Test
@@ -37,7 +39,7 @@ class FileHelperTest {
     @Test
     void shouldDeleteFile() throws IOException {
 
-        Files.createFile(Paths.get(filePathInput));
+        inputFile.createNewFile();
 
         filehelper.delete(filePathInput);
 
@@ -84,7 +86,11 @@ class FileHelperTest {
 
         BufferedReader reader = new BufferedReader(new FileReader(filePathInput));
 
-        assertTrue(reader.readLine() == null);
+        String temp = reader.readLine();
+
+        reader.close();
+
+        assertTrue(temp == null);
     }
 
     @Test
@@ -96,6 +102,8 @@ class FileHelperTest {
         BufferedReader reader = new BufferedReader(new FileReader(filePathInput));
 
         String expected = reader.lines().reduce((first, second) -> second).orElse(null);
+
+        reader.close();
 
         assertEquals(expected, givenLine);
     }
@@ -147,6 +155,8 @@ class FileHelperTest {
 
         String lastline = reader.lines().reduce((first, second) -> second).orElse(null);
 
+        reader.close();
+
         assertEquals(lastline, filehelper.readLastLine(filePathInput));
     }
 
@@ -183,6 +193,8 @@ class FileHelperTest {
         BufferedReader reader = Files.newBufferedReader(Paths.get(filePathInput));
 
         List<String> actual = reader.lines().collect(Collectors.toList());
+
+        reader.close();
 
         assertEquals(expected, actual);
 

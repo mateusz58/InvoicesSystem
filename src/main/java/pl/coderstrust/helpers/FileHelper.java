@@ -4,7 +4,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,10 @@ public class FileHelper {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
         BufferedReader br = new BufferedReader(new FileReader(filePath));
-        return br.readLine() == null;
+        String temp = br.readLine();
+        br.close();
+
+        return temp == null;
     }
 
     void clear(String filePath) throws IOException {
@@ -46,7 +48,9 @@ public class FileHelper {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
 
-        Files.newBufferedWriter(Paths.get(filePath), StandardOpenOption.TRUNCATE_EXISTING);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+        writer.flush();
+        writer.close();
     }
 
     void writeLine(String filePath, String Line) throws IOException {
@@ -67,8 +71,9 @@ public class FileHelper {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream(filePath), StandardCharsets.UTF_8));
-
-        return reader.lines().collect(Collectors.toList());
+        List<String> result = reader.lines().collect(Collectors.toList());
+        reader.close();
+        return result;
     }
 
     String readLastLine(String filePath) throws IOException {
@@ -79,8 +84,9 @@ public class FileHelper {
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream(filePath), StandardCharsets.UTF_8));
-        return reader.lines().reduce((first, second) -> second).orElse(null);
-
+        String lastLine = reader.lines().reduce((first, second) -> second).orElse(null);
+        reader.close();
+        return lastLine;
     }
 
     void removeLine(String filePath, int lineNumber) throws IOException {
