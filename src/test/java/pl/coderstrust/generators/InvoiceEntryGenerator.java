@@ -8,7 +8,6 @@ import pl.coderstrust.model.Vat;
 public class InvoiceEntryGenerator {
 
     public static InvoiceEntry getRandomEntry() {
-
         Long quantity = Long.valueOf(Generator.generateRandomNumber(2));
         BigDecimal price = BigDecimal.valueOf(Generator.generateRandomNumber(3));
         BigDecimal netValue = price.multiply(BigDecimal.valueOf(quantity));

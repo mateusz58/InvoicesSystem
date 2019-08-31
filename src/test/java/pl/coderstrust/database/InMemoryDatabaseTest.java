@@ -36,13 +36,21 @@ class InMemoryDatabaseTest {
         Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoice());
 
         assertNotNull(addedInvoice.getId());
-        assertEquals(1, (long) addedInvoice.getId());
-        assertEquals(storage.get(addedInvoice.getId()), addedInvoice);
-
+        assertEquals(1L, (long) addedInvoice.getId());
     }
 
     @Test
-    void shouldUpdate() {
+    void shouldAddInvoiceWithNullId() {
+
+        Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoicewithNullId());
+
+        assertNotNull(addedInvoice.getId());
+        assertEquals(1, (long) addedInvoice.getId());
+        assertEquals(storage.get(addedInvoice.getId()), addedInvoice);
+    }
+
+    @Test
+    void shouldUpdateInvoice() {
         Invoice invoiceInDatabase = InvoiceGenerator.generateRandomInvoice();
         Invoice invoiceToUpdate = invoiceInDatabase;
         storage.put(invoiceInDatabase.getId(), invoiceInDatabase);
@@ -53,7 +61,7 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void shouldDelete() throws DatabaseOperationException {
+    void shouldDeleteInvoice() throws DatabaseOperationException {
 
         Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
         Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
@@ -65,22 +73,25 @@ class InMemoryDatabaseTest {
         database.delete(invoice1.getId());
 
         assertEquals(expected, storage);
-
     }
 
     @Test
-    void deleteShouldThrowExceptionForNullId() {
+    void deleteMethodShouldThrowExceptionForNullId() {
         assertThrows(IllegalArgumentException.class, () -> database.delete(null));
     }
 
     @Test
-    void deleteShouldThrowExceptionDuringDeletingNotExistingInvoice() {
+    void deleteMethodShouldThrowExceptionDuringDeletingNotExistingInvoice() {
         assertThrows(DatabaseOperationException.class, () -> database.delete(10L));
     }
 
+    @Test
+    void saveMethodShouldThrowExceptionForNullInvoice() {
+        assertThrows(IllegalArgumentException.class, () -> database.save(null));
+    }
 
     @Test
-    void shouldGetById() {
+    void shouldReturnInvoiceById() {
         Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
         Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
         storage.put(invoice1.getId(), invoice1);
@@ -93,7 +104,7 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void shouldGetByNumber() {
+    void shouldReturnInvoiceByNumber() {
 
         Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
         Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
@@ -107,7 +118,7 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void shouldReturnEmptyOptionalWhileGetNonExistingInvoiceById() {
+    void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceById() {
         Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
         Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
         storage.put(invoice1.getId(), invoice1);
@@ -118,12 +129,11 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void shouldReturnEmptyOptionalWhileGetNonExistingInvoiceByNumber() {
-        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
-        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
-        storage.put(invoice1.getId(), invoice1);
+    void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceByNumber() {
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice.getId(), invoice);
 
-        Optional<Invoice> optionalInvoice = database.getByNumber(invoice2.getNumber());
+        Optional<Invoice> optionalInvoice = database.getByNumber(invoice.getNumber() + 1L);
 
         assertTrue(optionalInvoice.isEmpty());
     }
@@ -139,43 +149,38 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void shouldGetAll() {
+    void shouldReturnAllInvoices() {
 
-        for (int i = 0; i < 10; i++) {
-            Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-            storage.put(invoice.getId(), invoice);
-        }
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice.getId(), invoice);
 
         assertEquals(storage.values(), database.getAll());
-
     }
 
     @Test
-    void shouldDeleteAll() {
+    void shouldDeleteAllInvoices() {
 
-        for (int i = 0; i < 10; i++) {
-            Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-            storage.put(invoice.getId(), invoice);
-        }
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice.getId(), invoice);
 
         database.deleteAll();
         assertEquals(new HashMap<>(), storage);
     }
 
     @Test
-    void shouldCheckIfExists() {
+    void shouldReturnTrueForExistingInvoice() {
 
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        storage.put(invoice.getId(), invoice);
+        storage.put(invoice.getId(), InvoiceGenerator.generateRandomInvoice());
+
         assertTrue(database.exists(invoice.getId()));
     }
 
     @Test
-    void shouldCheckIfNotExists() {
-        for (int i = 0; i < 10; i++) {
-            Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-            storage.put(invoice.getId(), invoice);
-        }
+    void shouldReturnFalseForNonExistingInvoice() {
+
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice.getId(), invoice);
 
         assertFalse(database.exists(666L));
     }
@@ -186,13 +191,11 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void shouldCountInvoices() {
+    void shouldReturnNumberOfInvoices() {
 
-        for (int i = 0; i < 10; i++) {
-            Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-            storage.put(invoice.getId(), invoice);
-        }
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice.getId(), invoice);
 
-        assertEquals(10, database.count());
+        assertEquals(1, database.count());
     }
 }
