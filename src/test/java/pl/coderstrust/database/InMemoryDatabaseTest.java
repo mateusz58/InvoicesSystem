@@ -28,7 +28,7 @@ class InMemoryDatabaseTest {
     }
 
     @Test
-    void shouldSave() {
+    void shouldAddInvoice() {
 
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
 
