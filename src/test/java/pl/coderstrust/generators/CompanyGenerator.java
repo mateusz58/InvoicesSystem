@@ -15,5 +15,4 @@ public class CompanyGenerator {
             .withTaxId(Generator.generateRandomWord())
             .build();
     }
-
 }

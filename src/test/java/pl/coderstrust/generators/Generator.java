@@ -20,7 +20,6 @@ public class Generator {
         int year = ThreadLocalRandom.current().nextInt(1976, 2019);
         int month = ThreadLocalRandom.current().nextInt(1, 12);
         int day = ThreadLocalRandom.current().nextInt(1, 28);
-
         return LocalDate.of(year, month, day);
     }
 
@@ -28,5 +27,4 @@ public class Generator {
         int size = (int) Math.pow(10, length - 1);
         return random.nextInt() + size;
     }
-
 }
