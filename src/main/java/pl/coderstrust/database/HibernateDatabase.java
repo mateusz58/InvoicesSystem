@@ -6,7 +6,6 @@ import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class HibernateDatabase implements Database {
@@ -45,12 +44,14 @@ public class HibernateDatabase implements Database {
     }
 
     @Override
-    public Optional<Invoice> getById(Long id) {
+    public Optional<Invoice> getById(Long id) throws DatabaseOperationException {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        return null;
-        // return invoiceRepository.findById(id);
+        if (!invoiceRepository.existsById(id)) {
+            throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
+        }
+        return Optional.ofNullable(invoiceRepository.getOne(id));
     }
 
     @Override
@@ -58,19 +59,17 @@ public class HibernateDatabase implements Database {
         if (number == null) {
             throw new IllegalArgumentException("Invoice number cannot be null");
         }
-        return null;
-       /* return invoiceRepository.findAll()
+        return invoiceRepository.findAll()
                 .stream()
                 .filter(invoice -> invoice.getNumber().equals(number))
-                .findFirst();*/
+                .findFirst();
     }
 
     @Override
     public Collection<Invoice> getAll() throws DatabaseOperationException {
         List<Invoice> invoiceList;
         try {
-            return null;
-            /*  invoiceList = invoiceRepository.findAll();*/
+            return invoiceRepository.findAll();
         } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
         }
