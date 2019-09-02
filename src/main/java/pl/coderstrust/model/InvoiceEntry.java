@@ -141,4 +141,59 @@ public final class InvoiceEntry {
             return new InvoiceEntry(this);
         }
     }
+
+    public static class Builder {
+
+        private Long id;
+        private String description;
+        private Long quantity;
+        private BigDecimal price;
+        private BigDecimal netValue;
+        private BigDecimal grossValue;
+        private Vat vatRate;
+
+        public Builder withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder withNumber(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder withQuantity(Long quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public Builder withPrice(BigDecimal price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder withNetValue(BigDecimal netValue) {
+            this.netValue = netValue;
+            return this;
+        }
+
+        public Builder withGrossValue(BigDecimal grossValue) {
+            this.grossValue = grossValue;
+            return this;
+        }
+
+        public Builder withVatRate(Vat vatRate) {
+            this.vatRate = vatRate;
+            return this;
+        }
+
+        public InvoiceEntry build() {
+            return new InvoiceEntry(this);
+        }
+    }
 }
