@@ -35,10 +35,13 @@ public class FileHelper {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
         BufferedReader br = new BufferedReader(new FileReader(filePath));
-        String temp = br.readLine();
+        if(br.readLine()==null)
+        {
+            br.close();
+            return true;
+        }
         br.close();
-
-        return temp == null;
+        return false;
     }
 
     void clear(String filePath) throws IOException {
