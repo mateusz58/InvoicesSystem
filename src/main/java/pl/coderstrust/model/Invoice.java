@@ -141,7 +141,6 @@ public final class Invoice {
             this.seller = invoice.seller;
             this.buyer = invoice.buyer;
             this.entries = invoice.entries;
-
             return this;
         }
 
