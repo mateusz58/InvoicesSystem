@@ -6,13 +6,13 @@ public class CompanyGenerator {
 
     public static Company generateRandomCompany() {
         return Company.builder()
-            .withId(IdGenerator.getId())
-            .withEmail(Generator.generateRandomWord() + "@mail.com")
-            .withAddress(Generator.generateRandomWord())
-            .withAccountNumber(String.valueOf(Generator.generateRandomNumber(11)))
-            .withName(Generator.generateRandomWord())
-            .withPhoneNumber(String.valueOf(Generator.generateRandomNumber(9)))
-            .withTaxId(Generator.generateRandomWord())
+            .withId(IdGenerator.getRandomId())
+            .withEmail(RandomWordGenerator.generateRandomWord() + "@mail.com")
+            .withAddress(RandomWordGenerator.generateRandomWord())
+            .withAccountNumber(String.valueOf(RandomNumberGenerator.generateRandomNumber(11)))
+            .withName(RandomWordGenerator.generateRandomWord())
+            .withPhoneNumber(String.valueOf(RandomNumberGenerator.generateRandomNumber(9)))
+            .withTaxId(RandomWordGenerator.generateRandomWord())
             .build();
     }
 }

@@ -7,34 +7,27 @@ import pl.coderstrust.model.InvoiceEntry;
 
 public class InvoiceGenerator {
 
-    public static Invoice generateRandomInvoice() {
+    private static List<InvoiceEntry> generateEntries() {
         List<InvoiceEntry> entries = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             entries.add(InvoiceEntryGenerator.getRandomEntry());
         }
+        return entries;
+    }
+
+    private static Invoice buildInvoice(Long id) {
         return Invoice.builder()
-            .withId(IdGenerator.getId())
-            .withNumber(Generator.generateRandomWord())
+            .withId(id)
+            .withNumber(RandomWordGenerator.generateRandomWord())
             .withBuyer(CompanyGenerator.generateRandomCompany())
             .withSeller(CompanyGenerator.generateRandomCompany())
-            .withDueDate(Generator.generateRandomLocalDate())
-            .withIssuedDate(Generator.generateRandomLocalDate())
-            .withEntries(entries)
+            .withDueDate(RandomLocalDateGenerator.generateRandomLocalDate())
+            .withIssuedDate(RandomLocalDateGenerator.generateRandomLocalDate())
+            .withEntries(generateEntries())
             .build();
     }
 
-    public static Invoice generateRandomInvoicewithNullId() {
-        List<InvoiceEntry> entries = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            entries.add(InvoiceEntryGenerator.getRandomEntry());
-        }
-        return Invoice.builder()
-            .withNumber(Generator.generateRandomWord())
-            .withBuyer(CompanyGenerator.generateRandomCompany())
-            .withSeller(CompanyGenerator.generateRandomCompany())
-            .withDueDate(Generator.generateRandomLocalDate())
-            .withIssuedDate(Generator.generateRandomLocalDate())
-            .withEntries(entries)
-            .build();
+    public static Invoice generateRandomInvoice(Long id) {
+        return buildInvoice(id);
     }
 }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class HelloWorldTest {
 
     @Test
-    public void shouldReturnTrueForPalindromeWord() {
+    void shouldReturnTrueForPalindromeWord() {
         assertTrue(HelloWorld.isPalindrome("abba"));
     }
 }
