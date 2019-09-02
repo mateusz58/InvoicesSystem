@@ -40,6 +40,7 @@ class FileHelperTest {
     @Test
     void shouldCreateFile() throws IOException {
         fileHelper.createFile(filePathInput);
+
         assertTrue(Files.exists(Paths.get(filePathInput)));
     }
 
@@ -47,12 +48,14 @@ class FileHelperTest {
     void shouldDeleteFile() throws IOException {
         inputFile.createNewFile();
         fileHelper.delete(filePathInput);
+
         assertFalse(Files.exists(Paths.get(filePathInput)));
     }
 
     @Test
     void shouldReturnTrueIfFileExists() throws IOException {
         Files.createFile(Paths.get(filePathInput));
+
         assertTrue(fileHelper.exists(filePathInput));
     }
 
@@ -60,6 +63,7 @@ class FileHelperTest {
     void shouldReturnFalseIfFileDoesNotExists() throws IOException {
         Files.createFile(Paths.get(filePathInput));
         Files.delete(Paths.get(filePathInput));
+
         assertFalse(fileHelper.exists(filePathInput));
     }
 
@@ -70,6 +74,7 @@ class FileHelperTest {
         BufferedWriter writer = new BufferedWriter(new FileWriter(filePathInput));
         writer.write("Test data");
         writer.close();
+
         assertFalse(fileHelper.isEmpty(filePathInput));
     }
 
@@ -82,6 +87,7 @@ class FileHelperTest {
         BufferedReader reader = new BufferedReader(new FileReader(filePathInput));
         String temp = reader.readLine();
         reader.close();
+
         assertTrue(temp == null);
     }
 
@@ -91,6 +97,7 @@ class FileHelperTest {
         BufferedReader reader = new BufferedReader(new FileReader(filePathInput));
         String expected = reader.lines().reduce((first, second) -> second).orElse(null);
         reader.close();
+
         assertEquals(expected, "Test data");
     }
 
@@ -110,6 +117,7 @@ class FileHelperTest {
         }
         writer.close();
         List<String> actual = fileHelper.readLines(filePathInput);
+
         assertEquals(expected, actual);
     }
 
@@ -131,6 +139,7 @@ class FileHelperTest {
         writer.close();
         String lastline = reader.lines().reduce((first, second) -> second).orElse(null);
         reader.close();
+
         assertEquals(lastline, fileHelper.readLastLine(filePathInput));
     }
 
@@ -222,6 +231,7 @@ class FileHelperTest {
     @Test
     void createMethodShouldThrowExceptionForExistingFile() throws IOException {
         inputFile.createNewFile();
+
         assertThrows(FileAlreadyExistsException.class, () -> fileHelper.createFile(filePathInput));
     }
 
