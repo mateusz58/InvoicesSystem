@@ -32,7 +32,7 @@ public class HibernateDatabase implements Database {
 //    OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
 
     @Override
-    public Invoice save(Invoice invoice) {
+    public Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
@@ -60,7 +60,7 @@ public class HibernateDatabase implements Database {
     }
 
     @Override
-    public Optional<Invoice> getById(Long id) {
+    public Optional<Invoice> getById(Long id) throws DatabaseOperationException {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null.");
         }
