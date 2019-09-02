@@ -63,13 +63,13 @@ public final class Company {
             return false;
         }
         Company company = (Company) o;
-        return Objects.equals(id, company.id) &&
-            Objects.equals(name, company.name) &&
-            Objects.equals(address, company.address) &&
-            Objects.equals(taxId, company.taxId) &&
-            Objects.equals(accountNumber, company.accountNumber) &&
-            Objects.equals(phoneNumber, company.phoneNumber) &&
-            Objects.equals(email, company.email);
+        return Objects.equals(id, company.id)
+            && Objects.equals(name, company.name)
+            && Objects.equals(address, company.address)
+            && Objects.equals(taxId, company.taxId)
+            && Objects.equals(accountNumber, company.accountNumber)
+            && Objects.equals(phoneNumber, company.phoneNumber)
+            && Objects.equals(email, company.email);
     }
 
     @Override
@@ -79,15 +79,15 @@ public final class Company {
 
     @Override
     public String toString() {
-        return "Company{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", address='" + address + '\'' +
-            ", taxId='" + taxId + '\'' +
-            ", accountNumber='" + accountNumber + '\'' +
-            ", phoneNumber='" + phoneNumber + '\'' +
-            ", email='" + email + '\'' +
-            '}';
+        return "Company{"
+            + "id=" + id
+            + ", name='" + name + '\''
+            + ", address='" + address + '\''
+            + ", taxId='" + taxId + '\''
+            + ", accountNumber='" + accountNumber + '\''
+            + ", phoneNumber='" + phoneNumber + '\''
+            + ", email='" + email + '\''
+            + '}';
     }
 
     public static class Builder {

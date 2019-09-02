@@ -100,7 +100,7 @@ class InMemoryDatabaseTest {
     @Test
     void shouldReturnInvoiceByNumber() {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        storage.put(invoice.getId(),InvoiceGenerator.generateRandomInvoice());
+        storage.put(invoice.getId(),invoice);
 
         Optional<Invoice> optionalInvoice = database.getByNumber(invoice.getNumber());
 
@@ -113,7 +113,7 @@ class InMemoryDatabaseTest {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         storage.put(invoice.getId(), invoice);
 
-        Optional<Invoice> optionalInvoice = database.getById(invoice.getId()+1L);
+        Optional<Invoice> optionalInvoice = database.getById(invoice.getId() + 1L);
 
         assertTrue(optionalInvoice.isEmpty());
     }
