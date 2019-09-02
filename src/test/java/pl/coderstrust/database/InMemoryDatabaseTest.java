@@ -35,7 +35,7 @@ class InMemoryDatabaseTest {
         Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoice());
 
         assertNotNull(addedInvoice.getId());
-        assertEquals(1L, addedInvoice.getId());
+        assertEquals(storage.get(1L), addedInvoice.getId());
     }
 
     @Test
