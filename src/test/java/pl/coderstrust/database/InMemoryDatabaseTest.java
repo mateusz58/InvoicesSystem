@@ -35,7 +35,7 @@ class InMemoryDatabaseTest {
         Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoice());
 
         assertNotNull(addedInvoice.getId());
-        assertEquals(1L, (long) addedInvoice.getId());
+        assertEquals(1L, addedInvoice.getId());
     }
 
     @Test
@@ -52,6 +52,7 @@ class InMemoryDatabaseTest {
         Invoice invoiceInDatabase = InvoiceGenerator.generateRandomInvoice();
         Invoice invoiceToUpdate = invoiceInDatabase;
         storage.put(invoiceInDatabase.getId(), invoiceInDatabase);
+
         Invoice updatedInvoice = database.save(invoiceToUpdate);
 
         assertEquals(storage.get(invoiceInDatabase.getId()), updatedInvoice);
@@ -64,6 +65,7 @@ class InMemoryDatabaseTest {
         storage.put(invoice1.getId(), invoice1);
         storage.put(invoice2.getId(), invoice2);
         Map<Long, Invoice> expected = Map.of(invoice1.getId(), invoice1);
+
         database.delete(invoice2.getId());
 
         assertEquals(expected, storage);
@@ -88,6 +90,7 @@ class InMemoryDatabaseTest {
     void shouldReturnInvoiceById() {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         storage.put(invoice.getId(), invoice);
+
         Optional<Invoice> optionalInvoice = database.getById(invoice.getId());
 
         assertTrue(optionalInvoice.isPresent());
@@ -97,7 +100,8 @@ class InMemoryDatabaseTest {
     @Test
     void shouldReturnInvoiceByNumber() {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        storage.put(invoice.getId(), invoice);
+        storage.put(invoice.getId(),InvoiceGenerator.generateRandomInvoice());
+
         Optional<Invoice> optionalInvoice = database.getByNumber(invoice.getNumber());
 
         assertTrue(optionalInvoice.isPresent());
@@ -108,6 +112,7 @@ class InMemoryDatabaseTest {
     void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceById() {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         storage.put(invoice.getId(), invoice);
+
         Optional<Invoice> optionalInvoice = database.getById(invoice.getId()+1L);
 
         assertTrue(optionalInvoice.isEmpty());
@@ -117,6 +122,7 @@ class InMemoryDatabaseTest {
     void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceByNumber() {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         storage.put(invoice.getId(), invoice);
+
         Optional<Invoice> optionalInvoice = database.getByNumber(invoice.getNumber() + 1L);
 
         assertTrue(optionalInvoice.isEmpty());
@@ -143,7 +149,8 @@ class InMemoryDatabaseTest {
     @Test
     void shouldDeleteAllInvoices() {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        storage.put(invoice.getId(), invoice);
+        storage.put(invoice.getId(), InvoiceGenerator.generateRandomInvoice());
+
         database.deleteAll();
 
         assertEquals(new HashMap<>(), storage);
@@ -160,7 +167,7 @@ class InMemoryDatabaseTest {
     @Test
     void shouldReturnFalseForNonExistingInvoice() {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        storage.put(invoice.getId(), invoice);
+        storage.put(invoice.getId(), InvoiceGenerator.generateRandomInvoice());
 
         assertFalse(database.exists(666L));
     }
@@ -173,7 +180,7 @@ class InMemoryDatabaseTest {
     @Test
     void shouldReturnNumberOfInvoices() {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        storage.put(invoice.getId(), invoice);
+        storage.put(invoice.getId(), InvoiceGenerator.generateRandomInvoice());
 
         assertEquals(1, database.count());
     }
