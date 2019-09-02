@@ -99,7 +99,6 @@ public class FileHelper {
         String currentLine;
         int i = 1;
         while ((currentLine = reader.readLine()) != null) {
-
             if (i == lineNumber) {
                 i++;
                 continue;
