@@ -44,7 +44,7 @@ class InMemoryDatabaseTest {
 
         assertNotNull(addedInvoice.getId());
         assertEquals(1, (long) addedInvoice.getId());
-        assertEquals(storage.get(addedInvoice.getId()), addedInvoice);
+        assertEquals(storage.get(1L)  addedInvoice);
     }
 
     @Test
