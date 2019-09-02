@@ -7,6 +7,6 @@ public class IdGenerator {
     private static AtomicLong atomicLong = new AtomicLong(0);
 
     public static Long getId() {
-        return atomicLong.incrementAndGet();
+        return ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, Long.MAX_VALUE);
     }
 }
