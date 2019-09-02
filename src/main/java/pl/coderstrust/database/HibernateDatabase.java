@@ -9,6 +9,9 @@ import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
+import java.util.Collection;
+import java.util.Optional;
+
 public class HibernateDatabase implements Database {
     private final InvoiceRepository invoiceRepository;
     private final HibernateModelMapper modelMapper;
@@ -59,7 +62,7 @@ public class HibernateDatabase implements Database {
     }
 
     @Override
-    public Optional<Invoice> getById(Long id) {
+    public Optional<Invoice> getById(Long id) throws DatabaseOperationException {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null.");
         }
