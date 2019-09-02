@@ -1,9 +1,10 @@
 package pl.coderstrust.generators;
 
-import java.util.ArrayList;
-import java.util.List;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InvoiceGenerator {
 

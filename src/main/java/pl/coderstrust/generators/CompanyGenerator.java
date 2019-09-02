@@ -1,3 +1,4 @@
+
 package pl.coderstrust.generators;
 
 import pl.coderstrust.model.Company;

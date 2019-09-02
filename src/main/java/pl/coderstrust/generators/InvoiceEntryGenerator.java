@@ -1,9 +1,10 @@
 package pl.coderstrust.generators;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import pl.coderstrust.model.InvoiceEntry;
 import pl.coderstrust.model.Vat;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class InvoiceEntryGenerator {
 
