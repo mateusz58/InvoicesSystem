@@ -38,6 +38,10 @@ class FileHelperIT {
         if (inputFile.exists()) {
             inputFile.delete();
         }
+        expectedFile = new File(EXPECTED_FILE);
+        if (expectedFile.exists()) {
+            expectedFile.delete();
+        }
     }
 
     @Test
