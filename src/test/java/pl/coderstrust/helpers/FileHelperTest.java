@@ -112,7 +112,9 @@ class FileHelperTest {
             "Seller",
             "Buyer"
         );
-        for (int i = 0; i < expected.size(); i++) {
+         FileUtils.writeLines(inputFile, ENCODING, expected, true);
+        List<String> result = fileHelper.readLines(INPUT_FILE);
+        assertEquals(expected, result);
             writer.write(expected.get(i) + System.getProperty("line.separator"));
         }
         writer.close();
