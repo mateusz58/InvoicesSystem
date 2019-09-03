@@ -1,9 +1,11 @@
 package pl.coderstrust.database;
 
+import org.springframework.dao.NonTransientDataAccessException;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public class HibernateDatabase implements Database {
@@ -14,7 +16,7 @@ public class HibernateDatabase implements Database {
     }
 
     @Override
-    public Invoice save(Invoice invoice) throws DatabaseOperationException {
+    public Invoice save(Invoice invoice) {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
@@ -23,7 +25,13 @@ public class HibernateDatabase implements Database {
 
     @Override
     public void delete(Long id) throws DatabaseOperationException {
-
+        if (id == null) {
+            throw new IllegalArgumentException("Invoice id cannot be null.");
+        }
+//        if (!invoiceRepository.existsById(id)) {
+//            throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
+//        }
+        invoiceRepository.deleteById(id);
     }
 
     @Override
@@ -31,34 +39,50 @@ public class HibernateDatabase implements Database {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        if (!invoiceRepository.existsById(id)) {
-            throw new DatabaseOperationException(String.format("There was no invoice in database with id: %s", id));
-        }
-        return Optional.empty();
+//        if (!invoiceRepository.existsById(id)) {
+//            throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
+//        }
+        return Optional.ofNullable(invoiceRepository.getOne(id));
     }
 
     @Override
-    public Optional<Invoice> getByNumber(String number) throws DatabaseOperationException {
-        return Optional.empty();
+    public Optional<Invoice> getByNumber(String number) {
+        if (number == null) {
+            throw new IllegalArgumentException("Invoice number cannot be null");
+        }
+        return invoiceRepository.findAll()
+                .stream()
+                .filter(invoice -> invoice.getNumber().equals(number))
+                .findFirst();
     }
 
     @Override
     public Collection<Invoice> getAll() throws DatabaseOperationException {
-        return null;
+        List<Invoice> invoiceList;
+        try {
+            invoiceList = invoiceRepository.findAll();
+        } catch (NonTransientDataAccessException e) {
+            throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
+        }
+        return invoiceList;
     }
 
     @Override
     public void deleteAll() throws DatabaseOperationException {
-
+        try {
+            invoiceRepository.deleteAll();
+        } catch (NonTransientDataAccessException e) {
+            throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
+        }
     }
 
     @Override
-    public boolean exists(Long id) throws DatabaseOperationException {
-        return false;
+    public boolean exists(Long id) {
+        return invoiceRepository.existsById(id);
     }
 
     @Override
-    public long count() throws DatabaseOperationException {
-        return 0;
+    public long count() {
+        return invoiceRepository.count();
     }
 }
