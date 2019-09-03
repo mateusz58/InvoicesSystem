@@ -109,7 +109,7 @@ class FileHelperIT {
     }
 
     @Test
-    void shouldReadLines() throws IOException {
+    void shouldReadLinesFromFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(filePathInput));
         List<String> expected = Arrays.asList(
             "Id",
