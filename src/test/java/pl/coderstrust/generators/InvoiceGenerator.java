@@ -18,24 +18,24 @@ public class InvoiceGenerator {
     private static Invoice generateInvoice(Long id) {
         return Invoice.builder()
             .withId(id)
-            .withNumber(RandomWordGenerator.generateRandomWord())
+            .withNumber(WordGenerator.generateRandomWord())
             .withBuyer(CompanyGenerator.generateRandomCompany())
             .withSeller(CompanyGenerator.generateRandomCompany())
-            .withDueDate(RandomLocalDateGenerator.generateRandomLocalDate())
-            .withIssuedDate(RandomLocalDateGenerator.generateRandomLocalDate())
-            .withEntries(generateEntries())
+            .withDueDate(LocalDateGenerator.generateRandomLocalDate())
+            .withIssuedDate(LocalDateGenerator.generateRandomLocalDate())
+            .withEntries(generateEntries(5))
             .build();
     }
 
     public static Invoice getRandomInvoiceWithSpecificId(Long id) {
-        return buildInvoice(id);
+        return generateInvoice(id);
     }
 
     public static Invoice generateRandomInvoice() {
-        return buildInvoice(IdGenerator.getRandomId());
+        return generateInvoice(IdGenerator.getRandomId());
     }
 
     public static Invoice generateRandomInvoiceWithNullId() {
-        return buildInvoice(null);
+        return generateInvoice(null);
     }
 }

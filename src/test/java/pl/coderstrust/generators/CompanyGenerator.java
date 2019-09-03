@@ -7,12 +7,12 @@ public class CompanyGenerator {
     public static Company generateRandomCompany() {
         return Company.builder()
             .withId(IdGenerator.getRandomId())
-            .withEmail(RandomWordGenerator.generateRandomWord() + "@mail.com")
-            .withAddress(RandomWordGenerator.generateRandomWord())
-            .withAccountNumber(String.valueOf(RandomNumberGenerator.generateRandomNumber(11)))
-            .withName(RandomWordGenerator.generateRandomWord())
-            .withPhoneNumber(String.valueOf(RandomNumberGenerator.generateRandomNumber(9)))
-            .withTaxId(RandomWordGenerator.generateRandomWord())
+            .withEmail(WordGenerator.generateRandomWord() + "@mail.com")
+            .withAddress(WordGenerator.generateRandomWord())
+            .withAccountNumber(String.valueOf(NumberGenerator.generateRandomNumber(11)))
+            .withName(WordGenerator.generateRandomWord())
+            .withPhoneNumber(String.valueOf(NumberGenerator.generateRandomNumber(9)))
+            .withTaxId(WordGenerator.generateRandomWord())
             .build();
     }
 }
