@@ -145,7 +145,10 @@ class FileHelperTest {
 
     @Test
     void shouldRemoveLineFromFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filePathInput));
+        FileUtils.writeLines(inputFile, ENCODING, Arrays.asList("bla1", "bla2", "bla3"), true);
+        FileUtils.writeLines(expectedFile, ENCODING, Arrays.asList("bla1", "bla3"), true);
+        fileHelper.removeLine(INPUT_FILE, 2);
+        assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
         List<String> input = Arrays.asList(
             "Id",
             "22/2019",
