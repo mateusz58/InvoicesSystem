@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class FileHelper {
 
-    void createFile(String filePath) throws IOException {
+    void create(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
