@@ -51,7 +51,7 @@ public class FileHelper {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+        FileUtils.write(new File(filePath), "", ENCODING);
         writer.flush();
         writer.close();
     }
