@@ -25,7 +25,7 @@ public class HibernateDatabase implements Database {
     }
 
     @Override
-    public Invoice save(Invoice invoice) throws DatabaseOperationException {
+    public Invoice save(Invoice invoice) {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
