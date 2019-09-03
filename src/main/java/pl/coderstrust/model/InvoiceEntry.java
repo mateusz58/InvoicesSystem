@@ -112,11 +112,6 @@ public final class InvoiceEntry {
             return this;
         }
 
-        public Builder withNumber(String description) {
-            this.description = description;
-            return this;
-        }
-
         public Builder withQuantity(Long quantity) {
             this.quantity = quantity;
             return this;
