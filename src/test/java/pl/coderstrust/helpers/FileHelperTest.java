@@ -34,7 +34,7 @@ class FileHelperIT {
     @BeforeEach
     void beforeEach() {
         fileHelper = new FileHelper();
-        inputFile = new File(filePathInput);
+        inputFile = new File(INPUT_FILE);
         if (inputFile.exists()) {
             inputFile.delete();
         }
