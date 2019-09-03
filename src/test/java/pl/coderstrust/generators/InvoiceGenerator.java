@@ -15,7 +15,7 @@ public class InvoiceGenerator {
         return entries;
     }
 
-    private static Invoice buildInvoice(Long id) {
+    private static Invoice generateInvoice(Long id) {
         return Invoice.builder()
             .withId(id)
             .withNumber(RandomWordGenerator.generateRandomWord())
