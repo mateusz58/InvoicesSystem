@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.coderstrust.generators.IdGenerator;
 import pl.coderstrust.generators.InvoiceGenerator;
 import pl.coderstrust.model.Invoice;
 
@@ -33,7 +32,7 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldAddInvoice() {
-        Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId()));
+        Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoice());
 
         assertNotNull(addedInvoice.getId());
         assertEquals(storage.get(1L), addedInvoice);
@@ -41,7 +40,7 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldAddInvoiceWithNullId() {
-        Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoice(null));
+        Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoiceWithNullId());
 
         assertNotNull(addedInvoice.getId());
         assertEquals(1L, (long) addedInvoice.getId());
@@ -50,8 +49,8 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldUpdateInvoice() {
-        Invoice invoiceInDatabase = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        Invoice invoiceToUpdate = invoiceInDatabase;
+        Invoice invoiceInDatabase = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoiceToUpdate = InvoiceGenerator.getRandomInvoiceWithSpecificId(invoiceInDatabase.getId());
         storage.put(invoiceInDatabase.getId(), invoiceInDatabase);
 
         Invoice updatedInvoice = database.save(invoiceToUpdate);
@@ -61,8 +60,8 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldDeleteInvoice() throws DatabaseOperationException {
-        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
+        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
         storage.put(invoice1.getId(), invoice1);
         storage.put(invoice2.getId(), invoice2);
         Map<Long, Invoice> expected = Map.of(invoice1.getId(), invoice1);
@@ -89,29 +88,33 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldReturnInvoiceById() {
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        storage.put(invoice.getId(), invoice);
+        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice1.getId(), invoice1);
+        storage.put(invoice2.getId(), invoice2);
 
-        Optional<Invoice> optionalInvoice = database.getById(invoice.getId());
+        Optional<Invoice> optionalInvoice = database.getById(invoice1.getId());
 
         assertTrue(optionalInvoice.isPresent());
-        assertEquals(invoice, optionalInvoice.get());
+        assertEquals(invoice1, optionalInvoice.get());
     }
 
     @Test
     void shouldReturnInvoiceByNumber() {
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        storage.put(invoice.getId(),invoice);
+        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice1.getId(),invoice1);
+        storage.put(invoice2.getId(),invoice1);
 
-        Optional<Invoice> optionalInvoice = database.getByNumber(invoice.getNumber());
+        Optional<Invoice> optionalInvoice = database.getByNumber(invoice1.getNumber());
 
         assertTrue(optionalInvoice.isPresent());
-        assertEquals(invoice, optionalInvoice.get());
+        assertEquals(invoice1, optionalInvoice.get());
     }
 
     @Test
     void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceById() {
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         storage.put(invoice.getId(), invoice);
 
         Optional<Invoice> optionalInvoice = database.getById(invoice.getId() + 1L);
@@ -121,7 +124,7 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceByNumber() {
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         storage.put(invoice.getId(), invoice);
 
         Optional<Invoice> optionalInvoice = database.getByNumber(invoice.getNumber() + 1L);
@@ -141,18 +144,20 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldReturnAllInvoices() {
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        storage.put(invoice.getId(), InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId()));
+        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice1.getId(), InvoiceGenerator.generateRandomInvoice());
+        storage.put(invoice2.getId(), InvoiceGenerator.generateRandomInvoice());
 
         assertEquals(storage.values(), database.getAll());
     }
 
     @Test
     void shouldDeleteAllInvoices() {
-        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        storage.put(invoice1.getId(), InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId()));
-        storage.put(invoice2.getId(), InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId()));
+        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice1.getId(), InvoiceGenerator.generateRandomInvoice());
+        storage.put(invoice2.getId(), InvoiceGenerator.generateRandomInvoice());
 
         database.deleteAll();
 
@@ -161,18 +166,20 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldReturnTrueForExistingInvoice() {
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        storage.put(invoice.getId(), InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId()));
+        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice1.getId(), InvoiceGenerator.generateRandomInvoice());
+        storage.put(invoice2.getId(), InvoiceGenerator.generateRandomInvoice());
 
-        assertTrue(database.exists(invoice.getId()));
+        assertTrue(database.exists(invoice1.getId()));
     }
 
     @Test
     void shouldReturnFalseForNonExistingInvoice() {
-        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        storage.put(invoice1.getId(), InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId()));
-        storage.put(invoice2.getId(), InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId()));
+        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice1.getId(), InvoiceGenerator.generateRandomInvoice());
+        storage.put(invoice2.getId(), InvoiceGenerator.generateRandomInvoice());
 
         assertFalse(database.exists(666L));
     }
@@ -184,10 +191,10 @@ class InMemoryDatabaseTest {
 
     @Test
     void shouldReturnNumberOfInvoices() {
-        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId());
-        storage.put(invoice1.getId(), InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId()));
-        storage.put(invoice2.getId(), InvoiceGenerator.generateRandomInvoice(IdGenerator.getRandomId()));
+        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
+        storage.put(invoice1.getId(), InvoiceGenerator.generateRandomInvoice());
+        storage.put(invoice2.getId(), InvoiceGenerator.generateRandomInvoice());
 
         assertEquals(2, database.count());
     }

@@ -27,7 +27,15 @@ public class InvoiceGenerator {
             .build();
     }
 
-    public static Invoice generateRandomInvoice(Long id) {
+    public static Invoice getRandomInvoiceWithSpecificId(Long id) {
         return buildInvoice(id);
+    }
+
+    public static Invoice generateRandomInvoice() {
+        return buildInvoice(IdGenerator.getRandomId());
+    }
+
+    public static Invoice generateRandomInvoiceWithNullId() {
+        return buildInvoice(null);
     }
 }
