@@ -34,7 +34,10 @@ public class FileHelper {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
-        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        if (!Files.exists(Paths.get(filePath))) {
+            throw new FileNotFoundException("File does not exist.");
+        }
+        return (new File(filePath).length() == 0);
         if(br.readLine()==null)
         {
             br.close();
