@@ -103,7 +103,9 @@ class FileHelperIT {
 
     @Test
     void shouldWriteGivenLineInFile() throws IOException {
-        fileHelper.writeLine(filePathInput, "Test data");
+        FileUtils.writeLines(expectedFile, ENCODING, Collections.singleton("test test"), true);
+        fileHelper.writeLine(INPUT_FILE, "test test");
+        assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
         BufferedReader reader = new BufferedReader(new FileReader(filePathInput));
         String expected = reader.lines().reduce((first, second) -> second).orElse(null);
         reader.close();
