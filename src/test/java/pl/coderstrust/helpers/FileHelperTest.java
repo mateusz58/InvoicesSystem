@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class FileHelperTest {
+class FileHelperIT {
 
     private static final String filePathInput = "src/test/resources/helpers/input_file.txt";
     FileHelper fileHelper;
