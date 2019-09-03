@@ -122,7 +122,7 @@ class FileHelperTest {
     }
 
     @Test
-    void shouldReadLastLine() throws IOException {
+    void shouldReadLastLineFromFile() throws IOException {
         BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePathInput));
         BufferedReader reader = Files.newBufferedReader(Paths.get(filePathInput));
         List<String> lines = Arrays.asList(
