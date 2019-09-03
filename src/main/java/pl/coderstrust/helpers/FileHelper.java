@@ -63,7 +63,7 @@ public class FileHelper {
         if (line == null) {
             throw new IllegalArgumentException("Line cannot be null");
         }
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8));
+        FileUtils.writeLines(new File(filePath), ENCODING, Collections.singleton(line), true);
         writer.write(line);
         writer.close();
     }
