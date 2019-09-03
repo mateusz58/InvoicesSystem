@@ -2,7 +2,7 @@ package pl.coderstrust.generators;
 
 import java.util.Random;
 
-public class RandomWordGenerator {
+public class WordGenerator {
 
     private static Random random = new Random();
 
