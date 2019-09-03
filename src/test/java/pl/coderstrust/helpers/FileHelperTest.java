@@ -52,7 +52,7 @@ class FileHelperIT {
     }
 
     @Test
-    void shouldDeleteFile() throws IOException {
+    void shouldDeleteExistingFile() throws IOException {
         inputFile.createNewFile();
         fileHelper.delete(filePathInput);
 
