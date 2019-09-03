@@ -87,7 +87,10 @@ class FileHelperIT {
 
     @Test
     void shouldClearFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filePathInput));
+        expectedFile.createNewFile();
+        FileUtils.writeLines(inputFile, Collections.singleton("bla bla bla"), ENCODING, true);
+        fileHelper.clear(INPUT_FILE);
+        assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
         writer.write("Test data");
         writer.close();
         fileHelper.clear(filePathInput);
