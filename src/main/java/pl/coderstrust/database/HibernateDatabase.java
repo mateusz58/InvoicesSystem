@@ -2,10 +2,12 @@ package pl.coderstrust.database;
 
 import org.springframework.dao.NonTransientDataAccessException;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
+import org.springframework.dao.NonTransientDataAccessException;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public class HibernateDatabase implements Database {
