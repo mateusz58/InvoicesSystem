@@ -29,6 +29,7 @@ class FileHelperIT {
     private static final String ENCODING = "UTF-8";
     FileHelper fileHelper;
     private File inputFile;
+    private File expectedFile;
 
     @BeforeEach
     void beforeEach() {
