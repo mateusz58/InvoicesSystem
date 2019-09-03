@@ -123,7 +123,9 @@ class FileHelperTest {
 
     @Test
     void shouldReadLastLineFromFile() throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePathInput));
+        FileUtils.writeLines(inputFile, ENCODING, Arrays.asList("Seller's details", "2019-06-25", "Buyer's details"), false);
+        String result = fileHelper.readLastLine(INPUT_FILE);
+        assertEquals("Buyer's details", result);
         BufferedReader reader = Files.newBufferedReader(Paths.get(filePathInput));
         List<String> lines = Arrays.asList(
             "Id",
