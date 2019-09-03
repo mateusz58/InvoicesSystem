@@ -9,7 +9,7 @@ public class InvoiceGenerator {
 
     private static List<InvoiceEntry> generateEntries(int count) {
         List<InvoiceEntry> entries = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < count; i++) {
             entries.add(InvoiceEntryGenerator.getRandomEntry());
         }
         return entries;
