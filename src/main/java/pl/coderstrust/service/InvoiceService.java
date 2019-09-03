@@ -98,7 +98,10 @@ public class InvoiceService {
         }
     }
 
-    public boolean exists(Long id) throws ServiceOperationException {
+    public boolean exists(Long id) throws ServiceOperationException, DatabaseOperationException {
+        if(id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
         try {
             return database.exists(id);
         } catch (DatabaseOperationException e) {
