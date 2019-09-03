@@ -68,7 +68,7 @@ class FileHelperIT {
 
     @Test
     void shouldReturnFalseIfFileDoesNotExists() throws IOException {
-        Files.createFile(Paths.get(filePathInput));
+        assertFalse(fileHelper.exists(INPUT_FILE));
         Files.delete(Paths.get(filePathInput));
 
         assertFalse(fileHelper.exists(filePathInput));
