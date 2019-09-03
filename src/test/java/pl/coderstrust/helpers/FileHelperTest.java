@@ -86,7 +86,7 @@ class FileHelperIT {
     }
 
     @Test
-    void shouldCheckIfFileWasCleared() throws IOException {
+    void shouldClearFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(filePathInput));
         writer.write("Test data");
         writer.close();
