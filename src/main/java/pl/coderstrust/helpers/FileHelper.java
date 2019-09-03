@@ -72,7 +72,7 @@ public class FileHelper {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
-        BufferedReader reader = new BufferedReader(
+        return FileUtils.readLines(new File(filePath), ENCODING);
                 new InputStreamReader(
                         new FileInputStream(filePath), StandardCharsets.UTF_8));
         List<String> result = reader.lines().collect(Collectors.toList());
