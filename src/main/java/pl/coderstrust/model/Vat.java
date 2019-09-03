@@ -1,5 +1,10 @@
 package pl.coderstrust.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "vata:5: Wrong lexicographical ")
 public enum Vat {
 
     VAT_0(0.00f),
