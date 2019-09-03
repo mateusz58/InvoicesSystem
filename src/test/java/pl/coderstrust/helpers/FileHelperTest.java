@@ -102,7 +102,7 @@ class FileHelperIT {
     }
 
     @Test
-    void shouldWriteGivenLineInFile() throws IOException {
+    void shouldWriteLineToFile() throws IOException {
         FileUtils.writeLines(expectedFile, ENCODING, Collections.singleton("test test"), true);
         fileHelper.writeLine(INPUT_FILE, "test test");
         assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
