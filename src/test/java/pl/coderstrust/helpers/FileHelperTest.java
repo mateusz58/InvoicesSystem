@@ -144,7 +144,7 @@ class FileHelperTest {
     }
 
     @Test
-    void shouldRemoveLine() throws IOException {
+    void shouldRemoveLineFromFile() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(filePathInput));
         List<String> input = Arrays.asList(
             "Id",
