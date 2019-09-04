@@ -39,7 +39,7 @@ class InvoiceServiceTest {
 
     @Test
     void addMethodShouldThrowExceptionIfInvoiceAlreadyExist() throws DatabaseOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         doReturn(true).when(database).exists(invoice.getId());
 
         assertThrows(ServiceOperationException.class, () -> invoiceService.add(invoice));
@@ -49,8 +49,8 @@ class InvoiceServiceTest {
 
     @Test
     void shouldAddInvoice() throws DatabaseOperationException, ServiceOperationException {
-        Invoice invoiceToAdd = InvoiceGenerator.getRandomInvoice();
-        Invoice addedInvoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoiceToAdd = InvoiceGenerator.generateRandomInvoice();
+        Invoice addedInvoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoiceToAdd.getId())).thenReturn(false);
         when(database.save(invoiceToAdd)).thenReturn(addedInvoice);
 
@@ -63,8 +63,8 @@ class InvoiceServiceTest {
 
     @Test
     void shouldAddInvoiceWithNullId() throws DatabaseOperationException, ServiceOperationException {
-        Invoice invoiceToAdd = InvoiceGenerator.getRandomInvoiceWithNullId();
-        Invoice addedInvoice = InvoiceGenerator.getRandomInvoiceWithNullId();
+        Invoice invoiceToAdd = InvoiceGenerator.generateRandomInvoicewithNullId();
+        Invoice addedInvoice = InvoiceGenerator.generateRandomInvoicewithNullId();
         when(database.save(invoiceToAdd)).thenReturn(addedInvoice);
 
         Invoice result = invoiceService.add(invoiceToAdd);
@@ -75,7 +75,7 @@ class InvoiceServiceTest {
 
     @Test
     void addMethodShouldThrowExceptionWhenAnErrorOccurDuringAddingInvoiceToDatabase() throws DatabaseOperationException, ServiceOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.save(invoice)).thenThrow(DatabaseOperationException.class);
 
         assertThrows(ServiceOperationException.class, () -> invoiceService.add(invoice));
@@ -88,7 +88,7 @@ class InvoiceServiceTest {
 
     @Test
     void updateInvoiceMethodShouldThrowExceptionWhenInvoiceNotExist() throws DatabaseOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         doReturn(false).when(database).exists(invoice.getId());
 
         assertThrows(ServiceOperationException.class, () -> invoiceService.update(invoice));
@@ -98,14 +98,14 @@ class InvoiceServiceTest {
 
     @Test
     void updateMethodShouldThrowExceptionForNullInvoiceId() {
-        Invoice invoiceWithNullId = InvoiceGenerator.getRandomInvoiceWithNullId();
+        Invoice invoiceWithNullId = InvoiceGenerator.generateRandomInvoicewithNullId();
         assertThrows(ServiceOperationException.class, () -> invoiceService.update(invoiceWithNullId));
     }
 
     @Test
     void updateMethodShouldUpdateInvoice() throws ServiceOperationException, DatabaseOperationException {
-        Invoice invoiceToUpdate = InvoiceGenerator.getRandomInvoice();
-        Invoice invoiceUpdated = InvoiceGenerator.getRandomInvoice();
+        Invoice invoiceToUpdate = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoiceUpdated = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoiceToUpdate.getId())).thenReturn(true);
         when(database.save(invoiceToUpdate)).thenReturn(invoiceUpdated);
 
@@ -117,7 +117,7 @@ class InvoiceServiceTest {
 
     @Test
     void updateMethodShouldThrowExceptionWhenAnErrorOccurDuringUpdatingInvoiceInDatabase() throws DatabaseOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(true);
         when(database.save(invoice)).thenThrow(DatabaseOperationException.class);
 
@@ -133,7 +133,7 @@ class InvoiceServiceTest {
 
     @Test
     void deleteByIdMethodShouldThrowExceptionWhenAnErrorOccurDuringDeletingInvoiceByIdFromDatabase() throws DatabaseOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(true);
         doThrow(DatabaseOperationException.class).when(database).delete(invoice.getId());
 
@@ -176,7 +176,7 @@ class InvoiceServiceTest {
 
     @Test
     void shouldGetInvoiceById() throws DatabaseOperationException, ServiceOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         doReturn(true).when(database).exists(1L);
         doReturn(Optional.of(invoice)).when(database).getById(1L);
 
@@ -190,7 +190,7 @@ class InvoiceServiceTest {
 
     @Test
     void getByIdMethodShouldThrowExceptionWhenAnErrorOccurDuringGettingInvoiceByIdFromDatabase() throws DatabaseOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(true);
         when(database.getById(invoice.getId())).thenThrow(DatabaseOperationException.class);
 
@@ -206,7 +206,7 @@ class InvoiceServiceTest {
 
     @Test
     void shouldGetInvoiceByNumber() throws DatabaseOperationException, ServiceOperationException {
-        Optional<Invoice> expected = Optional.of(InvoiceGenerator.getRandomInvoice());
+        Optional<Invoice> expected = Optional.of(InvoiceGenerator.generateRandomInvoice());
         doReturn(expected).when(database).getByNumber("1");
 
         Optional<Invoice> actual = invoiceService.getByNumber("1");
@@ -217,7 +217,7 @@ class InvoiceServiceTest {
 
     @Test
     void shouldReturnAllInvoices() throws ServiceOperationException, DatabaseOperationException {
-        List<Invoice> expected = List.of(InvoiceGenerator.getRandomInvoice(), InvoiceGenerator.getRandomInvoice());
+        List<Invoice> expected = List.of(InvoiceGenerator.generateRandomInvoice(), InvoiceGenerator.generateRandomInvoice());
         doReturn(expected).when(database).getAll();
 
         Collection<Invoice> actual = invoiceService.getAll();
@@ -247,7 +247,7 @@ class InvoiceServiceTest {
 
     @Test
     void deleteAllMethodShouldThrowExceptionWhenAnErrorOccurDuringDeletingAllInvoicesFromDatabase() throws DatabaseOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         doThrow(DatabaseOperationException.class).when(database).deleteAll();
 
 
@@ -264,7 +264,7 @@ class InvoiceServiceTest {
 
     @Test
     void shouldReturnTrueWhenInvoiceExistsInDatabase() throws DatabaseOperationException, ServiceOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(true);
 
         assertTrue(invoiceService.exists(invoice.getId()));
@@ -273,7 +273,7 @@ class InvoiceServiceTest {
 
     @Test
     void shouldReturnFalseWhenInvoiceDoesNotExistsInDatabase() throws DatabaseOperationException, ServiceOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(false);
 
         assertFalse(invoiceService.exists(invoice.getId()));
@@ -287,7 +287,7 @@ class InvoiceServiceTest {
 
     @Test
     void existsMethodShouldThrowExceptionWhenAnErrorOccurDuringCheckingInvoiceExists() throws DatabaseOperationException {
-        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenThrow(DatabaseOperationException.class);
 
         assertThrows(ServiceOperationException.class, () -> invoiceService.exists(invoice.getId()));
