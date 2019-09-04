@@ -5,26 +5,24 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class FileHelperIT {
 
-    private static final String INPUT_FILE = "src/test/resources/helpers/input_file.txt";
+    private static final String INPUT_FILE  = "src/test/resources/helpers/input_file.txt";
     private static final String EXPECTED_FILE = "src/test/resources/helpers/expected_file.txt";
     private static final String ENCODING = "UTF-8";
     FileHelper fileHelper;
@@ -46,76 +44,70 @@ class FileHelperIT {
 
     @Test
     void shouldCreateFile() throws IOException {
-        fileHelper.createFile(filePathInput);
+        fileHelper.createFile(INPUT_FILE);
 
-        assertTrue(Files.exists(Paths.get(filePathInput)));
+        assertTrue(Files.exists(Paths.get(INPUT_FILE)));
     }
 
     @Test
     void shouldDeleteExistingFile() throws IOException {
         inputFile.createNewFile();
-        fileHelper.delete(filePathInput);
+        fileHelper.delete(INPUT_FILE);
 
-        assertFalse(Files.exists(Paths.get(filePathInput)));
+        assertFalse(Files.exists(Paths.get(INPUT_FILE)));
     }
 
     @Test
     void shouldReturnTrueIfFileExists() throws IOException {
-        Files.createFile(Paths.get(filePathInput));
+        Files.createFile(Paths.get(INPUT_FILE));
 
-        assertTrue(fileHelper.exists(filePathInput));
+        assertTrue(fileHelper.exists(INPUT_FILE));
     }
 
     @Test
     void shouldReturnFalseIfFileDoesNotExists() throws IOException {
         assertFalse(fileHelper.exists(INPUT_FILE));
-        Files.delete(Paths.get(filePathInput));
-
-        assertFalse(fileHelper.exists(filePathInput));
     }
 
     @Test
-    void shouldCheckIfFileIsEmpty() throws IOException {
-        Files.createFile(Paths.get(filePathInput));
-        assertTrue(fileHelper.isEmpty(filePathInput));
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filePathInput));
-        writer.write("Test data");
-        writer.close();
+    void  shouldReturnFalseIfFileIsNotEmpty() throws IOException {
+        FileUtils.writeLines(inputFile, Collections.singleton("bla bla bla"), ENCODING, true);
 
-        assertFalse(fileHelper.isEmpty(filePathInput));
+        boolean given = fileHelper.isEmpty(INPUT_FILE);
+
+        assertFalse(given);
+    }
+
+    @Test
+    void  shouldReturnTrueIfFileIsEmpty() throws IOException {
+        inputFile.createNewFile();
+
+        boolean given = fileHelper.isEmpty(INPUT_FILE);
+
+        assertTrue(given);
     }
 
     @Test
     void shouldClearFile() throws IOException {
         expectedFile.createNewFile();
         FileUtils.writeLines(inputFile, Collections.singleton("bla bla bla"), ENCODING, true);
-        fileHelper.clear(INPUT_FILE);
-        assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
-        writer.write("Test data");
-        writer.close();
-        fileHelper.clear(filePathInput);
-        BufferedReader reader = new BufferedReader(new FileReader(filePathInput));
-        String temp = reader.readLine();
-        reader.close();
 
-        assertTrue(temp == null);
+        fileHelper.clear(INPUT_FILE);
+
+        assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
     }
 
     @Test
     void shouldWriteLineToFile() throws IOException {
         FileUtils.writeLines(expectedFile, ENCODING, Collections.singleton("test test"), true);
-        fileHelper.writeLine(INPUT_FILE, "test test");
-        assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
-        BufferedReader reader = new BufferedReader(new FileReader(filePathInput));
-        String expected = reader.lines().reduce((first, second) -> second).orElse(null);
-        reader.close();
 
-        assertEquals(expected, "Test data");
+        fileHelper.writeLine(INPUT_FILE, "test test");
+
+        assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
     }
 
     @Test
     void shouldReadLinesFromFile() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filePathInput));
         List<String> expected = Arrays.asList(
             "Id",
             "22/2019",
@@ -124,13 +116,9 @@ class FileHelperIT {
             "Seller",
             "Buyer"
         );
-         FileUtils.writeLines(inputFile, ENCODING, expected, true);
-        List<String> result = fileHelper.readLines(INPUT_FILE);
-        assertEquals(expected, result);
-            writer.write(expected.get(i) + System.getProperty("line.separator"));
-        }
-        writer.close();
-        List<String> actual = fileHelper.readLines(filePathInput);
+
+        FileUtils.writeLines(inputFile, ENCODING, expected, true);
+        List<String> actual = fileHelper.readLines(INPUT_FILE);
 
         assertEquals(expected, actual);
     }
@@ -138,58 +126,20 @@ class FileHelperIT {
     @Test
     void shouldReadLastLineFromFile() throws IOException {
         FileUtils.writeLines(inputFile, ENCODING, Arrays.asList("Seller's details", "2019-06-25", "Buyer's details"), false);
-        String result = fileHelper.readLastLine(INPUT_FILE);
-        assertEquals("Buyer's details", result);
-        BufferedReader reader = Files.newBufferedReader(Paths.get(filePathInput));
-        List<String> lines = Arrays.asList(
-            "Id",
-            "22/2019",
-            "2019-06-25",
-            "2015-07-25",
-            "Seller",
-            "Buyer"
-        );
-        for (int i = 0; i < lines.size(); i++) {
-            writer.write(lines.get(i) + System.getProperty("line.separator"));
-        }
-        writer.close();
-        String lastline = reader.lines().reduce((first, second) -> second).orElse(null);
-        reader.close();
 
-        assertEquals(lastline, fileHelper.readLastLine(filePathInput));
+        String result = fileHelper.readLastLine(INPUT_FILE);
+
+        assertEquals("Buyer's details", result);
     }
 
     @Test
     void shouldRemoveLineFromFile() throws IOException {
         FileUtils.writeLines(inputFile, ENCODING, Arrays.asList("bla1", "bla2", "bla3"), true);
         FileUtils.writeLines(expectedFile, ENCODING, Arrays.asList("bla1", "bla3"), true);
-        fileHelper.removeLine(INPUT_FILE, 2);
-        assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
-        List<String> input = Arrays.asList(
-            "Id",
-            "22/2019",
-            "2019-06-25",
-            "2015-07-25",
-            "Seller",
-            "Buyer"
-        );
-        List<String> expected = Arrays.asList(
-            "Id",
-            "22/2019",
-            "2015-07-25",
-            "Seller",
-            "Buyer"
-        );
-        for (int i = 0; i < input.size(); i++) {
-            writer.write(input.get(i) + System.getProperty("line.separator"));
-        }
-        writer.close();
-        fileHelper.removeLine(filePathInput, 3);
-        BufferedReader reader = Files.newBufferedReader(Paths.get(filePathInput));
-        List<String> actual = reader.lines().collect(Collectors.toList());
-        reader.close();
 
-        assertEquals(expected, actual);
+        fileHelper.removeLine(INPUT_FILE, 2);
+
+        assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
     }
 
     @Test
@@ -224,7 +174,7 @@ class FileHelperIT {
 
     @Test
     void writeLineMethodShouldThrowExceptionForNullLineArgument() {
-        assertThrows(IllegalArgumentException.class, () -> fileHelper.writeLine(filePathInput, null));
+        assertThrows(IllegalArgumentException.class, () -> fileHelper.writeLine(INPUT_FILE, null));
     }
 
     @Test
@@ -244,23 +194,23 @@ class FileHelperIT {
 
     @Test
     void removeLineMethodShouldThrowExceptionForLineNumberSmallerThanOneArgument() {
-        assertThrows(IllegalArgumentException.class, () -> fileHelper.removeLine(filePathInput, 0));
+        assertThrows(IllegalArgumentException.class, () -> fileHelper.removeLine(INPUT_FILE, 0));
     }
 
     @Test
     void createMethodShouldThrowExceptionForExistingFile() throws IOException {
         inputFile.createNewFile();
 
-        assertThrows(FileAlreadyExistsException.class, () -> fileHelper.createFile(filePathInput));
+        assertThrows(FileAlreadyExistsException.class, () -> fileHelper.createFile(INPUT_FILE));
     }
 
     @Test
     void deleteMethodShouldThrowExceptionForNonExistingFile() {
-        assertThrows(NoSuchFileException.class, () -> fileHelper.delete(filePathInput));
+        assertThrows(NoSuchFileException.class, () -> fileHelper.delete(INPUT_FILE));
     }
 
     @Test
     void isEmptyMethodShouldThrowExceptionForNonExistingFile() {
-        assertThrows(FileNotFoundException.class, () -> fileHelper.isEmpty(filePathInput));
+        assertThrows(FileNotFoundException.class, () -> fileHelper.isEmpty(INPUT_FILE));
     }
 }
