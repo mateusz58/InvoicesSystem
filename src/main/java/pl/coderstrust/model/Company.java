@@ -26,6 +26,70 @@ public final class Company {
         return new Company.Builder();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Company company = (Company) o;
+        return Objects.equals(id, company.id)
+            && Objects.equals(name, company.name)
+            && Objects.equals(address, company.address)
+            && Objects.equals(taxId, company.taxId)
+            && Objects.equals(accountNumber, company.accountNumber)
+            && Objects.equals(phoneNumber, company.phoneNumber)
+            && Objects.equals(email, company.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, address, taxId, accountNumber, phoneNumber, email);
+    }
+
+    @Override
+    public String toString() {
+        return "Company{"
+            + "id=" + id
+            + ", name='" + name + '\''
+            + ", address='" + address + '\''
+            + ", taxId='" + taxId + '\''
+            + ", accountNumber='" + accountNumber + '\''
+            + ", phoneNumber='" + phoneNumber + '\''
+            + ", email='" + email + '\''
+            + '}';
+    }
+
     public static class Builder {
 
         private Long id;
@@ -74,69 +138,5 @@ public final class Company {
         public Company build() {
             return new Company(this);
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getTaxId() {
-        return taxId;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Company company = (Company) o;
-        return Objects.equals(id, company.id) &&
-                Objects.equals(name, company.name) &&
-                Objects.equals(address, company.address) &&
-                Objects.equals(taxId, company.taxId) &&
-                Objects.equals(accountNumber, company.accountNumber) &&
-                Objects.equals(phoneNumber, company.phoneNumber) &&
-                Objects.equals(email, company.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, address, taxId, accountNumber, phoneNumber, email);
-    }
-
-    @Override
-    public String toString() {
-        return "Company{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", taxId='" + taxId + '\'' +
-                ", accountNumber='" + accountNumber + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", email='" + email + '\'' +
-                '}';
     }
 }

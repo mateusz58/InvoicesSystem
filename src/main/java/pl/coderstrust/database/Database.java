@@ -1,9 +1,8 @@
 package pl.coderstrust.database;
 
-import pl.coderstrust.model.Invoice;
-
 import java.util.Collection;
 import java.util.Optional;
+import pl.coderstrust.model.Invoice;
 
 public interface Database {
 
