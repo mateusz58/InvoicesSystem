@@ -66,12 +66,12 @@ public final class InvoiceEntry {
         }
         InvoiceEntry that = (InvoiceEntry) o;
         return Objects.equals(id, that.id)
-            && Objects.equals(description, that.description)
-            && Objects.equals(quantity, that.quantity)
-            && Objects.equals(price, that.price)
-            && Objects.equals(netValue, that.netValue)
-            && Objects.equals(grossValue, that.grossValue)
-            && Objects.equals(vatRate, that.vatRate);
+                && Objects.equals(description, that.description)
+                && Objects.equals(quantity, that.quantity)
+                && Objects.equals(price, that.price)
+                && Objects.equals(netValue, that.netValue)
+                && Objects.equals(grossValue, that.grossValue)
+                && Objects.equals(vatRate, that.vatRate);
     }
 
     @Override
@@ -82,14 +82,14 @@ public final class InvoiceEntry {
     @Override
     public String toString() {
         return "InvoiceEntry{"
-            + "id=" + id
-            + ", description='" + description + '\''
-            + ", quantity=" + quantity
-            + ", price=" + price
-            + ", netValue=" + netValue
-            + ", grossValue=" + grossValue
-            + ", vatRate=" + vatRate
-            + '}';
+                + "id=" + id
+                + ", description='" + description + '\''
+                + ", quantity=" + quantity
+                + ", price=" + price
+                + ", netValue=" + netValue
+                + ", grossValue=" + grossValue
+                + ", vatRate=" + vatRate
+                + '}';
     }
 
     public static class Builder {
