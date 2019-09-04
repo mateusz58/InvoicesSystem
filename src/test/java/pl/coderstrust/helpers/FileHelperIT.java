@@ -15,18 +15,17 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class FileHelperIT {
 
-    private static final String INPUT_FILE = "src/test/resources/helpers/input_file.txt";
+    private static final String INPUT_FILE  = "src/test/resources/helpers/input_file.txt";
     private static final String EXPECTED_FILE = "src/test/resources/helpers/expected_file.txt";
     private static final String ENCODING = "UTF-8";
-    private FileHelper fileHelper;
+    FileHelper fileHelper;
     private File inputFile;
     private File expectedFile;
 
@@ -46,13 +45,13 @@ class FileHelperIT {
     @Test
     void shouldCreateFile() throws IOException {
         fileHelper.createFile(INPUT_FILE);
+
         assertTrue(Files.exists(Paths.get(INPUT_FILE)));
     }
 
     @Test
     void shouldDeleteExistingFile() throws IOException {
         inputFile.createNewFile();
-
         fileHelper.delete(INPUT_FILE);
 
         assertFalse(Files.exists(Paths.get(INPUT_FILE)));
@@ -71,17 +70,21 @@ class FileHelperIT {
     }
 
     @Test
-    void shouldReturnFalseIfFileIsNotEmpty() throws IOException {
+    void  shouldReturnFalseIfFileIsNotEmpty() throws IOException {
         FileUtils.writeLines(inputFile, Collections.singleton("bla bla bla"), ENCODING, true);
 
-        assertFalse(fileHelper.isEmpty(INPUT_FILE));
+        boolean given = fileHelper.isEmpty(INPUT_FILE);
+
+        assertFalse(given);
     }
 
     @Test
-    void shouldReturnTrueIfFileIsEmpty() throws IOException {
+    void  shouldReturnTrueIfFileIsEmpty() throws IOException {
         inputFile.createNewFile();
 
-        assertTrue(fileHelper.isEmpty(INPUT_FILE));
+        boolean given = fileHelper.isEmpty(INPUT_FILE);
+
+        assertTrue(given);
     }
 
     @Test
@@ -113,8 +116,8 @@ class FileHelperIT {
             "Seller",
             "Buyer"
         );
-        FileUtils.writeLines(inputFile, ENCODING, expected, true);
 
+        FileUtils.writeLines(inputFile, ENCODING, expected, true);
         List<String> actual = fileHelper.readLines(INPUT_FILE);
 
         assertEquals(expected, actual);
@@ -133,7 +136,9 @@ class FileHelperIT {
     void shouldRemoveLineFromFile() throws IOException {
         FileUtils.writeLines(inputFile, ENCODING, Arrays.asList("bla1", "bla2", "bla3"), true);
         FileUtils.writeLines(expectedFile, ENCODING, Arrays.asList("bla1", "bla3"), true);
+
         fileHelper.removeLine(INPUT_FILE, 2);
+
         assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
     }
 
@@ -187,15 +192,15 @@ class FileHelperIT {
         assertThrows(IllegalArgumentException.class, () -> fileHelper.removeLine(null, 1));
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {0, -1, -3, -5, -3, -20, Integer.MIN_VALUE})
-    void removeLineMethodShouldThrowExceptionForInvalidLineNumberArgument(int lineNumber) {
-        assertThrows(IllegalArgumentException.class, () -> fileHelper.removeLine(INPUT_FILE, lineNumber));
+    @Test
+    void removeLineMethodShouldThrowExceptionForLineNumberSmallerThanOneArgument() {
+        assertThrows(IllegalArgumentException.class, () -> fileHelper.removeLine(INPUT_FILE, 0));
     }
 
     @Test
     void createMethodShouldThrowExceptionForExistingFile() throws IOException {
         inputFile.createNewFile();
+
         assertThrows(FileAlreadyExistsException.class, () -> fileHelper.createFile(INPUT_FILE));
     }
 
