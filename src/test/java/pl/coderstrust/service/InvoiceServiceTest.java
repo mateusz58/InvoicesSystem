@@ -63,8 +63,8 @@ class InvoiceServiceTest {
 
     @Test
     void shouldAddInvoiceWithNullId() throws DatabaseOperationException, ServiceOperationException {
-        Invoice invoiceToAdd = InvoiceGenerator.generateRandomInvoicewithNullId();
-        Invoice addedInvoice = InvoiceGenerator.generateRandomInvoicewithNullId();
+        Invoice invoiceToAdd = InvoiceGenerator.generateRandomInvoiceWithNullId();
+        Invoice addedInvoice = InvoiceGenerator.generateRandomInvoiceWithNullId();
         when(database.save(invoiceToAdd)).thenReturn(addedInvoice);
 
         Invoice result = invoiceService.add(invoiceToAdd);
@@ -98,7 +98,7 @@ class InvoiceServiceTest {
 
     @Test
     void updateMethodShouldThrowExceptionForNullInvoiceId() {
-        Invoice invoiceWithNullId = InvoiceGenerator.generateRandomInvoicewithNullId();
+        Invoice invoiceWithNullId = InvoiceGenerator.generateRandomInvoiceWithNullId();
         assertThrows(ServiceOperationException.class, () -> invoiceService.update(invoiceWithNullId));
     }
 
