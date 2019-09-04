@@ -67,6 +67,9 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.4</version>
         <configuration>
+          <excludes>
+          <exclude>/pl/coderstrust/model/*.class</exclude>
+          </excludes>
         </configuration>
         <executions>
           <execution>
