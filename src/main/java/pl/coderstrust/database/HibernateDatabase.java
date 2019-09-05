@@ -9,10 +9,6 @@ import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
 public class HibernateDatabase implements Database {
     private final InvoiceRepository invoiceRepository;
     private final HibernateModelMapper modelMapper;
@@ -35,7 +31,7 @@ public class HibernateDatabase implements Database {
 //    OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
 
     @Override
-    public Invoice save(Invoice invoice) {
+    public Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
