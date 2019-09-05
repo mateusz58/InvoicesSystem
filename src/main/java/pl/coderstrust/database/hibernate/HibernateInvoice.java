@@ -42,7 +42,6 @@ public class HibernateInvoice {
 
     //many to many
     @Column(name = "entries")
-
     private final List<InvoiceEntry> entries;
 
     private HibernateInvoice(HibernateInvoice.Builder builder) {

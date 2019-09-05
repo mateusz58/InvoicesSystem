@@ -1,8 +1,8 @@
 package pl.coderstrust.database;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.NonTransientDataAccessException;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
-import org.springframework.dao.NonTransientDataAccessException;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
@@ -21,9 +21,6 @@ public class HibernateDatabase implements Database {
 
     //stwórz new HibernateInvoice
     //trzeba zrobić translację Invoice na HibernateInvoice i z powrotem
-
-//    ModelMapper modelMapper = new ModelMapper();
-//    OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
 
     @Override
     public Invoice save(Invoice invoice) {
@@ -88,6 +85,9 @@ public class HibernateDatabase implements Database {
 
     @Override
     public boolean exists(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null.");
+        }
         return invoiceRepository.existsById(id);
     }
 

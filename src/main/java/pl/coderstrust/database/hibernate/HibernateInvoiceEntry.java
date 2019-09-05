@@ -1,5 +1,9 @@
 package pl.coderstrust.database.hibernate;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import pl.coderstrust.model.Vat;
 
 import javax.persistence.Column;
@@ -35,8 +39,13 @@ public class HibernateInvoiceEntry {
     @Column(name = "gross_value")
     private final BigDecimal grossValue;
 
-    @Column(name = "vat_rate")
-    private final Vat vatRate;
+    @Enumerated
+    @Column(columnDefinition = "float")
+    private final HibernateVat vatRate;
+
+    @ManyToOne
+    @JoinColumn(name="invoice_id", nullable=false)
+    private HibernateInvoice invoice;
 
     private HibernateInvoiceEntry(HibernateInvoiceEntry.Builder builder) {
 
@@ -49,8 +58,8 @@ public class HibernateInvoiceEntry {
         vatRate = builder.vatRate;
     }
 
-    public static HibernateInvoice.Builder builder() {
-        return new HibernateInvoice.Builder();
+    public static HibernateInvoiceEntry.Builder builder() {
+        return new HibernateInvoiceEntry.Builder();
     }
 
     public static class Builder {
@@ -61,9 +70,9 @@ public class HibernateInvoiceEntry {
         private BigDecimal price;
         private BigDecimal netValue;
         private BigDecimal grossValue;
-        private Vat vatRate;
+        private HibernateVat vatRate;
 
-        public HibernateInvoiceEntry.Builder wthId(Long id) {
+        public HibernateInvoiceEntry.Builder withId(Long id) {
             this.id = id;
             return this;
         }
@@ -93,7 +102,7 @@ public class HibernateInvoiceEntry {
             return this;
         }
 
-        public HibernateInvoiceEntry.Builder withVatRate(Vat vatRate) {
+        public HibernateInvoiceEntry.Builder withVatRate(HibernateVat vatRate) {
             this.vatRate = vatRate;
             return this;
         }
@@ -127,7 +136,7 @@ public class HibernateInvoiceEntry {
         return grossValue;
     }
 
-    public Vat getVatRate() {
+    public HibernateVat getVatRate() {
         return vatRate;
     }
 
