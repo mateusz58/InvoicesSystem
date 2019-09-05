@@ -1,11 +1,5 @@
 package pl.coderstrust.database.hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "vat")
 public enum HibernateVat {
 
     VAT_0(0.00f),
@@ -13,7 +7,6 @@ public enum HibernateVat {
     VAT_8(0.08f),
     VAT_23(0.23f);
 
-    @Column(name = "vat_value")
     private final float value;
 
     HibernateVat(float value) {

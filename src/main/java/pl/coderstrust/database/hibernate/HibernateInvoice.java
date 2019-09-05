@@ -32,15 +32,15 @@ public class HibernateInvoice {
     @Column(name = "due_date")
     private final LocalDate dueDate;
 
-    //one to one
+    //many to one
     @Column(name = "seller")
     private final Company seller;
 
-    //one to one
+    //many to one
     @Column(name = "buyer")
     private final Company buyer;
 
-    //    @OneToMany + dodatkowa kolumna na id Invoice'a
+    //many to many
     @Column(name = "entries")
 
     private final List<InvoiceEntry> entries;

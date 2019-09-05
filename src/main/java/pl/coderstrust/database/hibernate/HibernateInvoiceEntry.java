@@ -15,8 +15,6 @@ import java.util.Objects;
 @Table(name = "invoice_entry")
 public class HibernateInvoiceEntry {
 
-    //zrobić dodatkowe pole @ManyToOne + dodatkowa kolumna na id Invoicea?
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
