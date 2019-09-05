@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
-import org.springframework.dao.NonTransientDataAccessException;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
