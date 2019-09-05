@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.data.domain.Example;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
+import org.springframework.data.domain.Example;
 import pl.coderstrust.database.hibernate.HibernateModelMapper;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
@@ -60,7 +60,7 @@ public class HibernateDatabase implements Database {
     }
 
     @Override
-    public Optional<Invoice> getById(Long id) throws DatabaseOperationException {
+    public Optional<Invoice> getById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null.");
         }
