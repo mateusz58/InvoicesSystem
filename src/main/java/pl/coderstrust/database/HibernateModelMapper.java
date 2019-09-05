@@ -16,7 +16,7 @@ import java.util.Collection;
 @Mapper(componentModel = "spring")
 public interface HibernateModelMapper {
 
-    Collection<HibernateInvoice> mapToHibernateIInvoices(Collection<Invoice> invoices);
+    Collection<HibernateInvoice> mapToHibernateInvoices(Collection<Invoice> invoices);
 
     Collection<Invoice> mapToInvoices(Collection<HibernateInvoice> invoices);
 

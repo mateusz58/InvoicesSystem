@@ -1,13 +1,12 @@
 package pl.coderstrust.database;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.NonTransientDataAccessException;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class HibernateDatabase implements Database {
@@ -23,12 +22,16 @@ public class HibernateDatabase implements Database {
     //trzeba zrobić translację Invoice na HibernateInvoice i z powrotem
 
     @Override
-    public Invoice save(Invoice invoice) {
+    public Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
-        HibernateInvoice savedInvoice = invoiceRepository.save(modelMapper.mapInvoice(invoice));
-        return modelMapper.mapInvoice(savedInvoice);
+        try {
+            HibernateInvoice savedInvoice = invoiceRepository.save(modelMapper.mapToHibernateInvoice(invoice));
+            return modelMapper.mapToInvoice(savedInvoice);
+        } catch (NonTransientDataAccessException e) {
+            throw new DatabaseOperationException("An error occurred during saving invoice.", e);
+        }
     }
 
     @Override
@@ -39,7 +42,11 @@ public class HibernateDatabase implements Database {
         if (!invoiceRepository.existsById(id)) {
             throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
         }
-        invoiceRepository.deleteById(id);
+        try {
+            invoiceRepository.deleteById(id);
+        } catch (NonTransientDataAccessException | NoSuchElementException e) {
+            throw new DatabaseOperationException("An error occurred during deleting invoice.", e);
+        }
     }
 
     @Override
@@ -50,27 +57,39 @@ public class HibernateDatabase implements Database {
         if (!invoiceRepository.existsById(id)) {
             throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
         }
-        return Optional.ofNullable(invoiceRepository.getOne(id));
+        try {
+            HibernateInvoice gotByIdInvoice = modelMapper.mapToHibernateInvoice(getById(id).get());
+            return Optional.ofNullable(modelMapper.mapToInvoice(gotByIdInvoice));
+        } catch (NoSuchElementException e) {
+            throw new DatabaseOperationException("An error occurred during getting invoice by id.", e);
+        }
     }
 
     @Override
-    public Optional<Invoice> getByNumber(String number) {
+    public Optional<Invoice> getByNumber(String number) throws DatabaseOperationException {
         if (number == null) {
             throw new IllegalArgumentException("Invoice number cannot be null");
         }
-        return invoiceRepository.findAll()
-                .stream()
-                .filter(invoice -> invoice.getNumber().equals(number))
-                .findFirst();
+        try {
+            HibernateInvoice gotByNumberInvoice = invoiceRepository.findAll()
+                    .stream()
+                    .filter(invoice -> invoice.getNumber().equals(number))
+                    .findFirst()
+                    .get();
+            return Optional.ofNullable(modelMapper.mapToInvoice(gotByNumberInvoice));
+        } catch (NonTransientDataAccessException e) {
+            throw new DatabaseOperationException("An error occurred during getting invoice by number.", e);
+        }
     }
 
     @Override
     public Collection<Invoice> getAll() throws DatabaseOperationException {
-        List<Invoice> invoiceList;
+        Collection<Invoice> invoiceList;
         try {
-            return invoiceRepository.findAll();
+            Collection<HibernateInvoice> hibernateInvoiceList = invoiceRepository.findAll();
+            return modelMapper.mapToInvoices(hibernateInvoiceList);
         } catch (NonTransientDataAccessException e) {
-            throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
+            throw new DatabaseOperationException("An error occurred during getting all invoices.", e);
         }
     }
 
@@ -84,15 +103,23 @@ public class HibernateDatabase implements Database {
     }
 
     @Override
-    public boolean exists(Long id) {
+    public boolean exists(Long id) throws DatabaseOperationException {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        return invoiceRepository.existsById(id);
+        try {
+            return invoiceRepository.existsById(id);
+        } catch (NonTransientDataAccessException e) {
+            throw new DatabaseOperationException("An error occurred during checking if invoice exists.", e);
+        }
     }
 
     @Override
-    public long count() {
-        return invoiceRepository.count();
+    public long count() throws DatabaseOperationException {
+        try {
+            return invoiceRepository.count();
+        } catch (NonTransientDataAccessException e) {
+            throw new DatabaseOperationException("An error occurred during getting number of invoices.", e);
+        }
     }
 }
