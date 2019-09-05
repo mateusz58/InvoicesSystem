@@ -59,7 +59,7 @@ public class HibernateDatabase implements Database {
     }
 
     @Override
-    public Optional<Invoice> getById(Long id) throws DatabaseOperationException {
+    public Optional<Invoice> getById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null.");
         }
