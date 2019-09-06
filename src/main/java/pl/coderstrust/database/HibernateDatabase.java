@@ -25,9 +25,6 @@ public class HibernateDatabase implements Database {
         this.modelMapper = modelMapper;
     }
 
-    //stwórz new HibernateInvoice
-    //trzeba zrobić translację Invoice na HibernateInvoice i z powrotem
-
     @Override
     public Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
