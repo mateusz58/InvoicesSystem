@@ -14,6 +14,9 @@ public class HibernateDatabase implements Database {
     private final HibernateModelMapper modelMapper;
 
     public HibernateDatabase(InvoiceRepository invoiceRepository, HibernateModelMapper modelMapper) {
+        if (invoiceRepository == null) {
+            throw new IllegalArgumentException("Database is empty.");
+        }
         this.invoiceRepository = invoiceRepository;
         this.modelMapper = modelMapper;
     }

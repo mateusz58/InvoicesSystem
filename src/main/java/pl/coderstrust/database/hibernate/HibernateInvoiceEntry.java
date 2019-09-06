@@ -78,7 +78,7 @@ public class HibernateInvoiceEntry {
             return this;
         }
 
-        public HibernateInvoiceEntry.Builder withNumber(String description) {
+        public HibernateInvoiceEntry.Builder withDescription(String description) {
             this.description = description;
             return this;
         }
