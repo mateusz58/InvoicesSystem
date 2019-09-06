@@ -36,12 +36,12 @@ public class HibernateCompany {
     @Column(name = "email")
     private final String email;
 
-    @Column(name = "sales invoices")
-    @OneToMany(mappedBy="company")
+    @Column(name = "sales_invoices")
+    @OneToMany(mappedBy = "seller")
     private List<HibernateInvoice> salesInvoices;
 
-    @Column(name = "purchase invoices")
-    @OneToMany(mappedBy="company")
+    @Column(name = "purchase_invoices")
+    @OneToMany(mappedBy = "buyer")
     private List<HibernateInvoice> purchaseInvoices;
 
 
