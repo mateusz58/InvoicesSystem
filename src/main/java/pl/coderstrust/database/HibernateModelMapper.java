@@ -56,8 +56,8 @@ public interface HibernateModelMapper {
     @Mapping(target = "withEmail", source = "email")
     Company mapToComapny(HibernateCompany company);
 
-    @Mapping(target = "wthId", source = "id")
-    @Mapping(target = "withNumber", source = "number")
+    @Mapping(target = "withId", source = "id")
+    @Mapping(target = "withDescription", source = "description")
     @Mapping(target = "withQuantity", source = "quantity")
     @Mapping(target = "withPrice", source = "price")
     @Mapping(target = "withNetValue", source = "netValue")
@@ -65,8 +65,8 @@ public interface HibernateModelMapper {
     @Mapping(target = "withVatRate", source = "vatRate")
     HibernateInvoiceEntry mapToHibernateInvoiceEntry(InvoiceEntry invoiceEntry);
 
-    @Mapping(target = "wthId", source = "id")
-    @Mapping(target = "withNumber", source = "number")
+    @Mapping(target = "withId", source = "id")
+    @Mapping(target = "withDescription", source = "description")
     @Mapping(target = "withQuantity", source = "quantity")
     @Mapping(target = "withPrice", source = "price")
     @Mapping(target = "withNetValue", source = "netValue")
