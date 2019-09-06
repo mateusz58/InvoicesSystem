@@ -1,7 +1,7 @@
 package pl.coderstrust.database.hibernate;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "company")
@@ -38,12 +37,12 @@ public class HibernateCompany {
     @Column(name = "email")
     private final String email;
 
-    @Column(name = "sales invoices")
-    @OneToMany(mappedBy="company")
+    @Column(name = "sales_invoices")
+    @OneToMany(mappedBy = "seller")
     private List<HibernateInvoice> salesInvoices;
 
-    @Column(name = "purchase invoices")
-    @OneToMany(mappedBy="company")
+    @Column(name = "purchase_invoices")
+    @OneToMany(mappedBy = "buyer")
     private List<HibernateInvoice> purchaseInvoices;
 
 

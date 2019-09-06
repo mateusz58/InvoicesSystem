@@ -8,6 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,16 +36,19 @@ public class HibernateInvoice {
     @Column(name = "due_date")
     private final LocalDate dueDate;
 
-    //many to one
-    @Column(name = "seller")
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
     private final Company seller;
 
-    //many to one
-    @Column(name = "buyer")
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
     private final Company buyer;
 
-    //many to many
-    @Column(name = "entries")
+    @ManyToMany
+    @JoinTable(
+            name = "entries",
+            joinColumns = @JoinColumn(name = "invoice_id"),
+            inverseJoinColumns = @JoinColumn(name = "entry_id"))
     private final List<InvoiceEntry> entries;
 
     private HibernateInvoice(HibernateInvoice.Builder builder) {

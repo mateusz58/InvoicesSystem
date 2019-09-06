@@ -1,8 +1,10 @@
 package pl.coderstrust.database.hibernate;
 
+import java.util.List;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import pl.coderstrust.model.Vat;
 
@@ -43,9 +45,8 @@ public class HibernateInvoiceEntry {
     @Column(columnDefinition = "float")
     private final HibernateVat vatRate;
 
-    @ManyToOne
-    @JoinColumn(name="invoice_id", nullable=false)
-    private HibernateInvoice invoice;
+    @ManyToMany(mappedBy = "entries")
+    private List<HibernateInvoice> invoices;
 
     private HibernateInvoiceEntry(HibernateInvoiceEntry.Builder builder) {
 
