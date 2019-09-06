@@ -15,17 +15,18 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class FileHelperIT {
 
     private static final String INPUT_FILE  = "src/test/resources/helpers/input_file.txt";
     private static final String EXPECTED_FILE = "src/test/resources/helpers/expected_file.txt";
     private static final String ENCODING = "UTF-8";
-    FileHelper fileHelper;
+    private FileHelper fileHelper;
     private File inputFile;
     private File expectedFile;
 
@@ -73,18 +74,14 @@ class FileHelperIT {
     void  shouldReturnFalseIfFileIsNotEmpty() throws IOException {
         FileUtils.writeLines(inputFile, Collections.singleton("bla bla bla"), ENCODING, true);
 
-        boolean given = fileHelper.isEmpty(INPUT_FILE);
-
-        assertFalse(given);
+        assertFalse(fileHelper.isEmpty(INPUT_FILE));
     }
 
     @Test
     void  shouldReturnTrueIfFileIsEmpty() throws IOException {
         inputFile.createNewFile();
 
-        boolean given = fileHelper.isEmpty(INPUT_FILE);
-
-        assertTrue(given);
+        assertTrue(fileHelper.isEmpty(INPUT_FILE));
     }
 
     @Test
@@ -192,9 +189,10 @@ class FileHelperIT {
         assertThrows(IllegalArgumentException.class, () -> fileHelper.removeLine(null, 1));
     }
 
-    @Test
-    void removeLineMethodShouldThrowExceptionForLineNumberSmallerThanOneArgument() {
-        assertThrows(IllegalArgumentException.class, () -> fileHelper.removeLine(INPUT_FILE, 0));
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1, -3, -5, -3, -20, Integer.MIN_VALUE}) // six numbers
+    void removeLineMethodShouldThrowExceptionForInvalidLineNumberArgument(int lineNumber) {
+        assertThrows(IllegalArgumentException.class, () -> fileHelper.removeLine(INPUT_FILE, lineNumber));
     }
 
     @Test
