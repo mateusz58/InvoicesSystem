@@ -1,13 +1,12 @@
 package pl.coderstrust.database;
 
+import java.util.Collection;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.dao.NonTransientDataAccessException;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
-
-import java.util.Collection;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 public class HibernateDatabase implements Database {
     private final InvoiceRepository invoiceRepository;
@@ -16,6 +15,9 @@ public class HibernateDatabase implements Database {
     public HibernateDatabase(InvoiceRepository invoiceRepository, HibernateModelMapper modelMapper) {
         if (invoiceRepository == null) {
             throw new IllegalArgumentException("Database is empty.");
+        }
+        if (modelMapper == null) {
+            throw new IllegalArgumentException("Mapper cannot be null.");
         }
         this.invoiceRepository = invoiceRepository;
         this.modelMapper = modelMapper;
@@ -58,8 +60,7 @@ public class HibernateDatabase implements Database {
             throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
         }
         try {
-            HibernateInvoice gotByIdInvoice = modelMapper.mapToHibernateInvoice(getById(id).get());
-            return Optional.ofNullable(modelMapper.mapToInvoice(gotByIdInvoice));
+            return Optional.ofNullable(modelMapper.mapToInvoice(invoiceRepository.getOne(id)));
         } catch (NoSuchElementException e) {
             throw new DatabaseOperationException("An error occurred during getting invoice by id.", e);
         }
@@ -71,12 +72,11 @@ public class HibernateDatabase implements Database {
             throw new IllegalArgumentException("Invoice number cannot be null");
         }
         try {
-            HibernateInvoice gotByNumberInvoice = invoiceRepository.findAll()
+            Optional<HibernateInvoice> hibernateInvoice = invoiceRepository.findAll()
                     .stream()
                     .filter(invoice -> invoice.getNumber().equals(number))
-                    .findFirst()
-                    .get();
-            return Optional.ofNullable(modelMapper.mapToInvoice(gotByNumberInvoice));
+                    .findFirst();
+            return Optional.ofNullable(modelMapper.mapToInvoice(hibernateInvoice.get()));
         } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during getting invoice by number.", e);
         }

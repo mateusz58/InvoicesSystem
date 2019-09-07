@@ -1,10 +1,13 @@
 package pl.coderstrust.database.hibernate;
 
-import pl.coderstrust.model.Company;
-import pl.coderstrust.model.InvoiceEntry;
-
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,10 +16,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import pl.coderstrust.model.Company;
+import pl.coderstrust.model.InvoiceEntry;
 
 @Entity
 @Table(name = "invoice")
@@ -36,15 +37,15 @@ public class HibernateInvoice {
     @Column(name = "due_date")
     private final LocalDate dueDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "company_id", nullable = false)
     private final Company seller;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "company_id", nullable = false)
     private final Company buyer;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "entries",
             joinColumns = @JoinColumn(name = "invoice_id"),

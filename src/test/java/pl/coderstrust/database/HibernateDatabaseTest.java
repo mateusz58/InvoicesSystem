@@ -1,95 +1,67 @@
 package pl.coderstrust.database;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.NonTransientDataAccessException;
+import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.generators.InvoiceGenerator;
 import pl.coderstrust.model.Invoice;
 
 @ExtendWith(MockitoExtension.class)
-public class HibernateDatabaseTest {
+class HibernateDatabaseTest {
 
-    private HibernateModelMapper hibernateModelMapper;
+    private HibernateDatabase database;
+    private HibernateModelMapper modelMapper;
 
     @Mock
-    InvoiceRepository invoiceRepository;
-
-    @InjectMocks
-    HibernateDatabase database;
+    private InvoiceRepository invoiceRepository;
 
     @BeforeEach
     void setup() {
-        database = new HibernateDatabase(invoiceRepository, hibernateModelMapper);
+        modelMapper = new HibernateModelMapperImpl();
+        database = new HibernateDatabase(invoiceRepository, modelMapper);
     }
 
     @Test
     void constructorClassShouldThrowExceptionForNullInvoiceRepository() {
-        assertThrows(IllegalArgumentException.class, () -> new HibernateDatabase(null, hibernateModelMapper));
+        assertThrows(IllegalArgumentException.class, () -> new HibernateDatabase(null, modelMapper));
     }
 
     @Test
-    void shouldSaveInvoice() throws DatabaseOperationException {
+    void constructorClassShouldThrowExceptionForNullModelMapper() {
+        assertThrows(IllegalArgumentException.class, () -> new HibernateDatabase(invoiceRepository, null));
+    }
+
+    @Test
+    void shouldSave() throws DatabaseOperationException {
         //given
-        Invoice invoiceToSave = InvoiceGenerator.generateRandomInvoice();
+        Invoice invoiceToBeSaved = InvoiceGenerator.generateRandomInvoice();
+        HibernateInvoice hibernateInvoiceToBeSaved = modelMapper.mapToHibernateInvoice(invoiceToBeSaved);
+        doReturn(hibernateInvoiceToBeSaved).when(invoiceRepository).save(hibernateInvoiceToBeSaved);
 
         //when
-        Invoice result = database.save(invoiceToSave);
+        Invoice savedInvoice = database.save(invoiceToBeSaved);
 
         //then
-        assertNotNull(result.getId());
-        assertEquals(invoiceToSave, database.getById(result.getId()));
-    }
-
-    //
-//    @Test
-//    void shouldAddInvoiceWithNullId() {
-//        Invoice addedInvoice = database.save(InvoiceGenerator.generateRandomInvoiceWithNullId());
-//
-//        assertNotNull(addedInvoice.getId());
-//        assertEquals(1L, (long) addedInvoice.getId());
-//        assertEquals(storage.get(1L), addedInvoice);
-//    }
-//
-//    @Test
-//    void shouldUpdateInvoice() {
-//        Invoice invoiceInDatabase = InvoiceGenerator.generateRandomInvoice();
-//        Invoice invoiceToUpdate = InvoiceGenerator.getRandomInvoiceWithSpecificId(invoiceInDatabase.getId());
-//        storage.put(invoiceInDatabase.getId(), invoiceInDatabase);
-//
-//        Invoice updatedInvoice = database.save(invoiceToUpdate);
-//
-//        assertEquals(storage.get(invoiceInDatabase.getId()), updatedInvoice);
-//    }
-//
-//    @Test
-//    void shouldDeleteInvoice() throws DatabaseOperationException {
-//        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
-//        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
-//        storage.put(invoice1.getId(), invoice1);
-//        storage.put(invoice2.getId(), invoice2);
-//        Map<Long, Invoice> expected = Map.of(invoice1.getId(), invoice1);
-//
-//        database.delete(invoice2.getId());
-//
-//        assertEquals(expected, storage);
-//    }
-//
-    @Test
-    void deleteMethodShouldThrowExceptionForNullId() {
-        assertThrows(IllegalArgumentException.class, () -> database.delete(null));
-    }
-
-    @Test
-    void deleteMethodShouldThrowExceptionForDeletingNotExistingInvoice() {
-        assertThrows(DatabaseOperationException.class, () -> database.delete(10L));
+        assertEquals(invoiceToBeSaved, savedInvoice);
+        verify(invoiceRepository).save(hibernateInvoiceToBeSaved);
     }
 
     @Test
@@ -97,57 +69,170 @@ public class HibernateDatabaseTest {
         assertThrows(IllegalArgumentException.class, () -> database.save(null));
     }
 
-    //
-//    @Test
-//    void shouldReturnInvoiceById() {
-//        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
-//        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
-//        storage.put(invoice1.getId(), invoice1);
-//        storage.put(invoice2.getId(), invoice2);
-//
-//        Optional<Invoice> optionalInvoice = database.getById(invoice1.getId());
-//
-//        assertTrue(optionalInvoice.isPresent());
-//        assertEquals(invoice1, optionalInvoice.get());
-//    }
-//
-//    @Test
-//    void shouldReturnInvoiceByNumber() {
-//        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
-//        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
-//        storage.put(invoice1.getId(), invoice1);
-//        storage.put(invoice2.getId(), invoice1);
-//
-//        Optional<Invoice> optionalInvoice = database.getByNumber(invoice1.getNumber());
-//
-//        assertTrue(optionalInvoice.isPresent());
-//        assertEquals(invoice1, optionalInvoice.get());
-//    }
-//
-//    @Test
-//    void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceById() {
-//        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-//        storage.put(invoice.getId(), invoice);
-//
-//        Optional<Invoice> optionalInvoice = database.getById(invoice.getId() + 1L);
-//
-//        assertTrue(optionalInvoice.isEmpty());
-//    }
-//
-//    @Test
-//    void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceByNumber() {
-//        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-//        storage.put(invoice.getId(), invoice);
-//
-//        Optional<Invoice> optionalInvoice = database.getByNumber(invoice.getNumber() + 1L);
-//
-//        assertTrue(optionalInvoice.isEmpty());
-//    }
-//
     @Test
-    void getByIdShouldThrowExceptionForNullId() {
+    void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenSavingInvoice() {
+        //given
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        doThrow(new NonTransientDataAccessException("") {
+        }).when(invoiceRepository).save(hibernateInvoice);
+
+        //then
+        assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
+        verify(invoiceRepository).save(modelMapper.mapToHibernateInvoice(invoice));
+    }
+
+    @Test
+    void shouldDelete() throws DatabaseOperationException {
+        //given
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        when(invoiceRepository.existsById(hibernateInvoice.getId())).thenReturn(true);
+
+        //when
+        database.delete(invoice.getId());
+
+        //then
+        verify(invoiceRepository).deleteById(invoice.getId());
+    }
+
+    @Test
+    void deleteMethodShouldThrowExceptionForNullId() {
+        assertThrows(IllegalArgumentException.class, () -> database.delete(null));
+    }
+
+    @Test
+    void deleteMethodShouldThrowExceptionForDeletingNotExistingInvoice() {
+        //given
+        when(invoiceRepository.existsById(10L)).thenReturn(false);
+
+        //then
+        assertThrows(DatabaseOperationException.class, () -> database.delete(10L));
+        verify(invoiceRepository).existsById(10L);
+        verify(invoiceRepository, never()).deleteById(10L);
+    }
+
+    @Test
+    void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenDeletingInvoice() {
+        //given
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        when(invoiceRepository.existsById(hibernateInvoice.getId())).thenReturn(true);
+        doThrow(new NonTransientDataAccessException("") {
+        }).when(invoiceRepository).deleteById(hibernateInvoice.getId());
+
+        //then
+        assertThrows(DatabaseOperationException.class, () -> database.delete(invoice.getId()));
+        verify(invoiceRepository).deleteById(invoice.getId());
+    }
+
+    @Test
+    void shouldThrowDatabaseOperationExceptionWhenNoSuchElementExceptionIsThrownWhenDeletingInvoice() {
+        //given
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        when(invoiceRepository.existsById(hibernateInvoice.getId())).thenReturn(true);
+        doThrow(new NoSuchElementException()).when(invoiceRepository).deleteById(hibernateInvoice.getId());
+
+        //then
+        assertThrows(DatabaseOperationException.class, () -> database.delete(invoice.getId()));
+        verify(invoiceRepository).deleteById(modelMapper.mapToHibernateInvoice(invoice).getId());
+    }
+
+    @Test
+    void shouldGetInvoiceById() throws DatabaseOperationException {
+        //given
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        when(invoiceRepository.existsById(hibernateInvoice.getId())).thenReturn(true);
+        doReturn(hibernateInvoice).when(invoiceRepository).getOne(hibernateInvoice.getId());
+
+        //when
+        Optional<Invoice> gotInvoice = database.getById(invoice.getId());
+
+        //then
+        assertTrue(gotInvoice.isPresent());
+        assertEquals(invoice, gotInvoice.get());
+        verify(invoiceRepository).getOne(hibernateInvoice.getId());
+    }
+
+    @Test
+    void shouldReturnEmptyOptionalWhenNonExistingInvoiceIsGotById() throws DatabaseOperationException {
+        //given
+        when(invoiceRepository.existsById(10L)).thenReturn(true);
+
+        //when
+        Optional<Invoice> gotInvoice = database.getById(10L);
+
+        //then
+        assertTrue(gotInvoice.isEmpty());
+        verify(invoiceRepository).getOne(10L);
+    }
+
+    @Test
+    void getByIdMethodShouldThrowExceptionForNotExistingInvoice() {
+        //given
+        when(invoiceRepository.existsById(10L)).thenReturn(false);
+
+        //then
+        assertThrows(DatabaseOperationException.class, () -> database.getById(10L));
+        verify(invoiceRepository).existsById(10L);
+        verify(invoiceRepository, never()).getOne(10L);
+    }
+
+    @Test
+    void getByIdMethodShouldThrowExceptionForNullId() {
         assertThrows(IllegalArgumentException.class, () -> database.getById(null));
     }
+
+    @Test
+    void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenGettingById() {
+        //given
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        when(invoiceRepository.existsById(hibernateInvoice.getId())).thenReturn(true);
+        doThrow(new NoSuchElementException()).when(invoiceRepository).getOne(hibernateInvoice.getId());
+
+        //then
+        assertThrows(DatabaseOperationException.class, () -> database.getById(invoice.getId()));
+        verify(invoiceRepository).getOne(invoice.getId());
+    }
+
+    @Test
+    void shouldReturnInvoiceByNumber() throws DatabaseOperationException {
+        //given
+        List<HibernateInvoice> list = new ArrayList<>();
+        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        list.add(hibernateInvoice);
+        doReturn(list).when(invoiceRepository).findAll();
+
+        //when
+        Optional<Invoice> gotInvoice = database.getByNumber(invoice.getNumber());
+
+        //then
+        assertTrue(gotInvoice.isPresent());
+        assertEquals(invoice, gotInvoice.get());
+        verify(invoiceRepository).findAll();
+    }
+
+    @Test
+    void shouldReturnEmptyOptionalWhenNonExistingInvoiceIsGotByNumber() throws DatabaseOperationException {
+        //given
+        List<HibernateInvoice> list = new ArrayList<>();
+//        Invoice invoice = Invoice.builder().withNumber("123").build();
+//        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+//        list.add(hibernateInvoice);
+        doReturn(list).when(invoiceRepository).findAll();
+
+        //when
+        Optional<Invoice> gotInvoice = database.getByNumber("123");
+
+        //then
+        assertTrue(gotInvoice.isEmpty());
+        verify(invoiceRepository).findAll();
+    }
+//
 
     @Test
     void getByNumberShouldThrowExceptionForNullNumber() {
@@ -166,7 +251,7 @@ public class HibernateDatabaseTest {
 //    }
 //
 //    @Test
-//    void shouldDeleteAllInvoices() {
+//    void shouldDeleteAll() {
 //        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
 //        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
 //        storage.put(invoice1.getId(), InvoiceGenerator.generateRandomInvoice());
