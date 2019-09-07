@@ -15,28 +15,28 @@ public class FileHelper {
 
     private static final String ENCODING = "UTF-8";
 
-    void createFile(String filePath) throws IOException {
+    public void createFile(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
         Files.createFile(Paths.get(filePath));
     }
 
-    void delete(String filePath) throws IOException {
+    public void delete(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
         Files.delete(Paths.get(filePath));
     }
 
-    boolean exists(String filePath) {
+    public boolean exists(String filePath) {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
         return Files.exists(Paths.get(filePath));
     }
 
-    boolean isEmpty(String filePath) throws IOException {
+    public boolean isEmpty(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
@@ -46,14 +46,14 @@ public class FileHelper {
         return (new File(filePath).length() == 0);
     }
 
-    void clear(String filePath) throws IOException {
+    public void clear(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
         FileUtils.write(new File(filePath), "", ENCODING);
     }
 
-    void writeLine(String filePath, String line) throws IOException {
+    public void writeLine(String filePath, String line) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
@@ -63,7 +63,7 @@ public class FileHelper {
         FileUtils.writeLines(new File(filePath), ENCODING, Collections.singleton(line), true);
     }
 
-    List<String> readLines(String filePath) throws IOException {
+    public List<String> readLines(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
