@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.dao.NonTransientDataAccessException;
-import pl.coderstrust.database.hibernate.HibernateInvoice;
 import org.springframework.data.domain.Example;
+import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.HibernateModelMapper;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
@@ -24,12 +24,6 @@ public class HibernateDatabase implements Database {
         this.invoiceRepository = invoiceRepository;
         this.modelMapper = modelMapper;
     }
-
-    //stwórz new HibernateInvoice
-    //trzeba zrobić translację Invoice na HibernateInvoice i z powrotem
-
-//    ModelMapper modelMapper = new ModelMapper();
-//    OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
 
     @Override
     public Invoice save(Invoice invoice) throws DatabaseOperationException {
