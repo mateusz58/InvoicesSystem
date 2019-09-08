@@ -106,17 +106,6 @@ public class HibernateInvoice {
             return this;
         }
 
-        public HibernateInvoice.Builder withInvoice(HibernateInvoice invoice) {
-            id = invoice.id;
-            dueDate = invoice.dueDate;
-            issuedDate = invoice.issuedDate;
-            dueDate = invoice.dueDate;
-            seller = invoice.seller;
-            buyer = invoice.buyer;
-            entries = invoice.entries;
-            return this;
-        }
-
         public HibernateInvoice.Builder withEntries(List<InvoiceEntry> entries) {
             this.entries = entries;
             return this;

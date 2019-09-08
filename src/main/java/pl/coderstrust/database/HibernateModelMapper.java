@@ -1,5 +1,6 @@
 package pl.coderstrust.database;
 
+import java.util.Collection;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import pl.coderstrust.database.hibernate.HibernateCompany;
@@ -10,8 +11,6 @@ import pl.coderstrust.model.Company;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;
 import pl.coderstrust.model.Vat;
-
-import java.util.Collection;
 
 @Mapper(componentModel = "spring")
 public interface HibernateModelMapper {

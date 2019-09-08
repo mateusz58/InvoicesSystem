@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.data.domain.Example;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
@@ -69,14 +70,15 @@ public class HibernateDatabase implements Database {
     @Override
     public Optional<Invoice> getByNumber(String number) throws DatabaseOperationException {
         if (number == null) {
-            throw new IllegalArgumentException("Invoice number cannot be null");
+            throw new IllegalArgumentException("Number cannot be null.");
         }
         try {
-            Optional<HibernateInvoice> hibernateInvoice = invoiceRepository.findAll()
-                    .stream()
-                    .filter(invoice -> invoice.getNumber().equals(number))
-                    .findFirst();
-            return Optional.ofNullable(modelMapper.mapToInvoice(hibernateInvoice.get()));
+            Example<HibernateInvoice> example = Example.of(modelMapper.mapToHibernateInvoice(new Invoice.Builder().withNumber(number).build()));
+            Optional<HibernateInvoice> hibernateInvoice = invoiceRepository.findOne(example);
+            if (hibernateInvoice.isPresent()) {
+                return Optional.of(modelMapper.mapToInvoice(hibernateInvoice.get()));
+            }
+            return Optional.empty();
         } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during getting invoice by number.", e);
         }
