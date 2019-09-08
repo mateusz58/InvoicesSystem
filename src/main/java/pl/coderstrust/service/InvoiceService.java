@@ -1,11 +1,11 @@
 package pl.coderstrust.service;
 
+import java.util.Collection;
+import java.util.Optional;
+
 import pl.coderstrust.database.Database;
 import pl.coderstrust.database.DatabaseOperationException;
 import pl.coderstrust.model.Invoice;
-
-import java.util.Collection;
-import java.util.Optional;
 
 public class InvoiceService {
 
@@ -99,7 +99,7 @@ public class InvoiceService {
     }
 
     public boolean exists(Long id) throws ServiceOperationException, DatabaseOperationException {
-        if(id == null){
+        if (id == null) {
             throw new IllegalArgumentException("Id cannot be null");
         }
         try {
