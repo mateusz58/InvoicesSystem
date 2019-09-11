@@ -2,9 +2,7 @@ package pl.coderstrust.database.hibernate;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,26 +14,18 @@ public class HibernateInvoiceEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private final Long id;
 
-    @Column(name = "description")
     private final String description;
 
-    @Column(name = "quantity")
     private final Long quantity;
 
-    @Column(name = "price")
     private final BigDecimal price;
 
-    @Column(name = "net_value")
     private final BigDecimal netValue;
 
-    @Column(name = "gross_value")
     private final BigDecimal grossValue;
 
-    @Enumerated
-    @Column(columnDefinition = "float")
     private final HibernateVat vatRate;
 
     private HibernateInvoiceEntry(HibernateInvoiceEntry.Builder builder) {
@@ -51,6 +41,70 @@ public class HibernateInvoiceEntry {
 
     public static HibernateInvoiceEntry.Builder builder() {
         return new HibernateInvoiceEntry.Builder();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public BigDecimal getNetValue() {
+        return netValue;
+    }
+
+    public BigDecimal getGrossValue() {
+        return grossValue;
+    }
+
+    public HibernateVat getVatRate() {
+        return vatRate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        HibernateInvoiceEntry that = (HibernateInvoiceEntry) o;
+        return Objects.equals(id, that.id)
+            && Objects.equals(description, that.description)
+            && Objects.equals(quantity, that.quantity)
+            && Objects.equals(price, that.price)
+            && Objects.equals(netValue, that.netValue)
+            && Objects.equals(grossValue, that.grossValue)
+            && Objects.equals(vatRate, that.vatRate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, quantity, price, netValue, grossValue, vatRate);
+    }
+
+    @Override
+    public String toString() {
+        return "HibernateInvoiceEntry{"
+            + "id=" + id
+            + ", description='" + description + '\''
+            + ", quantity=" + quantity
+            + ", price=" + price
+            + ", netValue=" + netValue
+            + ", grossValue=" + grossValue
+            + ", vatRate=" + vatRate
+            + '}';
     }
 
     public static class Builder {
@@ -101,69 +155,5 @@ public class HibernateInvoiceEntry {
         public HibernateInvoiceEntry build() {
             return new HibernateInvoiceEntry(this);
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Long getQuantity() {
-        return quantity;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public BigDecimal getNetValue() {
-        return netValue;
-    }
-
-    public BigDecimal getGrossValue() {
-        return grossValue;
-    }
-
-    public HibernateVat getVatRate() {
-        return vatRate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        HibernateInvoiceEntry that = (HibernateInvoiceEntry) o;
-        return Objects.equals(id, that.id)
-                && Objects.equals(description, that.description)
-                && Objects.equals(quantity, that.quantity)
-                && Objects.equals(price, that.price)
-                && Objects.equals(netValue, that.netValue)
-                && Objects.equals(grossValue, that.grossValue)
-                && Objects.equals(vatRate, that.vatRate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, description, quantity, price, netValue, grossValue, vatRate);
-    }
-
-    @Override
-    public String toString() {
-        return "InvoiceEntry{"
-                + "id=" + id
-                + ", description='" + description + '\''
-                + ", quantity=" + quantity
-                + ", price=" + price
-                + ", netValue=" + netValue
-                + ", grossValue=" + grossValue
-                + ", vatRate=" + vatRate
-                + '}';
     }
 }

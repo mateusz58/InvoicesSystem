@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
+import pl.coderstrust.database.hibernate.HibernateModelMapper;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
@@ -63,11 +64,12 @@ public class HibernateDatabase implements Database {
         if (id == null) {
             throw new IllegalArgumentException("Id cannot be null.");
         }
-        if (!invoiceRepository.existsById(id)) {
-            throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
-        }
         try {
-            return Optional.ofNullable(modelMapper.mapToInvoice(invoiceRepository.getOne(id)));
+            Optional<HibernateInvoice> invoice = invoiceRepository.findById(id);
+            if (invoice.isPresent()) {
+                return Optional.of(modelMapper.mapToInvoice(invoice.get()));
+            }
+            return Optional.empty();
         } catch (NoSuchElementException e) {
             throw new DatabaseOperationException("An error occurred during getting invoice by id.", e);
         }
@@ -80,9 +82,9 @@ public class HibernateDatabase implements Database {
         }
         try {
             Example<HibernateInvoice> example = Example.of(modelMapper.mapToHibernateInvoice(new Invoice.Builder().withNumber(number).build()));
-            Optional<HibernateInvoice> hibernateInvoice = invoiceRepository.findOne(example);
-            if (hibernateInvoice.isPresent()) {
-                return Optional.of(modelMapper.mapToInvoice(hibernateInvoice.get()));
+            Optional<HibernateInvoice> invoice = invoiceRepository.findOne(example);
+            if (invoice.isPresent()) {
+                return Optional.of(modelMapper.mapToInvoice(invoice.get()));
             }
             return Optional.empty();
         } catch (NonTransientDataAccessException e) {
@@ -93,8 +95,7 @@ public class HibernateDatabase implements Database {
     @Override
     public Collection<Invoice> getAll() throws DatabaseOperationException {
         try {
-            Collection<HibernateInvoice> hibernateInvoiceList = invoiceRepository.findAll();
-            return modelMapper.mapToInvoices(hibernateInvoiceList);
+            return modelMapper.mapToInvoices(invoiceRepository.findAll());
         } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during getting all invoices.", e);
         }

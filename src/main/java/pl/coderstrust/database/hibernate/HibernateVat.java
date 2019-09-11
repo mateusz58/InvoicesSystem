@@ -19,8 +19,8 @@ public enum HibernateVat {
 
     @Override
     public String toString() {
-        return "Vat{"
-                + "value=" + value
-                + '}';
+        return "HibernateVat{"
+            + "value=" + value
+            + '}';
     }
 }

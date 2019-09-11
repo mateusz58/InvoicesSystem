@@ -24,6 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
+import pl.coderstrust.database.hibernate.HibernateModelMapper;
+import pl.coderstrust.database.hibernate.HibernateModelMapperImpl;
 import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.generators.InvoiceGenerator;
 import pl.coderstrust.model.Invoice;
@@ -44,12 +46,12 @@ class HibernateDatabaseTest {
     }
 
     @Test
-    void constructorClassShouldThrowExceptionForNullInvoiceRepository() {
+    void constructorShouldThrowExceptionForNullInvoiceRepository() {
         assertThrows(IllegalArgumentException.class, () -> new HibernateDatabase(null, modelMapper));
     }
 
     @Test
-    void constructorClassShouldThrowExceptionForNullModelMapper() {
+    void constructorShouldThrowExceptionForNullModelMapper() {
         assertThrows(IllegalArgumentException.class, () -> new HibernateDatabase(invoiceRepository, null));
     }
 
@@ -115,7 +117,7 @@ class HibernateDatabaseTest {
     }
 
     @Test
-    void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenDeletingInvoice() {
+    void deleteMethodShouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionOccurDuringDeletingInvoice() {
         //given
         when(invoiceRepository.existsById(10L)).thenReturn(true);
         doThrow(new NonTransientDataAccessException("") {
@@ -138,12 +140,11 @@ class HibernateDatabaseTest {
     }
 
     @Test
-    void shouldGetInvoiceById() throws DatabaseOperationException {
+    void shouldReturnInvoiceById() throws DatabaseOperationException {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
-        when(invoiceRepository.existsById(hibernateInvoice.getId())).thenReturn(true);
-        doReturn(hibernateInvoice).when(invoiceRepository).getOne(hibernateInvoice.getId());
+        doReturn(Optional.of(hibernateInvoice)).when(invoiceRepository).findById(hibernateInvoice.getId());
 
         //when
         Optional<Invoice> gotInvoice = database.getById(invoice.getId());
@@ -151,31 +152,20 @@ class HibernateDatabaseTest {
         //then
         assertTrue(gotInvoice.isPresent());
         assertEquals(invoice, gotInvoice.get());
-        verify(invoiceRepository).getOne(hibernateInvoice.getId());
+        verify(invoiceRepository).findById(hibernateInvoice.getId());
     }
 
     @Test
     void shouldReturnEmptyOptionalWhenNonExistingInvoiceIsGotById() throws DatabaseOperationException {
         //given
-        when(invoiceRepository.existsById(10L)).thenReturn(true);
+        when(invoiceRepository.findById(10L)).thenReturn(Optional.empty());
 
         //when
         Optional<Invoice> gotInvoice = database.getById(10L);
 
         //then
         assertTrue(gotInvoice.isEmpty());
-        verify(invoiceRepository).getOne(10L);
-    }
-
-    @Test
-    void getByIdMethodShouldThrowExceptionForNotExistingInvoice() {
-        //given
-        when(invoiceRepository.existsById(10L)).thenReturn(false);
-
-        //then
-        assertThrows(DatabaseOperationException.class, () -> database.getById(10L));
-        verify(invoiceRepository).existsById(10L);
-        verify(invoiceRepository, never()).getOne(10L);
+        verify(invoiceRepository).findById(10L);
     }
 
     @Test
@@ -186,12 +176,11 @@ class HibernateDatabaseTest {
     @Test
     void shouldThrowDatabaseOperationExceptionWhenNoSuchElementExceptionIsThrownWhenGettingById() {
         //given
-        when(invoiceRepository.existsById(10L)).thenReturn(true);
-        doThrow(new NoSuchElementException()).when(invoiceRepository).getOne(10L);
+        doThrow(new NoSuchElementException()).when(invoiceRepository).findById(10L);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getById(10L));
-        verify(invoiceRepository).getOne(10L);
+        verify(invoiceRepository).findById(10L);
     }
 
     @Test

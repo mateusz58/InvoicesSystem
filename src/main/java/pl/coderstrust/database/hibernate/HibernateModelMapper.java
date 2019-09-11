@@ -1,12 +1,8 @@
-package pl.coderstrust.database;
+package pl.coderstrust.database.hibernate;
 
 import java.util.Collection;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import pl.coderstrust.database.hibernate.HibernateCompany;
-import pl.coderstrust.database.hibernate.HibernateInvoice;
-import pl.coderstrust.database.hibernate.HibernateInvoiceEntry;
-import pl.coderstrust.database.hibernate.HibernateVat;
 import pl.coderstrust.model.Company;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;

@@ -5,14 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -25,31 +22,21 @@ public class HibernateInvoice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private final Long id;
 
-    @Column(name = "number")
     private final String number;
 
-    @Column(name = "issued_date")
     private final LocalDate issuedDate;
 
-    @Column(name = "due_date")
     private final LocalDate dueDate;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "company_id", nullable = false)
     private final Company seller;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "company_id", nullable = false)
     private final Company buyer;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "entries",
-            joinColumns = @JoinColumn(name = "invoice_id"),
-            inverseJoinColumns = @JoinColumn(name = "entry_id"))
     private final List<InvoiceEntry> entries;
 
     private HibernateInvoice(HibernateInvoice.Builder builder) {
@@ -64,6 +51,70 @@ public class HibernateInvoice {
 
     public static HibernateInvoice.Builder builder() {
         return new HibernateInvoice.Builder();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public LocalDate getIssuedDate() {
+        return issuedDate;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public Company getSeller() {
+        return seller;
+    }
+
+    public Company getBuyer() {
+        return buyer;
+    }
+
+    public List<InvoiceEntry> getEntries() {
+        return entries != null ? new ArrayList(entries) : new ArrayList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        HibernateInvoice invoice = (HibernateInvoice) o;
+        return Objects.equals(id, invoice.id)
+            && Objects.equals(number, invoice.number)
+            && Objects.equals(issuedDate, invoice.issuedDate)
+            && Objects.equals(dueDate, invoice.dueDate)
+            && Objects.equals(seller, invoice.seller)
+            && Objects.equals(buyer, invoice.buyer)
+            && Objects.equals(entries, invoice.entries);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, number, issuedDate, dueDate, seller, buyer, entries);
+    }
+
+    @Override
+    public String toString() {
+        return "HibernateInvoice{"
+            + "id=" + id
+            + ", number='" + number + '\''
+            + ", issuedDate=" + issuedDate
+            + ", dueDate=" + dueDate
+            + ", seller=" + seller
+            + ", buyer=" + buyer
+            + ", entries=" + entries
+            + '}';
     }
 
     public static class Builder {
@@ -114,69 +165,5 @@ public class HibernateInvoice {
         public HibernateInvoice build() {
             return new HibernateInvoice(this);
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public LocalDate getIssuedDate() {
-        return issuedDate;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public Company getSeller() {
-        return seller;
-    }
-
-    public Company getBuyer() {
-        return buyer;
-    }
-
-    public List<InvoiceEntry> getEntries() {
-        return entries != null ? new ArrayList(entries) : new ArrayList();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        HibernateInvoice invoice = (HibernateInvoice) o;
-        return Objects.equals(id, invoice.id)
-                && Objects.equals(number, invoice.number)
-                && Objects.equals(issuedDate, invoice.issuedDate)
-                && Objects.equals(dueDate, invoice.dueDate)
-                && Objects.equals(seller, invoice.seller)
-                && Objects.equals(buyer, invoice.buyer)
-                && Objects.equals(entries, invoice.entries);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, number, issuedDate, dueDate, seller, buyer, entries);
-    }
-
-    @Override
-    public String toString() {
-        return "Invoice{"
-                + "id=" + id
-                + ", number='" + number + '\''
-                + ", issuedDate=" + issuedDate
-                + ", dueDate=" + dueDate
-                + ", seller=" + seller
-                + ", buyer=" + buyer
-                + ", entries=" + entries
-                + '}';
     }
 }
