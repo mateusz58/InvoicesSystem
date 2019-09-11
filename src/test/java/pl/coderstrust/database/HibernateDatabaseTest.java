@@ -80,8 +80,7 @@ class HibernateDatabaseTest {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
-        doThrow(new NonTransientDataAccessException("") {
-        }).when(invoiceRepository).save(hibernateInvoice);
+        doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).save(hibernateInvoice);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
@@ -120,8 +119,7 @@ class HibernateDatabaseTest {
     void deleteMethodShouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionOccurDuringDeletingInvoice() {
         //given
         when(invoiceRepository.existsById(10L)).thenReturn(true);
-        doThrow(new NonTransientDataAccessException("") {
-        }).when(invoiceRepository).deleteById(10L);
+        doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).deleteById(10L);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.delete(10L));
@@ -217,8 +215,7 @@ class HibernateDatabaseTest {
     @Test
     void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenGettingByNumber() {
         //given
-        doThrow(new NonTransientDataAccessException("") {
-        }).when(invoiceRepository).findOne(any(Example.class));
+        doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).findOne(any(Example.class));
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getByNumber("123"));
@@ -245,8 +242,7 @@ class HibernateDatabaseTest {
     @Test
     void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenGettingAll() {
         //given
-        doThrow(new NonTransientDataAccessException("") {
-        }).when(invoiceRepository).findAll();
+        doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).findAll();
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getAll());
@@ -268,8 +264,7 @@ class HibernateDatabaseTest {
     @Test
     void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenDeletingAll() {
         //given
-        doThrow(new NonTransientDataAccessException("") {
-        }).when(invoiceRepository).deleteAll();
+        doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).deleteAll();
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.deleteAll());
@@ -304,8 +299,7 @@ class HibernateDatabaseTest {
     @Test
     void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenCheckingIfInvoiceExists() {
         //given
-        doThrow(new NonTransientDataAccessException("") {
-        }).when(invoiceRepository).existsById(10L);
+        doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).existsById(10L);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.exists(10L));
@@ -328,8 +322,7 @@ class HibernateDatabaseTest {
     @Test
     void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenCauntingNumberOfInvoices() {
         //given
-        doThrow(new NonTransientDataAccessException("") {
-        }).when(invoiceRepository).count();
+        doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).count();
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.count());
