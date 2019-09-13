@@ -69,7 +69,7 @@ public interface HibernateModelMapper {
     @Mapping(target = "withVatRate", source = "vatRate")
     InvoiceEntry mapToInvoiceEntry(HibernateInvoiceEntry invoiceEntry);
 
-    Vat mapToHibernateVat(Vat vat);
+    HibernateVat mapToHibernateVat(Vat vat);
 
-    HibernateVat maptoVat(HibernateVat vat);
+    Vat maptoVat(HibernateVat vat);
 }
