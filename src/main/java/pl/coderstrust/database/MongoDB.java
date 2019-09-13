@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
@@ -13,7 +14,8 @@ import pl.coderstrust.model.Invoice;
 
 public class MongoDB implements Database {
 
-    MongoOperations invoiceRepository = new MongoTemplate(new SimpleMongoDbFactory(new MongoClientURI("something")));
+
+    //TODO zrobić konstruktor i podać do niego mongoTemplate + mapper
 
     @Override
     public Invoice save(Invoice invoice) throws DatabaseOperationException {

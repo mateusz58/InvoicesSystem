@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class MongoCompany {
 
     @Id
+    private final String mongoId;
+
     private final Long id;
 
     private final String name;
@@ -23,6 +25,8 @@ public class MongoCompany {
 
     private final String email;
 
+    //annotaacja persidtance konstruktor
+    //konstruktor sparametozpwamy
     private MongoCompany() {
         id = null;
         name = null;
@@ -125,6 +129,8 @@ public class MongoCompany {
             this.id = id;
             return this;
         }
+
+        //dotoboć "witg mongoId"
 
         public MongoCompany.Builder withName(String name) {
             this.name = name;
