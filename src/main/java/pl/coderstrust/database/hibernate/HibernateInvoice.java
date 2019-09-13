@@ -39,6 +39,16 @@ public class HibernateInvoice {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private final List<InvoiceEntry> entries;
 
+    private HibernateInvoice() {
+        id = null;
+        number = null;
+        issuedDate = null;
+        dueDate = null;
+        seller = null;
+        buyer = null;
+        entries = null;
+    }
+
     private HibernateInvoice(HibernateInvoice.Builder builder) {
         id = builder.id;
         number = builder.number;

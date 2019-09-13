@@ -28,8 +28,17 @@ public class HibernateInvoiceEntry {
 
     private final HibernateVat vatRate;
 
-    private HibernateInvoiceEntry(HibernateInvoiceEntry.Builder builder) {
+    private HibernateInvoiceEntry() {
+        id = null;
+        description = null;
+        quantity = null;
+        price = null;
+        netValue = null;
+        grossValue = null;
+        vatRate = null;
+    }
 
+    private HibernateInvoiceEntry(HibernateInvoiceEntry.Builder builder) {
         id = builder.id;
         description = builder.description;
         quantity = builder.quantity;
