@@ -49,11 +49,9 @@ public class MongoDatabase implements Database {
         if (id == null) {
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
-        if (!mongoTemplate.existsById(id)) {
-            throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
-        }
-        try {
-            mongoTemplate.deleteById(id);
+        MongoInvoice invoice = mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
+        if(invoice == null) /*rzuć exceptiona*/
+
         } catch (NonTransientDataAccessException | NoSuchElementException e) {
             throw new DatabaseOperationException("An error occurred during deleting invoice.", e);
         }
