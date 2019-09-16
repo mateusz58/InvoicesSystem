@@ -1,7 +1,10 @@
 package pl.coderstrust.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.util.Objects;
 
+@JsonDeserialize(builder = Invoice.Builder.class)
 public final class Company {
 
     private final Long id;
@@ -89,7 +92,7 @@ public final class Company {
             + ", email='" + email + '\''
             + '}';
     }
-
+    @JsonPOJOBuilder
     public static class Builder {
 
         private Long id;

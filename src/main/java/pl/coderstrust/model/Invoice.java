@@ -1,10 +1,13 @@
 package pl.coderstrust.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@JsonDeserialize(builder = Invoice.Builder.class)
 public final class Invoice {
 
     private final Long id;
@@ -92,7 +95,7 @@ public final class Invoice {
             + ", entries=" + entries
             + '}';
     }
-
+    @JsonPOJOBuilder
     public static class Builder {
 
         private Long id;
@@ -135,6 +138,7 @@ public final class Invoice {
 
         public Builder withInvoice(Invoice invoice) {
             this.id = invoice.id;
+            this.number = invoice.number;
             this.dueDate = invoice.dueDate;
             this.issuedDate = invoice.issuedDate;
             this.dueDate = invoice.dueDate;

@@ -122,11 +122,11 @@ class FileHelperIT {
 
     @Test
     void shouldReadLastLineFromFile() throws IOException {
-        FileUtils.writeLines(inputFile, ENCODING, Arrays.asList("Seller's details", "2019-06-25", "Buyer's details"), false);
+        FileUtils.writeLines(inputFile, ENCODING, Arrays.asList("Seller's details", "2019-06-25", "Buyer's details","2019-06-25"), false);
 
         String result = fileHelper.readLastLine(INPUT_FILE);
 
-        assertEquals("Buyer's details", result);
+        assertEquals("2019-06-25", result);
     }
 
     @Test
