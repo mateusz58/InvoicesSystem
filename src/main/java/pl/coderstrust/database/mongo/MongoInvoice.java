@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pl.coderstrust.model.Company;
 import pl.coderstrust.model.InvoiceEntry;
@@ -13,6 +14,8 @@ import pl.coderstrust.model.InvoiceEntry;
 public class MongoInvoice {
 
     @Id
+    private final String mongoId;
+
     private final Long id;
 
     private final String number;
@@ -27,7 +30,20 @@ public class MongoInvoice {
 
     private final List<InvoiceEntry> entries;
 
+    @PersistenceConstructor
+    public MongoInvoice(String mongoId, Long id, String number, LocalDate issuedDate, LocalDate dueDate, Company seller, Company buyer, List<InvoiceEntry> entries) {
+        this.mongoId = mongoId;
+        this.id = id;
+        this.number = number;
+        this.issuedDate = issuedDate;
+        this.dueDate = dueDate;
+        this.seller = seller;
+        this.buyer = buyer;
+        this.entries = entries;
+    }
+
     private MongoInvoice() {
+        mongoId = null;
         id = null;
         number = null;
         issuedDate = null;
@@ -38,6 +54,7 @@ public class MongoInvoice {
     }
 
     private MongoInvoice(MongoInvoice.Builder builder) {
+        mongoId = builder.mongoId;
         id = builder.id;
         number = builder.number;
         issuedDate = builder.issuedDate;
@@ -49,6 +66,10 @@ public class MongoInvoice {
 
     public static MongoInvoice.Builder builder() {
         return new MongoInvoice.Builder();
+    }
+
+    public String getMongoId() {
+        return mongoId;
     }
 
     public Long getId() {
@@ -89,6 +110,7 @@ public class MongoInvoice {
         }
         MongoInvoice invoice = (MongoInvoice) o;
         return Objects.equals(id, invoice.id)
+                && Objects.equals(mongoId, invoice.mongoId)
                 && Objects.equals(number, invoice.number)
                 && Objects.equals(issuedDate, invoice.issuedDate)
                 && Objects.equals(dueDate, invoice.dueDate)
@@ -99,13 +121,14 @@ public class MongoInvoice {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number, issuedDate, dueDate, seller, buyer, entries);
+        return Objects.hash(mongoId, id, number, issuedDate, dueDate, seller, buyer, entries);
     }
 
     @Override
     public String toString() {
         return "MongoInvoice{"
-                + "id=" + id
+                + "mongoId=" + mongoId
+                + ", id=" + id
                 + ", number='" + number + '\''
                 + ", issuedDate=" + issuedDate
                 + ", dueDate=" + dueDate
@@ -116,6 +139,7 @@ public class MongoInvoice {
     }
 
     public static class Builder {
+        private String mongoId;
         private Long id;
         private String number;
         private LocalDate issuedDate;
@@ -123,6 +147,11 @@ public class MongoInvoice {
         private Company seller;
         private Company buyer;
         private List<InvoiceEntry> entries;
+
+        public MongoInvoice.Builder withMongoId(String mongoId) {
+            this.mongoId = mongoId;
+            return this;
+        }
 
         public MongoInvoice.Builder withId(Long id) {
             this.id = id;

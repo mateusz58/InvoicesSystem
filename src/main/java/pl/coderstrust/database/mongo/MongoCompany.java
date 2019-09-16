@@ -1,8 +1,8 @@
 package pl.coderstrust.database.mongo;
 
 import java.util.Objects;
-
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -25,9 +25,20 @@ public class MongoCompany {
 
     private final String email;
 
-    //annotaacja persidtance konstruktor
-    //konstruktor sparametozpwamy
+    @PersistenceConstructor
+    public MongoCompany(String mongoId, Long id, String name, String address, String taxId, String accountNumber, String phoneNumber, String email) {
+        this.mongoId = mongoId;
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.taxId = taxId;
+        this.accountNumber = accountNumber;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
+
     private MongoCompany() {
+        mongoId = null;
         id = null;
         name = null;
         address = null;
@@ -38,6 +49,7 @@ public class MongoCompany {
     }
 
     private MongoCompany(MongoCompany.Builder builder) {
+        mongoId = builder.mongoId;
         id = builder.id;
         name = builder.name;
         address = builder.address;
@@ -45,6 +57,10 @@ public class MongoCompany {
         accountNumber = builder.accountNumber;
         phoneNumber = builder.phoneNumber;
         email = builder.email;
+    }
+
+    public String getMongoId() {
+        return mongoId;
     }
 
     public Long getId() {
@@ -85,6 +101,7 @@ public class MongoCompany {
         }
         MongoCompany company = (MongoCompany) o;
         return Objects.equals(id, company.id)
+                && Objects.equals(mongoId, company.mongoId)
                 && Objects.equals(name, company.name)
                 && Objects.equals(address, company.address)
                 && Objects.equals(taxId, company.taxId)
@@ -95,13 +112,14 @@ public class MongoCompany {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, address, taxId, accountNumber, phoneNumber, email);
+        return Objects.hash(mongoId, id, name, address, taxId, accountNumber, phoneNumber, email);
     }
 
     @Override
     public String toString() {
         return "MongoCompany{"
-                + "id=" + id
+                + "mongoId=" + mongoId
+                + ", id=" + id
                 + ", name='" + name + '\''
                 + ", address='" + address + '\''
                 + ", taxId='" + taxId + '\''
@@ -117,6 +135,7 @@ public class MongoCompany {
 
     public static class Builder {
 
+        private String mongoId;
         private Long id;
         private String name;
         private String address;
@@ -125,12 +144,16 @@ public class MongoCompany {
         private String phoneNumber;
         private String email;
 
+
+        public MongoCompany.Builder withMongoId(String mongoId) {
+            this.mongoId = mongoId;
+            return this;
+        }
+
         public MongoCompany.Builder withId(Long id) {
             this.id = id;
             return this;
         }
-
-        //dotoboć "witg mongoId"
 
         public MongoCompany.Builder withName(String name) {
             this.name = name;

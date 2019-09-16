@@ -3,12 +3,15 @@ package pl.coderstrust.database.mongo;
 import java.math.BigDecimal;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class MongoInvoiceEntry {
 
     @Id
+    private final String mongoId;
+
     private final Long id;
 
     private final String description;
@@ -23,7 +26,20 @@ public class MongoInvoiceEntry {
 
     private final MongoVat vatRate;
 
+    @PersistenceConstructor
+    public MongoInvoiceEntry(String mongoId, Long id, String description, Long quantity, BigDecimal price, BigDecimal netValue, BigDecimal grossValue, MongoVat vatRate) {
+        this.mongoId = mongoId;
+        this.id = id;
+        this.description = description;
+        this.quantity = quantity;
+        this.price = price;
+        this.netValue = netValue;
+        this.grossValue = grossValue;
+        this.vatRate = vatRate;
+    }
+
     private MongoInvoiceEntry() {
+        mongoId = null;
         id = null;
         description = null;
         quantity = null;
@@ -32,7 +48,9 @@ public class MongoInvoiceEntry {
         grossValue = null;
         vatRate = null;
     }
+
     private MongoInvoiceEntry(MongoInvoiceEntry.Builder builder) {
+        mongoId = builder.mongoId;
         id = builder.id;
         description = builder.description;
         quantity = builder.quantity;
@@ -44,6 +62,10 @@ public class MongoInvoiceEntry {
 
     public static MongoInvoiceEntry.Builder builder() {
         return new MongoInvoiceEntry.Builder();
+    }
+
+    public String getMongoId() {
+        return mongoId;
     }
 
     public Long getId() {
@@ -84,6 +106,7 @@ public class MongoInvoiceEntry {
         }
         MongoInvoiceEntry that = (MongoInvoiceEntry) o;
         return Objects.equals(id, that.id)
+                && Objects.equals(mongoId, that.mongoId)
                 && Objects.equals(description, that.description)
                 && Objects.equals(quantity, that.quantity)
                 && Objects.equals(price, that.price)
@@ -94,13 +117,14 @@ public class MongoInvoiceEntry {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, quantity, price, netValue, grossValue, vatRate);
+        return Objects.hash(mongoId, id, description, quantity, price, netValue, grossValue, vatRate);
     }
 
     @Override
     public String toString() {
         return "MongoInvoiceEntry{"
-                + "id=" + id
+                + "mongoId=" + mongoId
+                + ", id=" + id
                 + ", description='" + description + '\''
                 + ", quantity=" + quantity
                 + ", price=" + price
@@ -112,6 +136,7 @@ public class MongoInvoiceEntry {
 
     public static class Builder {
 
+        private String mongoId;
         private Long id;
         private String description;
         private Long quantity;
@@ -119,6 +144,11 @@ public class MongoInvoiceEntry {
         private BigDecimal netValue;
         private BigDecimal grossValue;
         private MongoVat vatRate;
+
+        public MongoInvoiceEntry.Builder withMongoId(String mongoId) {
+            this.mongoId = mongoId;
+            return this;
+        }
 
         public MongoInvoiceEntry.Builder withId(Long id) {
             this.id = id;
