@@ -4,15 +4,22 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.util.Objects;
 
-@JsonDeserialize(builder = Invoice.Builder.class)
+@JsonDeserialize(builder = Company.Builder.class)
 public final class Company {
 
+    
     private final Long id;
+    
     private final String name;
+    
     private final String address;
+    
     private final String taxId;
+    
     private final String accountNumber;
+    
     private final String phoneNumber;
+    
     private final String email;
 
     private Company(Builder builder) {

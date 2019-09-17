@@ -20,6 +20,9 @@ public class InFileDatabase implements Database {
     private FileHelper fileHelper;
     private AtomicLong nextId;
 
+    //temporary for testing
+    public static Invoice invoiceToGenerate;
+
     @Autowired
     public InFileDatabase(InFileDatabaseProperties inFileDatabaseProperties, ObjectMapper mapper, FileHelper fileHelper) throws IOException {
         this.filePath = inFileDatabaseProperties.getFilePath();;
@@ -39,11 +42,15 @@ public class InFileDatabase implements Database {
         if (json == null) {
             throw new IllegalArgumentException("Json cannot be null");
         }
-        try {
-            return mapper.readValue(json, Invoice.class);
-        } catch (IOException e) {
-            return null;
-        }
+        //temporary for testing
+       return invoiceToGenerate;
+
+         //production
+//        try{
+//            return mapper.readValue(json, Invoice.class);
+//        } catch (IOException e) {
+//            return null;
+//        }
     }
 
     private long getLastInvoiceId() throws IOException {

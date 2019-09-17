@@ -10,12 +10,19 @@ import java.util.Objects;
 @JsonDeserialize(builder = Invoice.Builder.class)
 public final class Invoice {
 
+
     private final Long id;
+
     private final String number;
+
     private final LocalDate issuedDate;
+
     private final LocalDate dueDate;
+
     private final Company seller;
+
     private final Company buyer;
+
     private final List<InvoiceEntry> entries;
 
     private Invoice(Builder builder) {

@@ -1,5 +1,8 @@
 package pl.coderstrust.configuration;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class InFileDatabaseProperties {
     private   String filePath;
 

@@ -4,15 +4,22 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.math.BigDecimal;
 import java.util.Objects;
-@JsonDeserialize(builder = Invoice.Builder.class)
+@JsonDeserialize(builder = InvoiceEntry.Builder.class)
 public final class InvoiceEntry {
 
+    
     private final Long id;
+    
     private final String description;
+    
     private final Long quantity;
+    
     private final BigDecimal price;
+    
     private final BigDecimal netValue;
+    
     private final BigDecimal grossValue;
+    
     private final Vat vatRate;
 
     private InvoiceEntry(Builder builder) {
