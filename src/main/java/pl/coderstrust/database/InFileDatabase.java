@@ -20,12 +20,9 @@ public class InFileDatabase implements Database {
     private FileHelper fileHelper;
     private AtomicLong nextId;
 
-    //temporary for testing
-    public static Invoice invoiceToGenerate;
-
     @Autowired
     public InFileDatabase(InFileDatabaseProperties inFileDatabaseProperties, ObjectMapper mapper, FileHelper fileHelper) throws IOException {
-        this.filePath = inFileDatabaseProperties.getFilePath();;
+        this.filePath = inFileDatabaseProperties.getFilePath();
         this.mapper = mapper;
         this.fileHelper = fileHelper;
         initFile();
@@ -38,27 +35,22 @@ public class InFileDatabase implements Database {
         nextId = new AtomicLong(getLastInvoiceId());
     }
 
-    private Invoice deserializeJsonToInvoice(String json) throws IOException {
+    private Invoice deserializeJsonToInvoice(String json)  {
         if (json == null) {
             throw new IllegalArgumentException("Json cannot be null");
         }
-        //temporary for testing
-       return invoiceToGenerate;
-
-         //production
-//        try{
-//            return mapper.readValue(json, Invoice.class);
-//        } catch (IOException e) {
-//            return null;
-//        }
+        try {
+            return mapper.readValue(json, Invoice.class);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     private long getLastInvoiceId() throws IOException {
-        String lastInvoiceAsJson = fileHelper.readLastLine(filePath);
-        if (lastInvoiceAsJson == null) {
+        if (fileHelper.readLastLine(filePath) == null) {
             return 0;
         }
-        Invoice invoice = deserializeJsonToInvoice(lastInvoiceAsJson);
+        Invoice invoice = deserializeJsonToInvoice(fileHelper.readLastLine(filePath));
         if (invoice == null) {
             return 0;
         }
@@ -119,6 +111,14 @@ public class InFileDatabase implements Database {
 
     @Override
     public void delete(Long id) throws DatabaseOperationException {
+        if (id == null) {
+            throw new IllegalArgumentException("Invoice id cannot be null.");
+        }
+        try {
+            fileHelper.removeLine(filePath, getIndexPositionOfInvoiceWithGivenId(id));
+        } catch (IOException e) {
+            throw new DatabaseOperationException(String.format("An error occured while deleting Invoice with id: %s from database", id));
+        }
     }
 
     @Override
@@ -173,14 +173,14 @@ public class InFileDatabase implements Database {
         if (id == null) {
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
-            try {
-                return getInvoices()
-                    .stream()
-                    .anyMatch(invoice -> invoice.getId().equals(id));
-            } catch (IOException e) {
-                throw new DatabaseOperationException("An error occured while checking if invoice exists in database");
-            }
+        try {
+            return getInvoices()
+                .stream()
+                .anyMatch(invoice -> invoice.getId().equals(id));
+        } catch (IOException e) {
+            throw new DatabaseOperationException("An error occured while checking if invoice exists in database");
         }
+    }
 
     @Override
     public long count() throws DatabaseOperationException {

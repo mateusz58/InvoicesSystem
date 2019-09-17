@@ -15,7 +15,7 @@ public class FileHelper {
 
     private static final String ENCODING = "UTF-8";
 
-   public  void createFile(String filePath) throws IOException {
+    public void createFile(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
@@ -53,7 +53,7 @@ public class FileHelper {
         FileUtils.write(new File(filePath), "", ENCODING);
     }
 
-    public  void writeLine(String filePath, String line) throws IOException {
+    public void writeLine(String filePath, String line) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
@@ -63,7 +63,7 @@ public class FileHelper {
         FileUtils.writeLines(new File(filePath), ENCODING, Collections.singleton(line), true);
     }
 
-     public List<String> readLines(String filePath) throws IOException {
+    public List<String> readLines(String filePath) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("Path of the file cannot be null");
         }
@@ -92,19 +92,19 @@ public class FileHelper {
         FileUtils.writeLines(file, ENCODING, lines, false);
     }
 
-    public void replaceLine(String filePath, int lineNumber,String line) throws IOException {
+    public void replaceLine(String filePath, int lineNumber, String line) throws IOException {
         if (filePath == null) {
             throw new IllegalArgumentException("File's path cannot be null.");
         }
         if (lineNumber < 1) {
             throw new IllegalArgumentException("Line number cannot be lower than one.");
         }
-        if (line==null) {
+        if (line == null) {
             throw new IllegalArgumentException("Line number cannot be null.");
         }
         File file = new File(filePath);
         List<String> lines = FileUtils.readLines(file, ENCODING);
-        lines.set(lineNumber-1,line);
+        lines.set(lineNumber - 1, line);
         FileUtils.writeLines(file, ENCODING, lines, false);
     }
 }

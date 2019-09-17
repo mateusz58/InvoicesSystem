@@ -102,6 +102,7 @@ public final class Invoice {
             + ", entries=" + entries
             + '}';
     }
+
     @JsonPOJOBuilder
     public static class Builder {
 

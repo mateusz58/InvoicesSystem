@@ -35,7 +35,6 @@ public class InMemoryDatabase implements Database {
             .withInvoice(invoice)
             .withId(id)
             .build();
-
         database.put(id, insertedInvoice);
         return insertedInvoice;
     }
@@ -44,7 +43,6 @@ public class InMemoryDatabase implements Database {
         Invoice updatedInvoice = Invoice.builder()
             .withInvoice(invoice)
             .build();
-
         database.put(invoice.getId(), updatedInvoice);
         return updatedInvoice;
     }
