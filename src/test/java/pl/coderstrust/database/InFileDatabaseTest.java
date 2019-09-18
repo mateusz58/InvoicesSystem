@@ -100,7 +100,8 @@ class InFileDatabaseTest {
     @Test
     void shouldReturnInvoiceById() throws DatabaseOperationException, IOException {
         //When
-        doReturn(List.of(objectMapper.writeValueAsString(InvoiceGenerator.generateRandomInvoice()), objectMapper.writeValueAsString(InvoiceGenerator.getRandomInvoiceWithSpecificId(1L)))).when(fileHelper).readLines(DATABASE_FILE);
+        Invoice invoice = InvoiceGenerator.getRandomInvoice();
+        doReturn(List.of(objectMapper.writeValueAsString(invoice), objectMapper.writeValueAsString(InvoiceGenerator.getRandomInvoice()))).when(fileHelper).readLines(DATABASE_FILE);
         Optional<Invoice> optionalInvoice = inFileDatabase.getById(1L);
         //Then
         assertTrue(optionalInvoice.isPresent());
