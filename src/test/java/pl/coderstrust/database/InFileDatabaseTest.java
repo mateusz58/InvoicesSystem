@@ -70,7 +70,7 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldUpdateInvoiceToFile() throws IOException, DatabaseOperationException {
+    void shouldUpdateInvoice() throws IOException, DatabaseOperationException {
         //Given
         Invoice invoiceToUpdate = InvoiceGenerator.getRandomInvoiceWithSpecificId(1L);
         //When
