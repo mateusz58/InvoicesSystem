@@ -219,7 +219,7 @@ class InFileDatabaseTest {
     @Test
     void saveMethodShouldThrowExceptionWhenFileHelpersWriteLineMethodThrowsException() throws IOException {
         //Given
-        Invoice invoiceToAdd = InvoiceGenerator.getRandomInvoiceWithSpecificId(1L);
+        Invoice invoiceToAdd = InvoiceGenerator.getRandomInvoice();
         Invoice expected = Invoice.builder().withId(2L).withInvoice(invoiceToAdd).build();
         //When
         doReturn(List.of(objectMapper.writeValueAsString(InvoiceGenerator.generateRandomInvoice()))).when(fileHelper).readLines(DATABASE_FILE);
