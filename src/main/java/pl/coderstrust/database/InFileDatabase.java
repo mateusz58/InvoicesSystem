@@ -84,7 +84,7 @@ public class InFileDatabase implements Database {
         return list;
     }
 
-    private int getIndexPositionOfInvoiceWithGivenId(Long id) throws IOException, DatabaseOperationException {
+    private int getPositionInDatabase(Long id) throws IOException, DatabaseOperationException {
         Optional<Invoice> invoice = getInvoices().stream()
             .filter(s -> s.getId().equals(id))
             .findFirst();
