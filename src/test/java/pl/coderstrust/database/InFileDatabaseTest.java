@@ -87,7 +87,7 @@ class InFileDatabaseTest {
     void shouldReturnAllInvoices() throws IOException, DatabaseOperationException {
         //Given
         Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
-        Invoice invoice2 = InvoiceGenerator.getRandomInvoiceWithSpecificId(2L);
+        Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
         List<Invoice> expected = Arrays.asList(invoice1, invoice2);
         //When
         doReturn(List.of(objectMapper.writeValueAsString(invoice1), objectMapper.writeValueAsString(invoice2))).when(fileHelper).readLines(DATABASE_FILE);
