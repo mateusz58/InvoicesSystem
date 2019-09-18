@@ -3,6 +3,7 @@ package pl.coderstrust.configuration;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConfigurationProperties(prefix = "pl.coderstrust.database.in-file")
 public class InFileDatabaseProperties {
     private String filePath;
 
