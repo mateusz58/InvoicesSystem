@@ -222,7 +222,7 @@ class InFileDatabaseTest {
         Invoice invoiceToAdd = InvoiceGenerator.getRandomInvoice();
         Invoice expected = Invoice.builder().withId(2L).withInvoice(invoiceToAdd).build();
         //When
-        doReturn(List.of(objectMapper.writeValueAsString(InvoiceGenerator.generateRandomInvoice()))).when(fileHelper).readLines(DATABASE_FILE);
+        doReturn(new ArrayList()).when(fileHelper).readLines(DATABASE_FILE);
         doThrow(IOException.class).when(fileHelper).writeLine(DATABASE_FILE, objectMapper.writeValueAsString(expected));
         //Then
         assertThrows(DatabaseOperationException.class, () -> inFileDatabase.save(invoiceToAdd));
