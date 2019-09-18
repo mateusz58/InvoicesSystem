@@ -197,7 +197,7 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void getByIdShouldThrowExceptionForNullId() {
+    void getByIdMethodShouldThrowExceptionForNullId() {
         assertThrows(IllegalArgumentException.class, () -> inFileDatabase.getById(null));
     }
 
