@@ -164,7 +164,7 @@ public class InFileDatabase implements Database {
         try {
             fileHelper.clear(filePath);
         } catch (IOException e) {
-            throw new DatabaseOperationException("An error occured while deleting all invoices from database");
+            throw new DatabaseOperationException("An error occurred while deleting all invoices from database");
         }
     }
 
