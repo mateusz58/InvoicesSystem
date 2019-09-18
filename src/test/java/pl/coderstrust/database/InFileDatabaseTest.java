@@ -105,7 +105,7 @@ class InFileDatabaseTest {
         Optional<Invoice> optionalInvoice = inFileDatabase.getById(1L);
         //Then
         assertTrue(optionalInvoice.isPresent());
-        assertEquals(1L, optionalInvoice.get().getId());
+        assertEquals(invoice, optionalInvoice.get());
         verify(fileHelper).readLines(DATABASE_FILE);
     }
 
