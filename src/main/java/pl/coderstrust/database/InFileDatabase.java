@@ -105,7 +105,7 @@ public class InFileDatabase implements Database {
             }
             return updateInvoice(invoice);
         } catch (IOException e) {
-            throw new DatabaseOperationException("An error occured while adding Invoice to database");
+            throw new DatabaseOperationException("An error occurred while saving invoice to database");
         }
     }
 
