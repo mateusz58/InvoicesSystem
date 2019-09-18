@@ -93,7 +93,7 @@ class InFileDatabaseTest {
         doReturn(List.of(objectMapper.writeValueAsString(invoice1), objectMapper.writeValueAsString(invoice2))).when(fileHelper).readLines(DATABASE_FILE);
         Collection<Invoice> result = inFileDatabase.getAll();
         //Then
-        assertEquals(expected, inFileDatabase.getAll());
+        assertEquals(expected, result);
         verify(fileHelper).readLines(DATABASE_FILE);
     }
 
