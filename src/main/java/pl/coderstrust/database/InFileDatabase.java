@@ -190,5 +190,4 @@ public class InFileDatabase implements Database {
             throw new DatabaseOperationException("An error occured while counting all invoices from database");
         }
     }
-
 }
