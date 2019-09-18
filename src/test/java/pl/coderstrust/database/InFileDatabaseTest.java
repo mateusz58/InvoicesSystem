@@ -38,6 +38,7 @@ class InFileDatabaseTest {
 
     private static final String DATABASE_FILE = "src/test/resources/database/database.json";
     private static ObjectMapper objectMapper;
+
     @Mock
     private FileHelper fileHelper;
     @Autowired
