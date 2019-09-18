@@ -155,7 +155,7 @@ public class InFileDatabase implements Database {
         try {
             return getInvoices();
         } catch (IOException e) {
-            throw new DatabaseOperationException("An error occured while getting all invoices from database");
+            throw new DatabaseOperationException("An error occurred while getting all invoices from database");
         }
     }
 
