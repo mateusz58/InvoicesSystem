@@ -62,7 +62,7 @@ class InFileDatabaseTest {
         doNothing().when(fileHelper).writeLine(DATABASE_FILE, objectMapper.writeValueAsString(invoiceToAdd));
         doReturn(new ArrayList<>()).when(fileHelper).readLines(DATABASE_FILE);
         //When
-        Invoice expectedInvoice = inFileDatabase.save(invoiceToAdd);
+        Invoice addedInvoice = inFileDatabase.save(invoiceToAdd);
         //Then
         assertEquals(expectedInvoice, invoiceToAdd);
         verify(fileHelper).readLines(DATABASE_FILE);
