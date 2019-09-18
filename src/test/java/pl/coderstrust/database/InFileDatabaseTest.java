@@ -227,7 +227,7 @@ class InFileDatabaseTest {
         //Then
         assertThrows(DatabaseOperationException.class, () -> inFileDatabase.save(invoiceToAdd));
         verify(fileHelper).readLines(DATABASE_FILE);
-        verify(fileHelper).writeLine(DATABASE_FILE, objectMapper.writeValueAsString(expected));
+        verify(fileHelper).writeLine(DATABASE_FILE, objectMapper.writeValueAsString(invoiceToAdd));
     }
 
     @Test
