@@ -82,7 +82,6 @@ class InFileDatabaseTest {
         assertEquals(invoiceToUpdate, updatedInvoice);
     }
 
-
     @Test
     void shouldReturnAllInvoices() throws IOException, DatabaseOperationException {
         //Given
