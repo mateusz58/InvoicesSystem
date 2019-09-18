@@ -145,7 +145,7 @@ public class InFileDatabase implements Database {
                 .filter(s -> s.getNumber().equals(number))
                 .findFirst();
         } catch (IOException e) {
-            throw new DatabaseOperationException(String.format("No invoice with number: %s", number));
+            throw new DatabaseOperationException(String.format("An error occurred while getting invoice with number: %s from database", number));
         }
 
     }
