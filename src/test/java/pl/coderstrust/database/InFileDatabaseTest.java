@@ -46,7 +46,7 @@ class InFileDatabaseTest {
 
     @BeforeEach
     void setup() throws IOException {
-        objectMapper = new ObjectMapper();
+        new ApplicationConfiguration().getObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         InFileDatabaseProperties inFileDatabasePropertiesTest = new InFileDatabaseProperties();
