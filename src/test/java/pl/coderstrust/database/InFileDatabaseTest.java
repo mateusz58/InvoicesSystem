@@ -146,6 +146,8 @@ class InFileDatabaseTest {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         //When
         doReturn(List.of(objectMapper.writeValueAsString(invoice))).when(fileHelper).readLines(DATABASE_FILE);
+       boolean result = inFileDatabase.exists(invoice.getId() + 1L);
+       
         //Then
         assertFalse(inFileDatabase.exists(invoice.getId() + 1L));
         verify(fileHelper).readLines(DATABASE_FILE);
