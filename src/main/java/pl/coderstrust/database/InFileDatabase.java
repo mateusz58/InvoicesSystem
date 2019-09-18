@@ -178,7 +178,7 @@ public class InFileDatabase implements Database {
                 .stream()
                 .anyMatch(invoice -> invoice.getId().equals(id));
         } catch (IOException e) {
-            throw new DatabaseOperationException("An error occured while checking if invoice exists in database");
+            throw new DatabaseOperationException("An error occurred while checking if invoice exists in database");
         }
     }
 
