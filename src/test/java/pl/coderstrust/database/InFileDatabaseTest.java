@@ -202,7 +202,7 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void getByNumberShouldThrowExceptionForNullNumber() {
+    void getByNumberMethodShouldThrowExceptionForNullNumber() {
         assertThrows(IllegalArgumentException.class, () -> inFileDatabase.getByNumber(null));
     }
 
