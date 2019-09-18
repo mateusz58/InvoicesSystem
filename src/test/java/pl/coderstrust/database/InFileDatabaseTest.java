@@ -149,7 +149,7 @@ class InFileDatabaseTest {
        boolean result = inFileDatabase.exists(invoice.getId() + 1L);
        
         //Then
-        assertFalse(inFileDatabase.exists(invoice.getId() + 1L));
+        assertFalse(result);
         verify(fileHelper).readLines(DATABASE_FILE);
     }
 
