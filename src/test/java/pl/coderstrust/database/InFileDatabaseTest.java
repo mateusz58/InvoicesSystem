@@ -56,7 +56,7 @@ class InFileDatabaseTest {
     }
 
     @Test
-    void shouldAddInvoiceToFile() throws DatabaseOperationException, IOException {
+    void shouldAddInvoice() throws DatabaseOperationException, IOException {
         //Given
         Invoice invoiceToAdd = InvoiceGenerator.getRandomInvoiceWithSpecificId(1L);
         doNothing().when(fileHelper).writeLine(DATABASE_FILE, objectMapper.writeValueAsString(invoiceToAdd));
