@@ -187,7 +187,7 @@ public class InFileDatabase implements Database {
         try {
             return getInvoices().size();
         } catch (IOException e) {
-            throw new DatabaseOperationException("An error occured while counting all invoices from database");
+            throw new DatabaseOperationException("An error occurred during getting number of invoices.");
         }
     }
 }
