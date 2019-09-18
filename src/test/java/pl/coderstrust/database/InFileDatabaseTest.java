@@ -237,5 +237,4 @@ class InFileDatabaseTest {
         verify(fileHelper, times(3)).readLines(DATABASE_FILE);
         verify(fileHelper).replaceLine(DATABASE_FILE, 1, objectMapper.writeValueAsString(invoiceToAdd));
     }
-
 }
