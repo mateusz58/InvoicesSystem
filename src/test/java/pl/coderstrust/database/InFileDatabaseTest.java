@@ -91,6 +91,7 @@ class InFileDatabaseTest {
         List<Invoice> expected = Arrays.asList(invoice1, invoice2);
         //When
         doReturn(List.of(objectMapper.writeValueAsString(invoice1), objectMapper.writeValueAsString(invoice2))).when(fileHelper).readLines(DATABASE_FILE);
+        Collection<Invoice> result = inFileDatabase.getAll();
         //Then
         assertEquals(expected, inFileDatabase.getAll());
         verify(fileHelper).readLines(DATABASE_FILE);
