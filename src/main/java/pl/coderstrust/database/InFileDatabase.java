@@ -117,7 +117,7 @@ public class InFileDatabase implements Database {
         try {
             fileHelper.removeLine(filePath, getIndexPositionOfInvoiceWithGivenId(id));
         } catch (IOException e) {
-            throw new DatabaseOperationException(String.format("An error occured while deleting Invoice with id: %s from database", id));
+            throw new DatabaseOperationException(String.format("An error occurred while deleting invoice with id: %d from database", id));
         }
     }
 
