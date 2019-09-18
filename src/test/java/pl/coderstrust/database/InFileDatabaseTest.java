@@ -86,7 +86,7 @@ class InFileDatabaseTest {
     @Test
     void shouldReturnAllInvoices() throws IOException, DatabaseOperationException {
         //Given
-        Invoice invoice1 = InvoiceGenerator.getRandomInvoiceWithSpecificId(1L);
+        Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
         Invoice invoice2 = InvoiceGenerator.getRandomInvoiceWithSpecificId(2L);
         List<Invoice> expected = Arrays.asList(invoice1, invoice2);
         //When
