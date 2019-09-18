@@ -102,7 +102,7 @@ class InFileDatabaseTest {
         //When
         Invoice invoice = InvoiceGenerator.getRandomInvoice();
         doReturn(List.of(objectMapper.writeValueAsString(invoice), objectMapper.writeValueAsString(InvoiceGenerator.getRandomInvoice()))).when(fileHelper).readLines(DATABASE_FILE);
-        Optional<Invoice> optionalInvoice = inFileDatabase.getById(1L);
+        Optional<Invoice> optionalInvoice = inFileDatabase.getById(invoice.getId());
         //Then
         assertTrue(optionalInvoice.isPresent());
         assertEquals(invoice, optionalInvoice.get());
