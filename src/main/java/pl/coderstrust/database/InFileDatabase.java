@@ -13,7 +13,6 @@ import pl.coderstrust.configuration.InFileDatabaseProperties;
 import pl.coderstrust.helpers.FileHelper;
 import pl.coderstrust.model.Invoice;
 
-
 public class InFileDatabase implements Database {
 
     private String filePath;

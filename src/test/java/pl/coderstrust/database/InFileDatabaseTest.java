@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import pl.coderstrust.configuration.ApplicationConfiguration;
 import pl.coderstrust.configuration.InFileDatabaseProperties;
 import pl.coderstrust.generators.InvoiceGenerator;
@@ -43,7 +42,6 @@ class InFileDatabaseTest {
 
     @Mock
     private FileHelper fileHelper;
-    @Autowired
     private InFileDatabase inFileDatabase;
 
     @BeforeEach
