@@ -81,7 +81,7 @@ class InFileDatabaseTest {
         Invoice updatedInvoice = inFileDatabase.save(invoiceToUpdate);
         //Then
         verify(fileHelper).replaceLine(DATABASE_FILE, 1, objectMapper.writeValueAsString(updatedInvoice));
-        verify(fileHelper, times(3)).readLines(DATABASE_FILE);
+        verify(fileHelper, times(2)).readLines(DATABASE_FILE);
         assertEquals(invoiceToUpdate, updatedInvoice);
     }
 
@@ -164,7 +164,7 @@ class InFileDatabaseTest {
         boolean result = inFileDatabase.exists(invoice.getId());
         //Then
         assertTrue(result);
-        verify(fileHelper, times(4)).readLines(DATABASE_FILE);
+        verify(fileHelper, times(3)).readLines(DATABASE_FILE);
     }
 
     @Test
@@ -176,7 +176,7 @@ class InFileDatabaseTest {
         doNothing().when(fileHelper).removeLine(DATABASE_FILE, 1);
         inFileDatabase.delete(invoiceToDelete.getId());
         //Then
-        verify(fileHelper, times(2)).readLines(DATABASE_FILE);
+        verify(fileHelper, times(1)).readLines(DATABASE_FILE);
         verify(fileHelper).removeLine(DATABASE_FILE, 1);
     }
 
@@ -240,7 +240,7 @@ class InFileDatabaseTest {
         doThrow(IOException.class).when(fileHelper).replaceLine(DATABASE_FILE, 1, objectMapper.writeValueAsString(invoiceToAdd));
         //Then
         assertThrows(DatabaseOperationException.class, () -> inFileDatabase.save(invoiceToAdd));
-        verify(fileHelper, times(3)).readLines(DATABASE_FILE);
+        verify(fileHelper, times(2)).readLines(DATABASE_FILE);
         verify(fileHelper).replaceLine(DATABASE_FILE, 1, objectMapper.writeValueAsString(invoiceToAdd));
     }
 }

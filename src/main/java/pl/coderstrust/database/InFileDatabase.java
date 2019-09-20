@@ -81,14 +81,14 @@ public class InFileDatabase implements Database {
     }
 
     private int getPositionInDatabase(Long id) throws IOException, DatabaseOperationException {
-        Optional<Invoice> invoice = getInvoices().stream()
+        List<Invoice>invoices=List.copyOf(getInvoices());
+        Optional<Invoice> invoice = invoices.stream()
             .filter(s -> s.getId().equals(id))
             .findFirst();
         if (invoice.isEmpty()) {
             throw new DatabaseOperationException(String.format("No invoice with id: %s", id));
         }
-        return
-            getInvoices().indexOf(invoice.get()) + 1;
+        return invoices.indexOf(invoice.get()) + 1;
     }
 
     @Override
