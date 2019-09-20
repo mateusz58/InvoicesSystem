@@ -36,9 +36,6 @@ public class InFileDatabase implements Database {
     }
 
     private Invoice deserializeJsonToInvoice(String json)  {
-        if (json == null) {
-            throw new IllegalArgumentException("Json cannot be null");
-        }
         try {
             return mapper.readValue(json, Invoice.class);
         } catch (IOException e) {
