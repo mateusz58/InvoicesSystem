@@ -45,10 +45,11 @@ public class InFileDatabase implements Database {
     }
 
     private long getLastInvoiceId() throws IOException {
-        if (fileHelper.readLastLine(filePath) == null) {
+        String lastLine=fileHelper.readLastLine(filePath);
+        if (lastLine == null) {
             return 0;
         }
-        Invoice invoice = deserializeJsonToInvoice(fileHelper.readLastLine(filePath));
+        Invoice invoice = deserializeJsonToInvoice(lastLine);
         if (invoice == null) {
             return 0;
         }
