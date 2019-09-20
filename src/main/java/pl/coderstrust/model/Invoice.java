@@ -10,7 +10,6 @@ import java.util.Objects;
 @JsonDeserialize(builder = Invoice.Builder.class)
 public final class Invoice {
 
-
     private final Long id;
 
     private final String number;

@@ -26,7 +26,6 @@ import pl.coderstrust.model.Invoice;
 
 @ExtendWith(MockitoExtension.class)
 class InvoiceServiceTest {
-
     @Mock
     Database database;
 
@@ -42,6 +41,7 @@ class InvoiceServiceTest {
     void addMethodShouldThrowExceptionIfInvoiceAlreadyExist() throws DatabaseOperationException {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         doReturn(true).when(database).exists(invoice.getId());
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.add(invoice));
         verify(database).exists(invoice.getId());
         verify(database, never()).save(invoice);
@@ -53,7 +53,9 @@ class InvoiceServiceTest {
         Invoice addedInvoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoiceToAdd.getId())).thenReturn(false);
         when(database.save(invoiceToAdd)).thenReturn(addedInvoice);
+
         Invoice result = invoiceService.add(invoiceToAdd);
+
         assertEquals(addedInvoice, result);
         verify(database).save(invoiceToAdd);
         verify(database).exists(invoiceToAdd.getId());
@@ -64,7 +66,9 @@ class InvoiceServiceTest {
         Invoice invoiceToAdd = InvoiceGenerator.generateRandomInvoiceWithNullId();
         Invoice addedInvoice = InvoiceGenerator.generateRandomInvoiceWithNullId();
         when(database.save(invoiceToAdd)).thenReturn(addedInvoice);
+
         Invoice result = invoiceService.add(invoiceToAdd);
+
         assertEquals(addedInvoice, result);
         verify(database).save(invoiceToAdd);
     }
@@ -73,6 +77,7 @@ class InvoiceServiceTest {
     void addMethodShouldThrowExceptionWhenAnErrorOccurDuringAddingInvoiceToDatabase() throws DatabaseOperationException, ServiceOperationException {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.save(invoice)).thenThrow(DatabaseOperationException.class);
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.add(invoice));
     }
 
@@ -85,6 +90,7 @@ class InvoiceServiceTest {
     void updateInvoiceMethodShouldThrowExceptionWhenInvoiceNotExist() throws DatabaseOperationException {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         doReturn(false).when(database).exists(invoice.getId());
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.update(invoice));
         verify(database).exists(invoice.getId());
         verify(database, never()).save(invoice);
@@ -102,6 +108,7 @@ class InvoiceServiceTest {
         Invoice invoiceUpdated = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoiceToUpdate.getId())).thenReturn(true);
         when(database.save(invoiceToUpdate)).thenReturn(invoiceUpdated);
+
         Invoice result = invoiceService.update(invoiceToUpdate);
         assertEquals(invoiceUpdated, result);
         verify(database).save(invoiceToUpdate);
@@ -113,6 +120,7 @@ class InvoiceServiceTest {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(true);
         when(database.save(invoice)).thenThrow(DatabaseOperationException.class);
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.update(invoice));
         verify(database).exists(invoice.getId());
         verify(database).save(invoice);
@@ -128,6 +136,8 @@ class InvoiceServiceTest {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(true);
         doThrow(DatabaseOperationException.class).when(database).delete(invoice.getId());
+
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.deleteById(invoice.getId()));
         verify(database).delete(invoice.getId());
     }
@@ -135,6 +145,7 @@ class InvoiceServiceTest {
     @Test
     void deleteByIdMethodShouldThrowExceptionWhenInvoiceDoesNotExist() throws DatabaseOperationException, ServiceOperationException {
         doReturn(false).when(database).exists(1L);
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.deleteById(1L));
         verify(database).exists(1L);
         verify(database, never()).delete(1L);
@@ -143,6 +154,7 @@ class InvoiceServiceTest {
     @Test
     void shouldDeleteInvoiceById() throws ServiceOperationException, DatabaseOperationException {
         doReturn(true).when(database).exists(1L);
+
         invoiceService.deleteById(1L);
         verify(database).exists(1L);
         verify(database).delete(1L);
@@ -156,6 +168,7 @@ class InvoiceServiceTest {
     @Test
     void getByIdMethodShouldThrowExceptionWhenInvoiceDoesNotExist() throws DatabaseOperationException {
         doReturn(false).when(database).exists(1L);
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.getById(1L));
         verify(database).exists(1L);
         verify(database, never()).getById(1L);
@@ -166,7 +179,9 @@ class InvoiceServiceTest {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         doReturn(true).when(database).exists(1L);
         doReturn(Optional.of(invoice)).when(database).getById(1L);
+
         Optional<Invoice> result = invoiceService.getById(1L);
+
         assertTrue(result.isPresent());
         assertEquals(invoice, result.get());
         verify(database).exists(1L);
@@ -178,6 +193,7 @@ class InvoiceServiceTest {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(true);
         when(database.getById(invoice.getId())).thenThrow(DatabaseOperationException.class);
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.getById(invoice.getId()));
         verify(database).exists(invoice.getId());
         verify(database).getById(invoice.getId());
@@ -192,7 +208,9 @@ class InvoiceServiceTest {
     void shouldGetInvoiceByNumber() throws DatabaseOperationException, ServiceOperationException {
         Optional<Invoice> expected = Optional.of(InvoiceGenerator.generateRandomInvoice());
         doReturn(expected).when(database).getByNumber("1");
+
         Optional<Invoice> actual = invoiceService.getByNumber("1");
+
         assertEquals(expected, actual);
         verify(database).getByNumber("1");
     }
@@ -201,7 +219,9 @@ class InvoiceServiceTest {
     void shouldReturnAllInvoices() throws ServiceOperationException, DatabaseOperationException {
         List<Invoice> expected = List.of(InvoiceGenerator.generateRandomInvoice(), InvoiceGenerator.generateRandomInvoice());
         doReturn(expected).when(database).getAll();
+
         Collection<Invoice> actual = invoiceService.getAll();
+
         assertEquals(expected, actual);
         verify(database).getAll();
     }
@@ -209,7 +229,9 @@ class InvoiceServiceTest {
     @Test
     void getAllMethodShouldThrowExceptionWhenAnErrorOccurDuringGettingAllInvoicesFromDatabase() throws DatabaseOperationException {
         when(database.getAll()).thenThrow(DatabaseOperationException.class);
+
         InvoiceService invoiceService = new InvoiceService(database);
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.getAll());
         verify(database).getAll();
     }
@@ -217,7 +239,9 @@ class InvoiceServiceTest {
     @Test
     void shouldDeleteAllInvoices() throws ServiceOperationException, DatabaseOperationException {
         doNothing().when(database).deleteAll();
+
         invoiceService.deleteAll();
+
         verify(database).deleteAll();
     }
 
@@ -225,6 +249,8 @@ class InvoiceServiceTest {
     void deleteAllMethodShouldThrowExceptionWhenAnErrorOccurDuringDeletingAllInvoicesFromDatabase() throws DatabaseOperationException {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         doThrow(DatabaseOperationException.class).when(database).deleteAll();
+
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.deleteAll());
         verify(database).deleteAll();
     }
@@ -232,6 +258,7 @@ class InvoiceServiceTest {
     @Test
     void shouldCheckIfInvoiceExist() throws ServiceOperationException, DatabaseOperationException {
         invoiceService.exists(1L);
+
         verify(database).exists(1L);
     }
 
@@ -239,6 +266,7 @@ class InvoiceServiceTest {
     void shouldReturnTrueWhenInvoiceExistsInDatabase() throws DatabaseOperationException, ServiceOperationException {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(true);
+
         assertTrue(invoiceService.exists(invoice.getId()));
         verify(database).exists(invoice.getId());
     }
@@ -247,6 +275,7 @@ class InvoiceServiceTest {
     void shouldReturnFalseWhenInvoiceDoesNotExistsInDatabase() throws DatabaseOperationException, ServiceOperationException {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenReturn(false);
+
         assertFalse(invoiceService.exists(invoice.getId()));
         verify(database).exists(invoice.getId());
     }
@@ -260,6 +289,7 @@ class InvoiceServiceTest {
     void existsMethodShouldThrowExceptionWhenAnErrorOccurDuringCheckingInvoiceExists() throws DatabaseOperationException {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         when(database.exists(invoice.getId())).thenThrow(DatabaseOperationException.class);
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.exists(invoice.getId()));
         verify(database).exists(invoice.getId());
     }
@@ -267,7 +297,9 @@ class InvoiceServiceTest {
     @Test
     void shouldReturnNumberOfInvoices() throws ServiceOperationException, DatabaseOperationException {
         doReturn(10L).when(database).count();
+
         Long result = invoiceService.count();
+
         assertEquals(10L, result);
         verify(database).count();
     }
@@ -275,6 +307,7 @@ class InvoiceServiceTest {
     @Test
     void countMethodShouldThrowExceptionWhenAnErrorOccurDuringGettingNumberOfInvoices() throws DatabaseOperationException {
         when(database.count()).thenThrow(DatabaseOperationException.class);
+
         assertThrows(ServiceOperationException.class, () -> invoiceService.count());
         verify(database).count();
     }

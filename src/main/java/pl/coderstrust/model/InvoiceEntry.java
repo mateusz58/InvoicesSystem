@@ -8,7 +8,6 @@ import java.util.Objects;
 @JsonDeserialize(builder = InvoiceEntry.Builder.class)
 public final class InvoiceEntry {
 
-
     private final Long id;
 
     private final String description;
