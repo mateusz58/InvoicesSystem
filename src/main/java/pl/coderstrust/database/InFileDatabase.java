@@ -71,7 +71,7 @@ public class InFileDatabase implements Database {
         Invoice updatedInvoice = Invoice.builder()
             .withInvoice(invoice)
             .build();
-        fileHelper.replaceLine(filePath, getIndexPositionOfInvoiceWithGivenId(invoice.getId()), mapper.writeValueAsString(updatedInvoice));
+        fileHelper.replaceLine(filePath, getPositionInDatabase(invoice.getId()), mapper.writeValueAsString(updatedInvoice));
         return updatedInvoice;
     }
 
@@ -110,12 +110,12 @@ public class InFileDatabase implements Database {
     }
 
     @Override
-    public void delete(Long id) throws DatabaseOperationException {
+    public synchronized void delete(Long id) throws DatabaseOperationException {
         if (id == null) {
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
         try {
-            fileHelper.removeLine(filePath, getIndexPositionOfInvoiceWithGivenId(id));
+            fileHelper.removeLine(filePath, getPositionInDatabase(id));
         } catch (IOException e) {
             throw new DatabaseOperationException(String.format("An error occurred while deleting invoice with id: %d from database", id));
         }
