@@ -44,7 +44,7 @@ public class InFileDatabase implements Database {
     }
 
     private long getLastInvoiceId() throws IOException {
-        String lastLine=fileHelper.readLastLine(filePath);
+        String lastLine = fileHelper.readLastLine(filePath);
         if (lastLine == null) {
             return 0;
         }
@@ -75,13 +75,13 @@ public class InFileDatabase implements Database {
 
     private List<Invoice> getInvoices() throws IOException {
         return fileHelper.readLines(filePath).stream()
-            .map(invoice->deserializeJsonToInvoice(invoice))
-            .filter(Objects::nonNull).
-            collect(Collectors.toList());
+            .map(invoice -> deserializeJsonToInvoice(invoice))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 
     private int getPositionInDatabase(Long id) throws IOException, DatabaseOperationException {
-        List<Invoice>invoices = getInvoices();
+        List<Invoice> invoices = getInvoices();
         Optional<Invoice> invoice = invoices.stream()
             .filter(s -> s.getId().equals(id))
             .findFirst();
