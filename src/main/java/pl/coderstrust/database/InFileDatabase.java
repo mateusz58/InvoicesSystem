@@ -81,7 +81,7 @@ public class InFileDatabase implements Database {
     }
 
     private int getPositionInDatabase(Long id) throws IOException, DatabaseOperationException {
-        List<Invoice>invoices=List.copyOf(getInvoices());
+        List<Invoice>invoices = getInvoices();
         Optional<Invoice> invoice = invoices.stream()
             .filter(s -> s.getId().equals(id))
             .findFirst();
