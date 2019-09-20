@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@JsonDeserialize(builder = Invoice.Builder.class)
 public final class Invoice {
 
 
@@ -148,7 +149,6 @@ public final class Invoice {
             this.number = invoice.number;
             this.dueDate = invoice.dueDate;
             this.issuedDate = invoice.issuedDate;
-            this.dueDate = invoice.dueDate;
             this.seller = invoice.seller;
             this.buyer = invoice.buyer;
             this.entries = invoice.entries;

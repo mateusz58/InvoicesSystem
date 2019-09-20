@@ -2,11 +2,12 @@ package pl.coderstrust.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.coderstrust.configuration.InFileDatabaseProperties;
 import pl.coderstrust.helpers.FileHelper;
@@ -73,12 +74,10 @@ public class InFileDatabase implements Database {
     }
 
     private List<Invoice> getInvoices() throws IOException {
-        List<Invoice> list = new ArrayList<>();
-        for (String s : fileHelper.readLines(filePath)) {
-            Invoice invoice = deserializeJsonToInvoice(s);
-            list.add(invoice);
-        }
-        return list;
+        return fileHelper.readLines(filePath).stream()
+            .map(invoice->deserializeJsonToInvoice(invoice))
+            .filter(Objects::nonNull).
+            collect(Collectors.toList());
     }
 
     private int getPositionInDatabase(Long id) throws IOException, DatabaseOperationException {
@@ -88,7 +87,8 @@ public class InFileDatabase implements Database {
         if (invoice.isEmpty()) {
             throw new DatabaseOperationException(String.format("No invoice with id: %s", id));
         }
-        return getInvoices().indexOf(invoice.get()) + 1;
+        return
+            getInvoices().indexOf(invoice.get()) + 1;
     }
 
     @Override
