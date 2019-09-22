@@ -1,15 +1,10 @@
 package pl.coderstrust.database;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClientURI;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.data.domain.Example;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import pl.coderstrust.database.mongo.MongoInvoice;
@@ -20,7 +15,7 @@ public class MongoDatabase implements Database {
     private final MongoTemplate mongoTemplate;
     private final MongoModelMapper modelMapper;
 
-    public MongoDatabase(MongoTemplate mongoTemplate, MongoModelMapper modelMapper) {
+    public MongoDatabase(MongoTemplate mongoTemplate, MongoModelMapper modelMapper) throws DatabaseOperationException {
         if (mongoTemplate == null) {
             throw new IllegalArgumentException("Database is empty.");
         }
@@ -49,10 +44,12 @@ public class MongoDatabase implements Database {
         if (id == null) {
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
-        MongoInvoice invoice = mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
-        if(invoice == null) /*rzuć exceptiona*/
-
-        } catch (NonTransientDataAccessException | NoSuchElementException e) {
+        try {
+            MongoInvoice invoice = mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
+            if (invoice == null) {
+                throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
+            }
+        } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during deleting invoice.", e);
         }
     }
@@ -63,7 +60,7 @@ public class MongoDatabase implements Database {
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
-            Optional<MongoInvoice> invoice = mongoTemplate.findById(id);
+            Optional<MongoInvoice> invoice = Optional.ofNullable(mongoTemplate.findById(id.toString(), MongoInvoice.class));
             if (invoice.isPresent()) {
                 return Optional.of(modelMapper.mapToInvoice(invoice.get()));
             }
@@ -79,8 +76,7 @@ public class MongoDatabase implements Database {
             throw new IllegalArgumentException("Number cannot be null.");
         }
         try {
-            Example<MongoInvoice> example = Example.of(modelMapper.mapToMongoInvoice(new Invoice.Builder().withNumber(number).build()));
-            Optional<MongoInvoice> invoice = mongoTemplate.findOne(example);
+            Optional<MongoInvoice> invoice = Optional.of(mongoTemplate.findOne(Query.query(Criteria.where("number").is(number)), MongoInvoice.class));
             if (invoice.isPresent()) {
                 return Optional.of(modelMapper.mapToInvoice(invoice.get()));
             }
@@ -93,7 +89,7 @@ public class MongoDatabase implements Database {
     @Override
     public Collection<Invoice> getAll() throws DatabaseOperationException {
         try {
-            return modelMapper.mapToInvoices(mongoTemplate.findAll());
+            return modelMapper.mapToInvoices(mongoTemplate.findAll(MongoInvoice.class));
         } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during getting all invoices.", e);
         }
@@ -102,7 +98,8 @@ public class MongoDatabase implements Database {
     @Override
     public void deleteAll() throws DatabaseOperationException {
         try {
-            mongoTemplate.deleteAll();
+            mongoTemplate.remove(MongoInvoice.class);
+//                findAllAndRemove(Query.query(Criteria.where("number").is(number)), MongoInvoice.class);
         } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
         }
@@ -114,7 +111,7 @@ public class MongoDatabase implements Database {
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
-            return mongoTemplate.existsById(id);
+            return mongoTemplate.exists(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
         } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during checking if invoice exists.", e);
         }
@@ -123,7 +120,7 @@ public class MongoDatabase implements Database {
     @Override
     public long count() throws DatabaseOperationException {
         try {
-            return mongoTemplate.count();
+            return mongoTemplate.count(Query.query(Criteria.where("id").regex("/[0-9]+/")), MongoInvoice.class);
         } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during getting number of invoices.", e);
         }
