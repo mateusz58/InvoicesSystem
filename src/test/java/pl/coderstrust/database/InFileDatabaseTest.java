@@ -15,7 +15,6 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +46,6 @@ class InFileDatabaseTest {
     @BeforeEach
     void setup() throws IOException {
         objectMapper = new ApplicationConfiguration().getObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
         InFileDatabaseProperties inFileDatabasePropertiesTest = new InFileDatabaseProperties();
