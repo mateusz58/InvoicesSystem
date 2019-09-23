@@ -1,181 +1,260 @@
+
 package pl.coderstrust.service;
 
-import com.itextpdf.text.Anchor;
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chapter;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.List;
-import com.itextpdf.text.ListItem;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Section;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-import java.io.FileOutputStream;
+import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.zugferd.exceptions.DataIncompleteException;
+import com.itextpdf.zugferd.exceptions.InvalidCodeException;
+import com.itextpdf.zugferd.profiles.IBasicProfile;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import org.xml.sax.SAXException;
+import pl.coderstrust.model.Invoice;
+import pl.coderstrust.model.InvoiceEntry;
 
+/**
+ * Reads invoice data from a test database and creates ZUGFeRD invoices
+ * (Basic profile).
+ * @author Bruno Lowagie
+ */
 public class InvoicePdfService {
 
-    private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
-        Font.BOLD);
-    private static Font redFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
-        Font.NORMAL, BaseColor.RED);
-    private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16,
-        Font.BOLD);
-    private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,
-        Font.BOLD);
 
-    public static void createPDF(String filePath) {
-        try {
-            Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(filePath));
-            document.open();
-            addMetaData(document);
-            addTitlePage(document);
-            addContent(document);
-            document.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    /** The path to the color profile. */
+    public static final String ICC = "resources/color/sRGB_CS_profile.icm";
+//
+//    /** The path to a regular font. */
+//    public static final String REGULAR = "resources/fonts/OpenSans-Regular.ttf";
+//
+//    /** The path to a bold font. */
+//    public static final String BOLD = "resources/fonts/OpenSans-Bold.ttf";
+
+//    private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
+//        Font.BOLD);
+
+    /** A <code>String</code> with a newline character. */
+    public static final String NEWLINE = "\n";
+
+
+    public static void createPdf(Invoice invoice,String filePath) throws ParserConfigurationException, SAXException, TransformerException, IOException, ParseException, DataIncompleteException, InvalidCodeException {
+
+        String dest = String.format(filePath, invoice);
+
+        PdfFont font = PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN);
+        PdfFont bold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+
+        // Create the XML
+        InvoiceData invoiceData=new InvoiceData();
+        IBasicProfile basic = invoiceData.createBasicProfileData(invoice);
+//        InvoiceDOM dom = new InvoiceDOM(basic);
+
+        PdfDocument pdfDocument = new PdfDocument(new PdfWriter(dest));
+         pdfDocument.setDefaultPageSize(PageSize.A4);
+
+        // Create the document
+        Document document = new Document(pdfDocument);
+//        document.setFont(PdfFontFactory.createFont(REGULAR, true))
+//            .setFontSize(12);
+//        PdfFont bold = PdfFontFactory.createFont(BOLD, true);
+
+        // Add the header
+        document.add(
+            new Paragraph()
+                .	setTextAlignment(TextAlignment.RIGHT)
+                .setMultipliedLeading(1)
+                .add(new Text(String.format("%s %s\n", basic.getName(), basic.getId())))
+                    .setFont(bold).setFontSize(14));
+        // Add the seller and buyer address
+        document.add(getAddressTable(basic, bold));
+
+        document.add(new Paragraph(NEWLINE));
+        document.add(new Paragraph(NEWLINE));
+        document.add(getLineItemTable(invoice, bold));
+       document.add(getTotalsTable(
+            basic.getTaxBasisTotalAmount(), basic.getTaxTotalAmount(), basic.getGrandTotalAmount(), basic.getGrandTotalAmountCurrencyID(),
+            basic.getTaxTypeCode(), basic.getTaxApplicablePercent(),
+            basic.getTaxBasisAmount(), basic.getTaxCalculatedAmount(), basic.getTaxCalculatedAmountCurrencyID(), bold));
+        // Add the payment info
+        document.close();
+    }
+
+    private static String convertDate(Date d, String newFormat) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(newFormat);
+        return sdf.format(d);
+    }
+
+    private static Table getAddressTable(IBasicProfile basic, PdfFont bold) {
+        Table table = new Table(new UnitValue[]{
+            new UnitValue(UnitValue.PERCENT, 50),
+            new UnitValue(UnitValue.PERCENT, 50)})
+            .setWidth(UnitValue.createPercentValue(100));
+        table.addCell(getPartyAddress("From:",
+            basic.getSellerName(),
+            basic.getSellerLineOne(),
+            basic.getSellerLineTwo(),
+            basic.getSellerCountryID(),
+            basic.getSellerPostcode(),
+            basic.getSellerCityName(),
+            bold));
+        table.addCell(getPartyAddress("To:",
+            basic.getBuyerName(),
+            basic.getBuyerLineOne(),
+            basic.getBuyerLineTwo(),
+            basic.getBuyerCountryID(),
+            basic.getBuyerPostcode(),
+            basic.getBuyerCityName(),
+            bold));
+        table.addCell(getPartyTax(basic.getSellerTaxRegistrationID(),
+            basic.getSellerTaxRegistrationSchemeID(), bold));
+        table.addCell(getPartyTax(basic.getBuyerTaxRegistrationID(),
+            basic.getBuyerTaxRegistrationSchemeID(), bold));
+        return table;
+    }
+
+    private static Cell getPartyAddress(String who, String name, String line1, String line2, String countryID, String postcode, String city, PdfFont bold) {
+        Paragraph p = new Paragraph()
+            .setMultipliedLeading(1.0f)
+            .add(new Text(who).setFont(bold)).add(NEWLINE)
+            .add(name).add(NEWLINE)
+            .add(line1).add(NEWLINE)
+//            .add(line2).add(NEWLINE)
+            .add(String.format("%s-%s %s", countryID, postcode, city));
+        Cell cell = new Cell()
+            .setBorder(Border.NO_BORDER)
+            .add(p);
+        return cell;
+    }
+
+    private static Cell getPartyTax(String[] taxId, String[] taxSchema, PdfFont bold) {
+        Paragraph p = new Paragraph()
+            .setFontSize(10).setMultipliedLeading(1.0f)
+            .add(new Text("Tax ID(s):").setFont(bold));
+        if (taxId.length == 0) {
+            p.add("\nNot applicable");
         }
-    }
-
-    // iText allows to add metadata to the PDF which can be viewed in your Adobe
-    // Reader
-    // under File -> Properties
-    private static void addMetaData(Document document) {
-        document.addTitle("My first PDF");
-        document.addSubject("Using iText");
-        document.addKeywords("Java, PDF, iText");
-        document.addAuthor("Lars Vogel");
-        document.addCreator("Lars Vogel");
-    }
-
-    private static void addTitlePage(Document document) throws DocumentException {
-
-        Paragraph preface = new Paragraph();
-        // We add one empty line
-        addEmptyLine(preface, 1);
-        // Lets write a big header
-        preface.add(new Paragraph("Title of the document", catFont));
-
-        addEmptyLine(preface, 1);
-        // Will create: Report generated by: _name, _date
-        preface.add(new Paragraph(
-            "Report generated by: " + System.getProperty("user.name") + ", " + new Date(), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            smallBold));
-        addEmptyLine(preface, 3);
-        preface.add(new Paragraph(
-            "This document describes something which is very important ",
-            smallBold));
-
-        addEmptyLine(preface, 8);
-
-        preface.add(new Paragraph(
-            "This document is a preliminary version and not subject to your license agreement or any other agreement with vogella.com ;-).",
-            redFont));
-
-        document.add(preface);
-        // Start a new page
-        document.newPage();
-    }
-
-    private static void addContent(Document document) throws DocumentException {
-        Anchor anchor = new Anchor("First Chapter", catFont);
-        anchor.setName("First Chapter");
-
-        // Second parameter is the number of the chapter
-        Chapter catPart = new Chapter(new Paragraph(anchor), 1);
-
-        Paragraph subPara = new Paragraph("Subcategory 1", subFont);
-        Section subCatPart = catPart.addSection(subPara);
-        subCatPart.add(new Paragraph("Hello"));
-
-        subPara = new Paragraph("Subcategory 2", subFont);
-        subCatPart = catPart.addSection(subPara);
-        subCatPart.add(new Paragraph("Paragraph 1"));
-        subCatPart.add(new Paragraph("Paragraph 2"));
-        subCatPart.add(new Paragraph("Paragraph 3"));
-
-        // add a list
-        createList(subCatPart);
-        Paragraph paragraph = new Paragraph();
-        addEmptyLine(paragraph, 5);
-        subCatPart.add(paragraph);
-
-        // add a table
-        createTable(subCatPart);
-
-        // now add all this to the document
-        document.add(catPart);
-
-        // Next section
-        anchor = new Anchor("Second Chapter", catFont);
-        anchor.setName("Second Chapter");
-
-        // Second parameter is the number of the chapter
-        catPart = new Chapter(new Paragraph(anchor), 1);
-
-        subPara = new Paragraph("Subcategory", subFont);
-        subCatPart = catPart.addSection(subPara);
-        subCatPart.add(new Paragraph("This is a very important message"));
-
-        // now add all this to the document
-        document.add(catPart);
-
-    }
-
-    private static void createTable(Section subCatPart)
-        throws BadElementException {
-        PdfPTable table = new PdfPTable(3);
-
-        // t.setBorderColor(BaseColor.GRAY);
-        // t.setPadding(4);
-        // t.setSpacing(4);
-        // t.setBorderWidth(1);
-
-        PdfPCell c1 = new PdfPCell(new Phrase("Table Header 1"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(c1);
-
-        c1 = new PdfPCell(new Phrase("Table Header 2"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(c1);
-
-        c1 = new PdfPCell(new Phrase("Table Header 3"));
-        c1.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(c1);
-        table.setHeaderRows(1);
-
-        table.addCell("1.0");
-        table.addCell("1.1");
-        table.addCell("1.2");
-        table.addCell("2.1");
-        table.addCell("2.2");
-        table.addCell("2.3");
-
-        subCatPart.add(table);
-
-    }
-
-    private static void createList(Section subCatPart) {
-        List list = new List(true, false, 10);
-        list.add(new ListItem("First point"));
-        list.add(new ListItem("Second point"));
-        list.add(new ListItem("Third point"));
-        subCatPart.add(list);
-    }
-
-    private static void addEmptyLine(Paragraph paragraph, int number) {
-        for (int i = 0; i < number; i++) {
-            paragraph.add(new Paragraph(" "));
+        else {
+            int n = taxId.length;
+            for (int i = 0; i < n; i++) {
+                p.add(NEWLINE)
+                    .add(String.format("%s: %s", taxSchema[i], taxId[i]));
+            }
         }
+        return new Cell().setBorder(Border.NO_BORDER).add(p);
+    }
+
+    private static Table getLineItemTable(Invoice invoice, PdfFont bold) {
+        Table table = new Table(new UnitValue[]{
+            new UnitValue(UnitValue.PERCENT, 43.75f),
+            new UnitValue(UnitValue.PERCENT, 12.5f),
+            new UnitValue(UnitValue.PERCENT, 6.25f),
+            new UnitValue(UnitValue.PERCENT, 12.5f),
+            new UnitValue(UnitValue.PERCENT, 12.5f),
+            new UnitValue(UnitValue.PERCENT, 12.5f)})
+            .setWidth(UnitValue.createPercentValue(100))
+            .setMarginTop(10).setMarginBottom(10);
+        table.addHeaderCell(createCell("Item:", bold));
+        table.addHeaderCell(createCell("Price:", bold));
+        table.addHeaderCell(createCell("Qty:", bold));
+        table.addHeaderCell(createCell("Subtotal:", bold));
+        table.addHeaderCell(createCell("VAT:", bold));
+        table.addHeaderCell(createCell("Total:", bold));
+        InvoiceEntry product;
+        for (InvoiceEntry item : invoice.getEntries()) {
+            product = item;
+            table.addCell(createCell(product.getDescription()));
+            table.addCell(createCell(
+                product.getPrice().toString())
+                .setTextAlignment(TextAlignment.RIGHT));
+            table.addCell(createCell(String.valueOf(item.getQuantity()))
+                .setTextAlignment(TextAlignment.RIGHT));
+            table.addCell(createCell(
+               item.getPrice().toString())
+                .setTextAlignment(TextAlignment.RIGHT));
+            table.addCell(createCell(
+               product.getVatRate().toString())
+                .setTextAlignment(TextAlignment.RIGHT));
+
+            table.addCell(createCell(
+                item.getPrice().toString()))
+                .setTextAlignment(TextAlignment.RIGHT);
+//            table.addCell(createCell(
+//                    item.getPrice() + ((item.getPrice() * product.getVatRate()) / 100)))
+//                .setTextAlignment(TextAlignment.RIGHT);
+        }
+        return table;
+    }
+
+    private static Cell createCell(String text) {
+        return new Cell().setPadding(0.8f)
+            .add(new Paragraph(text)
+                .setMultipliedLeading(1));
+    }
+
+    private static Cell createCell(String text, PdfFont font) {
+        return new Cell().setPadding(0.8f)
+            .add(new Paragraph(text)
+                .setFont(font).setMultipliedLeading(1));
+    }
+
+    private static Table getTotalsTable(String tBase, String tTax, String tTotal, String tCurrency,
+                                String[] type, String[] percentage, String base[], String tax[], String currency[],
+                                PdfFont bold) {
+        Table table = new Table(new UnitValue[]{
+            new UnitValue(UnitValue.PERCENT, 8.33f),
+            new UnitValue(UnitValue.PERCENT, 8.33f),
+            new UnitValue(UnitValue.PERCENT, 25f),
+            new UnitValue(UnitValue.PERCENT, 25f),
+            new UnitValue(UnitValue.PERCENT, 25f),
+            new UnitValue(UnitValue.PERCENT, 8.34f)})
+            .setWidth(UnitValue.createPercentValue(100));
+        table.addCell(createCell("TAX:", bold));
+        table.addCell(createCell("%", bold)
+            .setTextAlignment(TextAlignment.RIGHT));
+        table.addCell(createCell("Base amount:", bold));
+        table.addCell(createCell("Tax amount:", bold));
+        table.addCell(createCell("Total:", bold));
+        table.addCell(createCell("Curr.:", bold));
+        int n = type.length;
+        for (int i = 0; i < n; i++) {
+            table.addCell(createCell(type[i])
+                .setTextAlignment(TextAlignment.RIGHT));
+            table.addCell(createCell(percentage[i])
+                .setTextAlignment(TextAlignment.RIGHT));
+            table.addCell(createCell(base[i])
+                .setTextAlignment(TextAlignment.RIGHT));
+            table.addCell(createCell(tax[i])
+                .setTextAlignment(TextAlignment.RIGHT));
+//            double total = Double.parseDouble(base[i]) + Double.parseDouble(tax[i]);
+            table.addCell(createCell(
+               String.valueOf(100))
+                .setTextAlignment(TextAlignment.RIGHT));
+            table.addCell(createCell(currency[i]));
+        }
+        table.addCell(new Cell(1, 2).setBorder(Border.NO_BORDER));
+        table.addCell(createCell(tBase, bold)
+            .setTextAlignment(TextAlignment.RIGHT));
+        table.addCell(createCell(tTax, bold)
+            .setTextAlignment(TextAlignment.RIGHT));
+        table.addCell(createCell(tTotal, bold)
+            .setTextAlignment(TextAlignment.RIGHT));
+        table.addCell(createCell(tCurrency, bold));
+        return table;
     }
 
 }
-
-

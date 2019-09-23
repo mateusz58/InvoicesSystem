@@ -1,7 +1,9 @@
 package pl.coderstrust.service;
 
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.coderstrust.generators.InvoiceGenerator;
 
 class InvoicePdfServiceTest {
 
@@ -14,8 +16,7 @@ class InvoicePdfServiceTest {
         invoicePdfService=new InvoicePdfService();
     }
     @Test
-    void shouldCreatePdf()
-    {
-        InvoicePdfService.createPDF(PDFPATH);
+    void shouldCreatePdf() throws Exception {
+        InvoicePdfService.createPdf(InvoiceGenerator.generateRandomInvoice(), PDFPATH);
     }
 }
