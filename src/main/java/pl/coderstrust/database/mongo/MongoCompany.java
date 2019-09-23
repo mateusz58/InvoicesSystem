@@ -11,7 +11,7 @@ public class MongoCompany {
     @Id
     private final String mongoId;
 
-    private final Long id;
+//    private final Long id;
 
     private final String name;
 

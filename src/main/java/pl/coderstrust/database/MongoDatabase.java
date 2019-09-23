@@ -1,7 +1,6 @@
 package pl.coderstrust.database;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -65,7 +64,7 @@ public class MongoDatabase implements Database {
                 return Optional.of(modelMapper.mapToInvoice(invoice.get()));
             }
             return Optional.empty();
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             throw new DatabaseOperationException("An error occurred during getting invoice by id.", e);
         }
     }
@@ -98,8 +97,7 @@ public class MongoDatabase implements Database {
     @Override
     public void deleteAll() throws DatabaseOperationException {
         try {
-            mongoTemplate.remove(MongoInvoice.class);
-//                findAllAndRemove(Query.query(Criteria.where("number").is(number)), MongoInvoice.class);
+            mongoTemplate.dropCollection(MongoInvoice.class);
         } catch (NonTransientDataAccessException e) {
             throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
         }
