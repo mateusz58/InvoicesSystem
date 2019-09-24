@@ -28,69 +28,6 @@ public class InFileDatabase implements Database {
         initFile();
     }
 
-    private void initFile() throws IOException {
-        if (!fileHelper.exists(filePath)) {
-            fileHelper.createFile(filePath);
-        }
-        nextId = new AtomicLong(getLastInvoiceId());
-    }
-
-    private Invoice deserializeJsonToInvoice(String json)  {
-        try {
-            return mapper.readValue(json, Invoice.class);
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    private long getLastInvoiceId() throws IOException {
-        String lastLine = fileHelper.readLastLine(filePath);
-        if (lastLine == null) {
-            return 0;
-        }
-        Invoice invoice = deserializeJsonToInvoice(lastLine);
-        if (invoice == null) {
-            return 0;
-        }
-        return invoice.getId();
-    }
-
-    private Invoice insertInvoice(Invoice invoice) throws IOException {
-        Long id = nextId.incrementAndGet();
-        Invoice insertedInvoice = Invoice.builder()
-            .withInvoice(invoice)
-            .withId(id)
-            .build();
-        fileHelper.writeLine(filePath, mapper.writeValueAsString(insertedInvoice));
-        return insertedInvoice;
-    }
-
-    private Invoice updateInvoice(Invoice invoice) throws IOException, DatabaseOperationException {
-        Invoice updatedInvoice = Invoice.builder()
-            .withInvoice(invoice)
-            .build();
-        fileHelper.replaceLine(filePath, getPositionInDatabase(invoice.getId()), mapper.writeValueAsString(updatedInvoice));
-        return updatedInvoice;
-    }
-
-    private List<Invoice> getInvoices() throws IOException {
-        return fileHelper.readLines(filePath).stream()
-            .map(invoice -> deserializeJsonToInvoice(invoice))
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
-    }
-
-    private int getPositionInDatabase(Long id) throws IOException, DatabaseOperationException {
-        List<Invoice> invoices = getInvoices();
-        Optional<Invoice> invoice = invoices.stream()
-            .filter(s -> s.getId().equals(id))
-            .findFirst();
-        if (invoice.isEmpty()) {
-            throw new DatabaseOperationException(String.format("No invoice with id: %s", id));
-        }
-        return invoices.indexOf(invoice.get()) + 1;
-    }
-
     @Override
     public synchronized Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
@@ -187,4 +124,68 @@ public class InFileDatabase implements Database {
             throw new DatabaseOperationException("An error occurred during getting number of invoices.");
         }
     }
+
+    private void initFile() throws IOException {
+        if (!fileHelper.exists(filePath)) {
+            fileHelper.createFile(filePath);
+        }
+        nextId = new AtomicLong(getLastInvoiceId());
+    }
+
+    private Invoice deserializeJsonToInvoice(String json)  {
+        try {
+            return mapper.readValue(json, Invoice.class);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private long getLastInvoiceId() throws IOException {
+        String lastLine = fileHelper.readLastLine(filePath);
+        if (lastLine == null) {
+            return 0;
+        }
+        Invoice invoice = deserializeJsonToInvoice(lastLine);
+        if (invoice == null) {
+            return 0;
+        }
+        return invoice.getId();
+    }
+
+    private Invoice insertInvoice(Invoice invoice) throws IOException {
+        Long id = nextId.incrementAndGet();
+        Invoice insertedInvoice = Invoice.builder()
+            .withInvoice(invoice)
+            .withId(id)
+            .build();
+        fileHelper.writeLine(filePath, mapper.writeValueAsString(insertedInvoice));
+        return insertedInvoice;
+    }
+
+    private Invoice updateInvoice(Invoice invoice) throws IOException, DatabaseOperationException {
+        Invoice updatedInvoice = Invoice.builder()
+            .withInvoice(invoice)
+            .build();
+        fileHelper.replaceLine(filePath, getPositionInDatabase(invoice.getId()), mapper.writeValueAsString(updatedInvoice));
+        return updatedInvoice;
+    }
+
+    private List<Invoice> getInvoices() throws IOException {
+        return fileHelper.readLines(filePath).stream()
+            .map(invoice -> deserializeJsonToInvoice(invoice))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    }
+
+    private int getPositionInDatabase(Long id) throws IOException, DatabaseOperationException {
+        List<Invoice> invoices = getInvoices();
+        Optional<Invoice> invoice = invoices.stream()
+            .filter(s -> s.getId().equals(id))
+            .findFirst();
+        if (invoice.isEmpty()) {
+            throw new DatabaseOperationException(String.format("No invoice with id: %s", id));
+        }
+        return invoices.indexOf(invoice.get()) + 1;
+    }
+
 }

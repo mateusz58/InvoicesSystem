@@ -61,10 +61,10 @@ class InFileDatabaseTest {
         doReturn(List.of(objectMapper.writeValueAsString(InvoiceGenerator.generateRandomInvoice()), objectMapper.writeValueAsString(InvoiceGenerator.generateRandomInvoice()), objectMapper.writeValueAsString(InvoiceGenerator.generateRandomInvoice()))).when(fileHelper).readLines(DATABASE_FILE);
 
         //When
-        Invoice expectedInvoice = inFileDatabase.save(invoiceToAdd);
+        Invoice addedInvoice = inFileDatabase.save(invoiceToAdd);
 
         //Then
-        assertEquals(expectedInvoice, invoiceToAdd);
+        assertEquals(invoiceToAdd, addedInvoice);
         verify(fileHelper).readLines(DATABASE_FILE);
         verify(fileHelper).writeLine(DATABASE_FILE, objectMapper.writeValueAsString(invoiceToAdd));
     }
@@ -157,9 +157,9 @@ class InFileDatabaseTest {
     void shouldReturnFalseForNonExistingInvoice() throws IOException, DatabaseOperationException {
         //Given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        doReturn(List.of(objectMapper.writeValueAsString(invoice))).when(fileHelper).readLines(DATABASE_FILE);
 
         //When
-        doReturn(List.of(objectMapper.writeValueAsString(invoice))).when(fileHelper).readLines(DATABASE_FILE);
         boolean result = inFileDatabase.exists(invoice.getId() + 1L);
 
         //Then
@@ -174,7 +174,6 @@ class InFileDatabaseTest {
         doReturn(List.of(objectMapper.writeValueAsString(invoice))).when(fileHelper).readLines(DATABASE_FILE);
 
         //When
-        inFileDatabase.save(invoice);
         boolean result = inFileDatabase.exists(invoice.getId());
 
         //Then
@@ -238,8 +237,6 @@ class InFileDatabaseTest {
     void saveMethodShouldThrowExceptionWhenFileHelpersWriteLineMethodThrowsException() throws IOException {
         //Given
         Invoice invoiceToAdd = InvoiceGenerator.getRandomInvoiceWithSpecificId(1L);
-
-        //When
         doReturn(new ArrayList<>()).when(fileHelper).readLines(DATABASE_FILE);
         doThrow(IOException.class).when(fileHelper).writeLine(DATABASE_FILE, objectMapper.writeValueAsString(invoiceToAdd));
 
@@ -279,6 +276,8 @@ class InFileDatabaseTest {
     void shouldReturnEmptyOptionalWhenGettingNonExistingInvoiceById() throws IOException, DatabaseOperationException {
         //Given
         doReturn(new ArrayList<>()).when(fileHelper).readLines(DATABASE_FILE);
+
+        //When
         Optional<Invoice> optionalInvoice = inFileDatabase.getById(InvoiceGenerator.generateRandomInvoice().getId());
 
         //Then

@@ -213,7 +213,7 @@ class FileHelperIT {
     }
 
     @Test
-    void shouldReplaceLineToFile() throws IOException {
+    void shouldReplaceLine() throws IOException {
         FileUtils.writeLines(inputFile, ENCODING, Arrays.asList("Line1", "LineToRemove", "Line3"), true);
         FileUtils.writeLines(expectedFile, ENCODING, Arrays.asList("Line1", "Line Added", "Line3"), true);
 
@@ -241,5 +241,4 @@ class FileHelperIT {
     void replaceLineMethodShouldThrowExceptionForNullLineArgument() {
         assertThrows(IllegalArgumentException.class, () -> fileHelper.replaceLine(INPUT_FILE,1,null));
     }
-
 }
