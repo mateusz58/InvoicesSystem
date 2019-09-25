@@ -59,7 +59,6 @@ public class InvoicePdfService {
         PdfFont font = PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN);
         PdfFont bold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
 
-        // Create the XML
         InvoiceData invoiceData=new InvoiceData();
         IBasicProfile basic = invoiceData.createBasicProfileData(invoice);
 //        InvoiceDOM dom = new InvoiceDOM(basic);
@@ -86,10 +85,12 @@ public class InvoicePdfService {
         document.add(new Paragraph(NEWLINE));
         document.add(new Paragraph(NEWLINE));
         document.add(getLineItemTable(invoice, bold));
-       document.add(getTotalsTable(
-            basic.getTaxBasisTotalAmount(), basic.getTaxTotalAmount(), basic.getGrandTotalAmount(), basic.getGrandTotalAmountCurrencyID(),
-            basic.getTaxTypeCode(), basic.getTaxApplicablePercent(),
-            basic.getTaxBasisAmount(), basic.getTaxCalculatedAmount(), basic.getTaxCalculatedAmountCurrencyID(), bold));
+
+
+//       document.add(getTotalsTable(
+//            basic.getTaxBasisTotalAmount(), basic.getTaxTotalAmount(), basic.getGrandTotalAmount(), basic.getGrandTotalAmountCurrencyID(),
+//            basic.getTaxTypeCode(), basic.getTaxApplicablePercent(),
+//            basic.getTaxBasisAmount(), basic.getTaxCalculatedAmount(), basic.getTaxCalculatedAmountCurrencyID(), bold));
         // Add the payment info
         document.close();
     }
