@@ -217,28 +217,28 @@ class FileHelperIT {
         FileUtils.writeLines(inputFile, ENCODING, Arrays.asList("Line1", "LineToRemove", "Line3"), true);
         FileUtils.writeLines(expectedFile, ENCODING, Arrays.asList("Line1", "Line Added", "Line3"), true);
 
-        fileHelper.replaceLine(INPUT_FILE,2,"Line Added");
+        fileHelper.replaceLine(INPUT_FILE, 2, "Line Added");
 
         assertTrue(FileUtils.contentEquals(expectedFile, inputFile));
     }
 
     @Test
     void replaceLineMethodShouldThrowExceptionForNonExistingFile() {
-        assertThrows(FileNotFoundException.class, () -> fileHelper.replaceLine(INPUT_FILE,1,"Test"));
+        assertThrows(FileNotFoundException.class, () -> fileHelper.replaceLine(INPUT_FILE, 1, "Test"));
     }
 
     @Test
     void replaceLineMethodShouldThrowExceptionForNullFilePathArgument() {
-        assertThrows(IllegalArgumentException.class, () -> fileHelper.replaceLine(null,1,"Test"));
+        assertThrows(IllegalArgumentException.class, () -> fileHelper.replaceLine(null, 1, "Test"));
     }
 
     @Test
     void replaceLineMethodShouldThrowExceptionForInvalidLineNumberArgument() {
-        assertThrows(IllegalArgumentException.class, () -> fileHelper.replaceLine(INPUT_FILE,-1,"Test"));
+        assertThrows(IllegalArgumentException.class,() -> fileHelper.replaceLine(INPUT_FILE, 1, "Test"));
     }
 
     @Test
     void replaceLineMethodShouldThrowExceptionForNullLineArgument() {
-        assertThrows(IllegalArgumentException.class, () -> fileHelper.replaceLine(INPUT_FILE,1,null));
+        assertThrows(IllegalArgumentException.class,() -> fileHelper.replaceLine(INPUT_FILE, 1, null));
     }
 }
