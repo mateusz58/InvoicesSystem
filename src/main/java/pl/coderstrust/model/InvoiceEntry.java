@@ -1,9 +1,11 @@
 package pl.coderstrust.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@JsonDeserialize(builder = InvoiceEntry.Builder.class)
 public final class InvoiceEntry {
 
     private final Long id;

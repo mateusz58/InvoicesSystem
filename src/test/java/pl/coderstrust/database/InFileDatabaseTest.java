@@ -178,7 +178,7 @@ class InFileDatabaseTest {
 
         //Then
         assertTrue(result);
-        verify(fileHelper, times(3)).readLines(DATABASE_FILE);
+        verify(fileHelper, times(1)).readLines(DATABASE_FILE);
     }
 
     @Test
