@@ -36,14 +36,12 @@ public class InvoiceData {
 //    }
 
     public void importInvoiceSellerBuyer(BasicProfileImp profileImp, Invoice invoice) {
-        profileImp.setTest(true);
-        profileImp.setId(String.format("I/%05d", invoice.getId()));
+        profileImp.setId(String.format("I/%s", invoice.getNumber()));
         profileImp.setName("INVOICE");
         profileImp.setTypeCode(DocumentTypeCode.COMMERCIAL_INVOICE);
         profileImp.setDate(Date.valueOf(invoice.getIssuedDate()), DateFormatCode.YYYYMMDD);
 
         Company seller = invoice.getSeller();
-
         profileImp.setSellerName(seller.getName());
         profileImp.setSellerLineOne(invoice.getSeller().getAddress());
         profileImp.addSellerTaxRegistration(TaxIDTypeCode.FISCAL_NUMBER, seller.getTaxId());
@@ -73,16 +71,24 @@ public class InvoiceData {
         BigDecimal total, tA;
         int ltN = 0;
         int ttA = 0;
-        int gtA = 0;
+        BigDecimal gtA = new BigDecimal(0);
         for (Map.Entry<Vat, BigDecimal> t : taxes.entrySet()) {
-//            tax = t.getKey();
-//            total = t.getValue();
-//            gtA += total;
-//            tA = (100 * total) / (100 + tax);
-//            ttA += (total - tA);
-//            ltN += tA;
-        profileImp.addApplicableTradeTax("110", "PLN", TaxTypeCode.VALUE_ADDED_TAX, "asdasd", "PLN", t.getKey().toString());
+            tax = t.getKey();
+            total = t.getValue();
+            gtA.add(total);
+            tA = (total * 100) / (100 + tax);
+            ttA += (total - tA);
+            ltN += tA;
+            profileImp.addApplicableTradeTax("110", "PLN", TaxTypeCode.VALUE_ADDED_TAX, "asdasd", "PLN", t.getKey().toString());
+//            profileImp.addApplicableTradeTax(format2dec(total - tA), "EUR", TaxTypeCode.VALUE_ADDED_TAX, format2dec(tA), "EUR", format2dec(tax));
         }
+            profileImp.setMonetarySummation(format2dec(ltN), "PLN",
+                format2dec(0), "PLN",
+                format2dec(0), "PLN",
+                format2dec(ltN), "PLN",
+                format2dec(ttA), "PLN",
+                format2dec(gtA), "PLN");
+
     }
 
 }
