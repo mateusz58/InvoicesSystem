@@ -234,11 +234,11 @@ class FileHelperIT {
 
     @Test
     void replaceLineMethodShouldThrowExceptionForInvalidLineNumberArgument() {
-        assertThrows(IllegalArgumentException.class,() -> fileHelper.replaceLine(INPUT_FILE, 1, "Test"));
+        assertThrows(IllegalArgumentException.class, () -> fileHelper.replaceLine(INPUT_FILE, -1, "Test"));
     }
 
     @Test
     void replaceLineMethodShouldThrowExceptionForNullLineArgument() {
-        assertThrows(IllegalArgumentException.class,() -> fileHelper.replaceLine(INPUT_FILE, 1, null));
+        assertThrows(IllegalArgumentException.class, () -> fileHelper.replaceLine(INPUT_FILE, 1, null));
     }
 }
