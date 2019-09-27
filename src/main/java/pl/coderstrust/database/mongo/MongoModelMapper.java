@@ -33,25 +33,22 @@ public interface MongoModelMapper {
     @Mapping(target = "withEntries", source = "entries")
     Invoice mapToInvoice(MongoInvoice invoice);
 
-    @Mapping(target = "withId", source = "id")
     @Mapping(target = "withName", source = "name")
     @Mapping(target = "withAddress", source = "address")
     @Mapping(target = "withTaxId", source = "taxId")
     @Mapping(target = "withAccountNumber", source = "accountNumber")
     @Mapping(target = "withPhoneNumber", source = "phoneNumber")
     @Mapping(target = "withEmail", source = "email")
-    MongoCompany mapToMongoIComapny(Company company);
+    MongoCompany mapToMongoCompany(Company company);
 
-    @Mapping(target = "withId", source = "id")
     @Mapping(target = "withName", source = "name")
     @Mapping(target = "withAddress", source = "address")
     @Mapping(target = "withTaxId", source = "taxId")
     @Mapping(target = "withAccountNumber", source = "accountNumber")
     @Mapping(target = "withPhoneNumber", source = "phoneNumber")
     @Mapping(target = "withEmail", source = "email")
-    Company mapToComapny(MongoCompany company);
+    Company mapToCompany(MongoCompany company);
 
-    @Mapping(target = "withId", source = "id")
     @Mapping(target = "withDescription", source = "description")
     @Mapping(target = "withQuantity", source = "quantity")
     @Mapping(target = "withPrice", source = "price")
@@ -60,7 +57,6 @@ public interface MongoModelMapper {
     @Mapping(target = "withVatRate", source = "vatRate")
     MongoInvoiceEntry mapToMongoInvoiceEntry(InvoiceEntry invoiceEntry);
 
-    @Mapping(target = "withId", source = "id")
     @Mapping(target = "withDescription", source = "description")
     @Mapping(target = "withQuantity", source = "quantity")
     @Mapping(target = "withPrice", source = "price")

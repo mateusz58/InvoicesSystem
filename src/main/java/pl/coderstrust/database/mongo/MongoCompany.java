@@ -11,8 +11,6 @@ public class MongoCompany {
     @Id
     private final String mongoId;
 
-//    private final Long id;
-
     private final String name;
 
     private final String address;
@@ -26,9 +24,8 @@ public class MongoCompany {
     private final String email;
 
     @PersistenceConstructor
-    public MongoCompany(String mongoId, Long id, String name, String address, String taxId, String accountNumber, String phoneNumber, String email) {
+    public MongoCompany(String mongoId, String name, String address, String taxId, String accountNumber, String phoneNumber, String email) {
         this.mongoId = mongoId;
-        this.id = id;
         this.name = name;
         this.address = address;
         this.taxId = taxId;
@@ -39,7 +36,6 @@ public class MongoCompany {
 
     private MongoCompany() {
         mongoId = null;
-        id = null;
         name = null;
         address = null;
         taxId = null;
@@ -50,7 +46,6 @@ public class MongoCompany {
 
     private MongoCompany(MongoCompany.Builder builder) {
         mongoId = builder.mongoId;
-        id = builder.id;
         name = builder.name;
         address = builder.address;
         taxId = builder.taxId;
@@ -61,10 +56,6 @@ public class MongoCompany {
 
     public String getMongoId() {
         return mongoId;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {
@@ -100,33 +91,31 @@ public class MongoCompany {
             return false;
         }
         MongoCompany company = (MongoCompany) o;
-        return Objects.equals(id, company.id)
-                && Objects.equals(mongoId, company.mongoId)
-                && Objects.equals(name, company.name)
-                && Objects.equals(address, company.address)
-                && Objects.equals(taxId, company.taxId)
-                && Objects.equals(accountNumber, company.accountNumber)
-                && Objects.equals(phoneNumber, company.phoneNumber)
-                && Objects.equals(email, company.email);
+        return Objects.equals(mongoId, company.mongoId)
+            && Objects.equals(name, company.name)
+            && Objects.equals(address, company.address)
+            && Objects.equals(taxId, company.taxId)
+            && Objects.equals(accountNumber, company.accountNumber)
+            && Objects.equals(phoneNumber, company.phoneNumber)
+            && Objects.equals(email, company.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(mongoId, id, name, address, taxId, accountNumber, phoneNumber, email);
+        return Objects.hash(mongoId, name, address, taxId, accountNumber, phoneNumber, email);
     }
 
     @Override
     public String toString() {
         return "MongoCompany{"
-                + "mongoId=" + mongoId
-                + ", id=" + id
-                + ", name='" + name + '\''
-                + ", address='" + address + '\''
-                + ", taxId='" + taxId + '\''
-                + ", accountNumber='" + accountNumber + '\''
-                + ", phoneNumber='" + phoneNumber + '\''
-                + ", email='" + email + '\''
-                + '}';
+            + "mongoId=" + mongoId
+            + ", name='" + name + '\''
+            + ", address='" + address + '\''
+            + ", taxId='" + taxId + '\''
+            + ", accountNumber='" + accountNumber + '\''
+            + ", phoneNumber='" + phoneNumber + '\''
+            + ", email='" + email + '\''
+            + '}';
     }
 
     public static MongoCompany.Builder builder() {
@@ -136,7 +125,6 @@ public class MongoCompany {
     public static class Builder {
 
         private String mongoId;
-        private Long id;
         private String name;
         private String address;
         private String taxId;
@@ -144,14 +132,8 @@ public class MongoCompany {
         private String phoneNumber;
         private String email;
 
-
         public MongoCompany.Builder withMongoId(String mongoId) {
             this.mongoId = mongoId;
-            return this;
-        }
-
-        public MongoCompany.Builder withId(Long id) {
-            this.id = id;
             return this;
         }
 

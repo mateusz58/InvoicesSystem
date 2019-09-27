@@ -90,6 +90,7 @@
                     <excludes>
                         <exclude>/pl/coderstrust/model/*.class</exclude>
                         <exclude>/pl/coderstrust/database/hibernate/*.class</exclude>
+                        <exclude>/pl/coderstrust/database/mongo/*.class</exclude>
                         <exclude>/pl/coderstrust/Application.class</exclude>
                     </excludes>
                 </configuration>
