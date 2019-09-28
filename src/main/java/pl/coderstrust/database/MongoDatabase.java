@@ -58,7 +58,7 @@ public class MongoDatabase implements Database {
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
-            Optional<MongoInvoice> invoice = Optional.ofNullable(mongoTemplate.findById(id.toString(), MongoInvoice.class));
+            Optional<MongoInvoice> invoice = Optional.ofNullable(mongoTemplate.findOne(Query.query(Criteria.where("id").is(id)), MongoInvoice.class));
             if (invoice.isPresent()) {
                 return Optional.of(modelMapper.mapToInvoice(invoice.get()));
             }

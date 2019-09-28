@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import pl.coderstrust.model.Company;
 import pl.coderstrust.model.InvoiceEntry;
@@ -16,6 +17,7 @@ public class MongoInvoice {
     @Id
     private final String mongoId;
 
+    @Indexed
     private final Long id;
 
     private final String number;

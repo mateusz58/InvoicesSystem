@@ -1,15 +1,9 @@
 package pl.coderstrust.database.mongo;
 
 import java.util.Objects;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
 public class MongoCompany {
-
-    @Id
-    private final String mongoId;
 
     private final String name;
 
@@ -24,8 +18,7 @@ public class MongoCompany {
     private final String email;
 
     @PersistenceConstructor
-    public MongoCompany(String mongoId, String name, String address, String taxId, String accountNumber, String phoneNumber, String email) {
-        this.mongoId = mongoId;
+    public MongoCompany(String name, String address, String taxId, String accountNumber, String phoneNumber, String email) {
         this.name = name;
         this.address = address;
         this.taxId = taxId;
@@ -35,7 +28,6 @@ public class MongoCompany {
     }
 
     private MongoCompany() {
-        mongoId = null;
         name = null;
         address = null;
         taxId = null;
@@ -45,17 +37,12 @@ public class MongoCompany {
     }
 
     private MongoCompany(MongoCompany.Builder builder) {
-        mongoId = builder.mongoId;
         name = builder.name;
         address = builder.address;
         taxId = builder.taxId;
         accountNumber = builder.accountNumber;
         phoneNumber = builder.phoneNumber;
         email = builder.email;
-    }
-
-    public String getMongoId() {
-        return mongoId;
     }
 
     public String getName() {
@@ -91,8 +78,7 @@ public class MongoCompany {
             return false;
         }
         MongoCompany company = (MongoCompany) o;
-        return Objects.equals(mongoId, company.mongoId)
-            && Objects.equals(name, company.name)
+        return Objects.equals(name, company.name)
             && Objects.equals(address, company.address)
             && Objects.equals(taxId, company.taxId)
             && Objects.equals(accountNumber, company.accountNumber)
@@ -102,13 +88,12 @@ public class MongoCompany {
 
     @Override
     public int hashCode() {
-        return Objects.hash(mongoId, name, address, taxId, accountNumber, phoneNumber, email);
+        return Objects.hash(name, address, taxId, accountNumber, phoneNumber, email);
     }
 
     @Override
     public String toString() {
         return "MongoCompany{"
-            + "mongoId=" + mongoId
             + ", name='" + name + '\''
             + ", address='" + address + '\''
             + ", taxId='" + taxId + '\''
@@ -124,18 +109,12 @@ public class MongoCompany {
 
     public static class Builder {
 
-        private String mongoId;
         private String name;
         private String address;
         private String taxId;
         private String accountNumber;
         private String phoneNumber;
         private String email;
-
-        public MongoCompany.Builder withMongoId(String mongoId) {
-            this.mongoId = mongoId;
-            return this;
-        }
 
         public MongoCompany.Builder withName(String name) {
             this.name = name;
@@ -172,4 +151,3 @@ public class MongoCompany {
         }
     }
 }
-

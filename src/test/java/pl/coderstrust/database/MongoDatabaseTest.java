@@ -127,7 +127,7 @@ class MongoDatabaseTest {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
-        doReturn(mongoInvoice).when(invoiceRepository).findById(mongoInvoice.getId().toString(), MongoInvoice.class);
+        doReturn(mongoInvoice).when(invoiceRepository).findOne(Query.query(Criteria.where("id").is(invoice.getId())), MongoInvoice.class);
 
         //when
         Optional<Invoice> gotInvoice = database.getById(invoice.getId());
@@ -135,30 +135,30 @@ class MongoDatabaseTest {
         //then
         assertTrue(gotInvoice.isPresent());
         assertEquals(invoice, gotInvoice.get());
-        verify(invoiceRepository).findById(invoice.getId().toString(), MongoInvoice.class);
+        verify(invoiceRepository).findOne(Query.query(Criteria.where("id").is(invoice.getId())), MongoInvoice.class);
     }
 
     @Test
     void shouldReturnEmptyOptionalWhenNonExistingInvoiceIsGotById() throws DatabaseOperationException {
         //given
-        when(invoiceRepository.findById("10", MongoInvoice.class)).thenReturn(null);
+        when(invoiceRepository.findOne(Query.query(Criteria.where("id").is(10L)), MongoInvoice.class)).thenReturn(null);
 
         //when
         Optional<Invoice> gotInvoice = database.getById(10L);
 
         //then
         assertTrue(gotInvoice.isEmpty());
-        verify(invoiceRepository).findById("10", MongoInvoice.class);
+        verify(invoiceRepository).findOne(Query.query(Criteria.where("id").is(10L)), MongoInvoice.class);
     }
 
     @Test
     void shouldThrowDatabaseOperationExceptionWhenExceptionIsThrownWhenGettingById() {
         //given
-        doThrow(new MockitoException("") {}).when(invoiceRepository).findById("10", MongoInvoice.class);
+        doThrow(new MockitoException("") {}).when(invoiceRepository).findOne(Query.query(Criteria.where("id").is(10L)), MongoInvoice.class);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getById(10L));
-        verify(invoiceRepository).findById("10", MongoInvoice.class);
+        verify(invoiceRepository).findOne(Query.query(Criteria.where("id").is(10L)), MongoInvoice.class);
     }
 
     @Test
