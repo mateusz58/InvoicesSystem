@@ -7,6 +7,7 @@ import com.itextpdf.zugferd.validation.basic.DocumentTypeCode;
 import com.itextpdf.zugferd.validation.basic.TaxIDTypeCode;
 import com.itextpdf.zugferd.validation.basic.TaxTypeCode;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.Map;
 import java.util.TreeMap;
@@ -21,74 +22,82 @@ public class InvoiceData {
     public InvoiceData() {
     }
 
+    private static Double[] add(Double[] first, Double[] second) {
+        int length = first.length < second.length ? first.length
+            : second.length;
+        Double[] result = new Double[length];
+
+        for (int i = 0; i < length; i++) {
+            result[i] = first[i] + second[i];
+        }
+
+        return result;
+    }
+
     public IBasicProfile createBasicProfileData(Invoice invoice) {
         BasicProfileImp profileImp = new BasicProfileImp(true);
         importInvoiceSellerBuyer(profileImp, invoice);
-        importItems(profileImp, invoice);
+        importItemsTotalPrizeValues(profileImp, invoice);
         return profileImp;
     }
-
-//    public IComfortProfile createComfortProfileData(Invoice invoice) {
-//        ComfortProfileImp profileImp = new ComfortProfileImp(true);
-//        importInvoiceSellerBuyer(profileImp, invoice);
-//        //importComfortData(profileImp, invoice);
-//        return profileImp;
-//    }
 
     public void importInvoiceSellerBuyer(BasicProfileImp profileImp, Invoice invoice) {
         profileImp.setId(String.format("I/%s", invoice.getNumber()));
         profileImp.setName("INVOICE");
         profileImp.setTypeCode(DocumentTypeCode.COMMERCIAL_INVOICE);
         profileImp.setDate(Date.valueOf(invoice.getIssuedDate()), DateFormatCode.YYYYMMDD);
+        profileImp.setPaymentReference(String.format("%09d", invoice.getId()));
 
         Company seller = invoice.getSeller();
+
         profileImp.setSellerName(seller.getName());
         profileImp.setSellerLineOne(invoice.getSeller().getAddress());
         profileImp.addSellerTaxRegistration(TaxIDTypeCode.FISCAL_NUMBER, seller.getTaxId());
 
         Company customer = invoice.getBuyer();
 
-        profileImp.setBuyerName(String.format("%s ", customer.getName()));
+        profileImp.setBuyerName(customer.getName());
         profileImp.setBuyerLineOne(customer.getAddress());
-        profileImp.setPaymentReference(String.format("%09d", invoice.getId()));
+        profileImp.addBuyerTaxRegistration(TaxIDTypeCode.FISCAL_NUMBER, customer.getTaxId());
 
         profileImp.setInvoiceCurrencyCode("PLN");
     }
 
-    public void importItems(BasicProfileImp profileImp, Invoice invoice) {
-        Map<Vat,BigDecimal> taxes = new TreeMap<Vat, BigDecimal>();
+//    public void importInvoicePaymentMeans(BasicProfileImp profileImp, Invoice invoice){
+//
+//        profileImp.addPaymentMeans("", "", invoice.getSeller().getAccountNumber(), "", "", "", "", "");
+//        profileImp.addPaymentMeans("", "", invoice.getBuyer().getAccountNumber(), "", "", "", "", "");
+//    }
+
+    public void importItemsTotalPrizeValues(BasicProfileImp profileImp, Invoice invoice) {
+        Map<Vat, Double[]> taxes = new TreeMap<>();
         Vat tax;
         for (InvoiceEntry item : invoice.getEntries()) {
             tax = item.getVatRate();
             if (taxes.containsKey(tax)) {
-                taxes.put(tax, taxes.get(tax).add(item.getPrice()));
-            }
-            else {
-                taxes.put(tax, item.getPrice());
+                taxes.put(tax, add(taxes.get(tax),new Double[]{item.getGrossValue().doubleValue(),item.getNetValue().doubleValue()}));
+            } else {
+                taxes.put(tax, new Double[]{item.getGrossValue().doubleValue(),item.getNetValue().doubleValue()});
             }
             profileImp.addIncludedSupplyChainTradeLineItem(item.getQuantity().toString(), "C62", item.getDescription());
         }
-        BigDecimal total, tA;
-        int ltN = 0;
-        int ttA = 0;
-        BigDecimal gtA = new BigDecimal(0);
-        for (Map.Entry<Vat, BigDecimal> t : taxes.entrySet()) {
+
+        double grandTotal=0;
+        double baseTotal=0;
+        double taxTotal=0;
+        for (Map.Entry<Vat, Double[]> t : taxes.entrySet()) {
             tax = t.getKey();
-            total = t.getValue();
-            gtA.add(total);
-            tA = (total * 100) / (100 + tax);
-            ttA += (total - tA);
-            ltN += tA;
-            profileImp.addApplicableTradeTax("110", "PLN", TaxTypeCode.VALUE_ADDED_TAX, "asdasd", "PLN", t.getKey().toString());
-//            profileImp.addApplicableTradeTax(format2dec(total - tA), "EUR", TaxTypeCode.VALUE_ADDED_TAX, format2dec(tA), "EUR", format2dec(tax));
+            taxTotal=taxTotal+(t.getValue()[0] -t.getValue()[1]);
+            baseTotal=baseTotal+t.getValue()[1].doubleValue();
+            grandTotal=grandTotal+t.getValue()[0].doubleValue();
+            profileImp.addApplicableTradeTax( String.valueOf(BigDecimal.valueOf(t.getValue()[0]-t.getValue()[1]).setScale(2,RoundingMode.HALF_EVEN)), "PLN", TaxTypeCode.VALUE_ADDED_TAX, String.valueOf(BigDecimal.valueOf(t.getValue()[1]).setScale(2,RoundingMode.HALF_EVEN)), "PLN", String.format("%s%%",String.valueOf(tax.getValue()*100)));
         }
-            profileImp.setMonetarySummation(format2dec(ltN), "PLN",
-                format2dec(0), "PLN",
-                format2dec(0), "PLN",
-                format2dec(ltN), "PLN",
-                format2dec(ttA), "PLN",
-                format2dec(gtA), "PLN");
+        profileImp.setMonetarySummation(String.valueOf(0), "PLN",
+            String.valueOf(0), "PLN",
+            String.valueOf(0), "PLN",
+            String.valueOf(BigDecimal.valueOf(baseTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN", /// suma wszystkiego netto
+            String.valueOf(BigDecimal.valueOf(taxTotal).setScale(2,RoundingMode.HALF_EVEN)), "PLN",  ///suma calego podatku
+            String.valueOf(BigDecimal.valueOf(grandTotal).setScale(2,RoundingMode.HALF_EVEN)), "PLN"); ///suma wszystkiego
 
     }
-
 }

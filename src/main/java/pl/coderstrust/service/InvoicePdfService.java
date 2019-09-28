@@ -1,4 +1,3 @@
-
 package pl.coderstrust.service;
 
 import com.itextpdf.io.font.constants.StandardFonts;
@@ -15,141 +14,83 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
-import com.itextpdf.zugferd.exceptions.DataIncompleteException;
-import com.itextpdf.zugferd.exceptions.InvalidCodeException;
 import com.itextpdf.zugferd.profiles.IBasicProfile;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import org.xml.sax.SAXException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;
 
-/**
- * Reads invoice data from a test database and creates ZUGFeRD invoices
- * (Basic profile).
- * @author Bruno Lowagie
- */
 public class InvoicePdfService {
 
-
-    /** The path to the color profile. */
-    public static final String ICC = "resources/color/sRGB_CS_profile.icm";
-//
-//    /** The path to a regular font. */
-//    public static final String REGULAR = "resources/fonts/OpenSans-Regular.ttf";
-//
-//    /** The path to a bold font. */
-//    public static final String BOLD = "resources/fonts/OpenSans-Bold.ttf";
-
-//    private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
-//        Font.BOLD);
-
-    /** A <code>String</code> with a newline character. */
     public static final String NEWLINE = "\n";
 
+    private static PdfFont bold() throws IOException {
+        return PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+    }
 
-    public static void createPdf(Invoice invoice,String filePath) throws ParserConfigurationException, SAXException, TransformerException, IOException, ParseException, DataIncompleteException, InvalidCodeException {
-
+    public static void createPdf(Invoice invoice, String filePath) throws IOException {
         String dest = String.format(filePath, invoice);
-
-        PdfFont font = PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN);
-        PdfFont bold = PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
-
-        InvoiceData invoiceData=new InvoiceData();
-        IBasicProfile basic = invoiceData.createBasicProfileData(invoice);
-//        InvoiceDOM dom = new InvoiceDOM(basic);
-
+        IBasicProfile invoiceProfile = new InvoiceData().createBasicProfileData(invoice);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(dest));
-         pdfDocument.setDefaultPageSize(PageSize.A4);
-
+        pdfDocument.setDefaultPageSize(PageSize.A4);
         // Create the document
         Document document = new Document(pdfDocument);
-//        document.setFont(PdfFontFactory.createFont(REGULAR, true))
-//            .setFontSize(12);
-//        PdfFont bold = PdfFontFactory.createFont(BOLD, true);
-
-        // Add the header
-        document.add(
-            new Paragraph()
-                .	setTextAlignment(TextAlignment.RIGHT)
-                .setMultipliedLeading(1)
-                .add(new Text(String.format("%s %s\n", basic.getName(), basic.getId())))
-                    .setFont(bold).setFontSize(14));
+        document.add(getHeaderInfo(invoiceProfile).add(new Text(getInvoicesIssueDueDates(invoice))));
         // Add the seller and buyer address
-        document.add(getAddressTable(basic, bold));
-
+        document.add(getAddressTable(invoiceProfile));
         document.add(new Paragraph(NEWLINE));
         document.add(new Paragraph(NEWLINE));
-        document.add(getLineItemTable(invoice, bold));
-
-
-//       document.add(getTotalsTable(
-//            basic.getTaxBasisTotalAmount(), basic.getTaxTotalAmount(), basic.getGrandTotalAmount(), basic.getGrandTotalAmountCurrencyID(),
-//            basic.getTaxTypeCode(), basic.getTaxApplicablePercent(),
-//            basic.getTaxBasisAmount(), basic.getTaxCalculatedAmount(), basic.getTaxCalculatedAmountCurrencyID(), bold));
-        // Add the payment info
+        document.add(getLineItemTable(invoice));
+        document.add(getTotalsTable(invoiceProfile));
+        document.add(getPaymentInfo(invoice));
         document.close();
     }
 
-    private static String convertDate(Date d, String newFormat) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat(newFormat);
-        return sdf.format(d);
+    private static String getInvoicesIssueDueDates(Invoice invoice) throws IOException {
+        String issuedDate = invoice.getIssuedDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        String dueDate = invoice.getIssuedDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        return String.format("Issued date: %s\n Due date: %s\n", issuedDate, dueDate);
     }
 
-    private static Table getAddressTable(IBasicProfile basic, PdfFont bold) {
-        Table table = new Table(new UnitValue[]{
+    private static Table getAddressTable(IBasicProfile basic) throws IOException {
+        Table table = new Table(new UnitValue[] {
             new UnitValue(UnitValue.PERCENT, 50),
             new UnitValue(UnitValue.PERCENT, 50)})
             .setWidth(UnitValue.createPercentValue(100));
         table.addCell(getPartyAddress("From:",
             basic.getSellerName(),
-            basic.getSellerLineOne(),
-            basic.getSellerLineTwo(),
-            basic.getSellerCountryID(),
-            basic.getSellerPostcode(),
-            basic.getSellerCityName(),
-            bold));
+            basic.getSellerLineOne()));
         table.addCell(getPartyAddress("To:",
             basic.getBuyerName(),
-            basic.getBuyerLineOne(),
-            basic.getBuyerLineTwo(),
-            basic.getBuyerCountryID(),
-            basic.getBuyerPostcode(),
-            basic.getBuyerCityName(),
-            bold));
+            basic.getBuyerLineOne()));
         table.addCell(getPartyTax(basic.getSellerTaxRegistrationID(),
-            basic.getSellerTaxRegistrationSchemeID(), bold));
+            basic.getSellerTaxRegistrationSchemeID()));
         table.addCell(getPartyTax(basic.getBuyerTaxRegistrationID(),
-            basic.getBuyerTaxRegistrationSchemeID(), bold));
+            basic.getBuyerTaxRegistrationSchemeID()));
         return table;
     }
 
-    private static Cell getPartyAddress(String who, String name, String line1, String line2, String countryID, String postcode, String city, PdfFont bold) {
+    private static Cell getPartyAddress(String who, String name, String address) throws IOException {
         Paragraph p = new Paragraph()
             .setMultipliedLeading(1.0f)
-            .add(new Text(who).setFont(bold)).add(NEWLINE)
+            .add(new Text(who).setFont(bold())).add(NEWLINE)
             .add(name).add(NEWLINE)
-            .add(line1).add(NEWLINE)
-//            .add(line2).add(NEWLINE)
-            .add(String.format("%s-%s %s", countryID, postcode, city));
+            .add(address).add(NEWLINE);
         Cell cell = new Cell()
             .setBorder(Border.NO_BORDER)
             .add(p);
         return cell;
     }
 
-    private static Cell getPartyTax(String[] taxId, String[] taxSchema, PdfFont bold) {
+    private static Cell getPartyTax(String[] taxId, String[] taxSchema) throws IOException {
         Paragraph p = new Paragraph()
             .setFontSize(10).setMultipliedLeading(1.0f)
-            .add(new Text("Tax ID(s):").setFont(bold));
+            .add(new Text("Tax ID(s):").setFont(bold()));
         if (taxId.length == 0) {
             p.add("\nNot applicable");
-        }
-        else {
+        } else {
             int n = taxId.length;
             for (int i = 0; i < n; i++) {
                 p.add(NEWLINE)
@@ -159,8 +100,8 @@ public class InvoicePdfService {
         return new Cell().setBorder(Border.NO_BORDER).add(p);
     }
 
-    private static Table getLineItemTable(Invoice invoice, PdfFont bold) {
-        Table table = new Table(new UnitValue[]{
+    private static Table getLineItemTable(Invoice invoice) throws IOException {
+        Table table = new Table(new UnitValue[] {
             new UnitValue(UnitValue.PERCENT, 43.75f),
             new UnitValue(UnitValue.PERCENT, 12.5f),
             new UnitValue(UnitValue.PERCENT, 6.25f),
@@ -169,34 +110,33 @@ public class InvoicePdfService {
             new UnitValue(UnitValue.PERCENT, 12.5f)})
             .setWidth(UnitValue.createPercentValue(100))
             .setMarginTop(10).setMarginBottom(10);
-        table.addHeaderCell(createCell("Item:", bold));
-        table.addHeaderCell(createCell("Price:", bold));
-        table.addHeaderCell(createCell("Qty:", bold));
-        table.addHeaderCell(createCell("Subtotal:", bold));
-        table.addHeaderCell(createCell("VAT:", bold));
-        table.addHeaderCell(createCell("Total:", bold));
+        table.addHeaderCell(createCell("Item:", bold()));
+        table.addHeaderCell(createCell("Price:", bold()));
+        table.addHeaderCell(createCell("Qty:", bold()));
+        table.addHeaderCell(createCell("Subtotal:", bold()));
+        table.addHeaderCell(createCell("VAT:", bold()));
+        table.addHeaderCell(createCell("Total:", bold()));
         InvoiceEntry product;
         for (InvoiceEntry item : invoice.getEntries()) {
             product = item;
             table.addCell(createCell(product.getDescription()));
             table.addCell(createCell(
-                product.getPrice().toString())
+                product.getPrice().setScale(2).toString())
                 .setTextAlignment(TextAlignment.RIGHT));
             table.addCell(createCell(String.valueOf(item.getQuantity()))
                 .setTextAlignment(TextAlignment.RIGHT));
+            //Subtotal
             table.addCell(createCell(
-               item.getPrice().toString())
+                item.getNetValue().setScale(2).toString())
                 .setTextAlignment(TextAlignment.RIGHT));
             table.addCell(createCell(
-               product.getVatRate().toString())
+                //Vat
+                (product.getVatRate().getValue() * 100) + "%")
                 .setTextAlignment(TextAlignment.RIGHT));
-
+            //Total
             table.addCell(createCell(
-                item.getPrice().toString()))
+                item.getGrossValue().setScale(2).toString()))
                 .setTextAlignment(TextAlignment.RIGHT);
-//            table.addCell(createCell(
-//                    item.getPrice() + ((item.getPrice() * product.getVatRate()) / 100)))
-//                .setTextAlignment(TextAlignment.RIGHT);
         }
         return table;
     }
@@ -213,10 +153,8 @@ public class InvoicePdfService {
                 .setFont(font).setMultipliedLeading(1));
     }
 
-    private static Table getTotalsTable(String tBase, String tTax, String tTotal, String tCurrency,
-                                String[] type, String[] percentage, String base[], String tax[], String currency[],
-                                PdfFont bold) {
-        Table table = new Table(new UnitValue[]{
+    private static Table getTotalsTable(IBasicProfile basic) throws IOException {
+        Table table = new Table(new UnitValue[] {
             new UnitValue(UnitValue.PERCENT, 8.33f),
             new UnitValue(UnitValue.PERCENT, 8.33f),
             new UnitValue(UnitValue.PERCENT, 25f),
@@ -224,38 +162,57 @@ public class InvoicePdfService {
             new UnitValue(UnitValue.PERCENT, 25f),
             new UnitValue(UnitValue.PERCENT, 8.34f)})
             .setWidth(UnitValue.createPercentValue(100));
-        table.addCell(createCell("TAX:", bold));
-        table.addCell(createCell("%", bold)
+        table.addCell(createCell("TAX:", bold()));
+        table.addCell(createCell("%", bold())
             .setTextAlignment(TextAlignment.RIGHT));
-        table.addCell(createCell("Base amount:", bold));
-        table.addCell(createCell("Tax amount:", bold));
-        table.addCell(createCell("Total:", bold));
-        table.addCell(createCell("Curr.:", bold));
-        int n = type.length;
+        table.addCell(createCell("Base amount:", bold()));
+        table.addCell(createCell("Tax amount:", bold()));
+        table.addCell(createCell("Total:", bold()));
+        table.addCell(createCell("Curr.:", bold()));
+        int n = basic.getTaxTypeCode().length;
+        double total = 0;
         for (int i = 0; i < n; i++) {
-            table.addCell(createCell(type[i])
+            table.addCell(createCell(basic.getTaxTypeCode()[i])
                 .setTextAlignment(TextAlignment.RIGHT));
-            table.addCell(createCell(percentage[i])
+            table.addCell(createCell(basic.getTaxApplicablePercent()[i])
                 .setTextAlignment(TextAlignment.RIGHT));
-            table.addCell(createCell(base[i])
+            table.addCell(createCell(basic.getTaxBasisAmount()[i])
                 .setTextAlignment(TextAlignment.RIGHT));
-            table.addCell(createCell(tax[i])
+            table.addCell(createCell(basic.getTaxCalculatedAmount()[i])
                 .setTextAlignment(TextAlignment.RIGHT));
-//            double total = Double.parseDouble(base[i]) + Double.parseDouble(tax[i]);
+            total = Double.parseDouble(basic.getTaxBasisAmount()[i]) + Double.parseDouble(basic.getTaxCalculatedAmount()[i]);
             table.addCell(createCell(
-               String.valueOf(100))
+                String.valueOf(BigDecimal.valueOf(total).setScale(2, RoundingMode.HALF_EVEN)))
                 .setTextAlignment(TextAlignment.RIGHT));
-            table.addCell(createCell(currency[i]));
+            table.addCell(createCell(basic.getTaxCalculatedAmountCurrencyID()[i]));
         }
         table.addCell(new Cell(1, 2).setBorder(Border.NO_BORDER));
-        table.addCell(createCell(tBase, bold)
+        table.addCell(createCell(basic.getTaxBasisTotalAmount(), bold())
             .setTextAlignment(TextAlignment.RIGHT));
-        table.addCell(createCell(tTax, bold)
+        table.addCell(createCell(basic.getTaxTotalAmount(), bold())
             .setTextAlignment(TextAlignment.RIGHT));
-        table.addCell(createCell(tTotal, bold)
+        table.addCell(createCell(basic.getGrandTotalAmount(), bold())
             .setTextAlignment(TextAlignment.RIGHT));
-        table.addCell(createCell(tCurrency, bold));
+        table.addCell(createCell(basic.getGrandTotalAmountCurrencyID(), bold()));
         return table;
     }
 
+    private static Paragraph getPaymentInfo(Invoice invoice) {
+        Paragraph p = new Paragraph(String.format(
+            "Bank account numbers :",
+            invoice.getNumber()));
+        p.add(NEWLINE).add(String.format("Seller account number %s: ", invoice.getSeller().getAccountNumber()));
+        p.add(NEWLINE).add(String.format("Buyer account number %s: ", invoice.getBuyer().getAccountNumber()));
+        return p;
+    }
+
+    private static Paragraph getHeaderInfo(IBasicProfile invoiceProfile) throws IOException {
+        return new Paragraph()
+            .setTextAlignment(TextAlignment.RIGHT)
+            .setMultipliedLeading(1)
+            .add(new Text(String.format("%s %s\n", invoiceProfile.getName(), invoiceProfile.getId())))
+            .setFont(bold());
+    }
+
 }
+

@@ -23,7 +23,7 @@ public class InvoiceGenerator {
             .withSeller(CompanyGenerator.generateRandomCompany())
             .withDueDate(LocalDateGenerator.generateRandomLocalDate())
             .withIssuedDate(LocalDateGenerator.generateRandomLocalDate())
-            .withEntries(generateEntries(5))
+            .withEntries(generateEntries(Math.toIntExact(NumberGenerator.generateRandomNumber(1))+1))
             .build();
     }
 

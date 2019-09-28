@@ -8,7 +8,6 @@ public class NumberGenerator {
 
     public static long generateRandomNumber(int length) {
 
-        long numberGenerated= Long.valueOf(random.number().digits(length));
-        return numberGenerated;
+        return Long.valueOf(random.number().digits(length));
     }
 }
