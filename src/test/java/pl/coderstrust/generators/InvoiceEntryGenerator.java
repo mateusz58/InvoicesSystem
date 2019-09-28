@@ -14,8 +14,8 @@ public class InvoiceEntryGenerator {
     private static Faker faker = new Faker(new Locale("pl"));
 
     public static InvoiceEntry getRandomEntry() {
-        Long quantity = NumberGenerator.generateRandomNumber(1)+1;
-        BigDecimal price = BigDecimal.valueOf(NumberGenerator.generateRandomNumber(2)+1);
+        Long quantity = NumberGenerator.generateRandomNumber(1) + 1;
+        BigDecimal price = BigDecimal.valueOf(NumberGenerator.generateRandomNumber(2) + 1);
         BigDecimal netValue = price.multiply(BigDecimal.valueOf(quantity));
         Vat vatRate = VatRateGenerator.getRandomVatRate(Vat.class);
         BigDecimal vatValue = netValue.multiply(BigDecimal.valueOf(vatRate.getValue())).setScale(2, RoundingMode.HALF_EVEN);
