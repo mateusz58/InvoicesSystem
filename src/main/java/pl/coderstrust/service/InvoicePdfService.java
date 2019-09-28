@@ -14,25 +14,29 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.zugferd.profiles.BasicProfileImp;
 import com.itextpdf.zugferd.profiles.IBasicProfile;
+import com.itextpdf.zugferd.validation.basic.DateFormatCode;
+import com.itextpdf.zugferd.validation.basic.DocumentTypeCode;
+import com.itextpdf.zugferd.validation.basic.TaxIDTypeCode;
+import com.itextpdf.zugferd.validation.basic.TaxTypeCode;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Date;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.TreeMap;
+import pl.coderstrust.model.Company;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;
+import pl.coderstrust.model.Vat;
 
 public class InvoicePdfService {
 
-    public static final String NEWLINE = "\n";
-
-    private static PdfFont bold() throws IOException {
-        return PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
-    }
-
     public static void createPdf(Invoice invoice, String filePath) throws IOException {
         String dest = String.format(filePath, invoice);
-        IBasicProfile invoiceProfile = new InvoiceData().createBasicProfileData(invoice);
+        IBasicProfile invoiceProfile = createBasicProfileData(invoice);
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(dest));
         pdfDocument.setDefaultPageSize(PageSize.A4);
         // Create the document
@@ -40,15 +44,19 @@ public class InvoicePdfService {
         document.add(getHeaderInfo(invoiceProfile).add(new Text(getInvoicesIssueDueDates(invoice))));
         // Add the seller and buyer address
         document.add(getAddressTable(invoiceProfile));
-        document.add(new Paragraph(NEWLINE));
-        document.add(new Paragraph(NEWLINE));
+        document.add(new Paragraph("\n"));
+        document.add(new Paragraph("\n"));
         document.add(getLineItemTable(invoice));
         document.add(getTotalsTable(invoiceProfile));
         document.add(getPaymentInfo(invoice));
         document.close();
     }
 
-    private static String getInvoicesIssueDueDates(Invoice invoice) throws IOException {
+    private static PdfFont bold() throws IOException {
+        return PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+    }
+
+    private static String getInvoicesIssueDueDates(Invoice invoice) {
         String issuedDate = invoice.getIssuedDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
         String dueDate = invoice.getIssuedDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
         return String.format("Issued date: %s\n Due date: %s\n", issuedDate, dueDate);
@@ -75,9 +83,9 @@ public class InvoicePdfService {
     private static Cell getPartyAddress(String who, String name, String address) throws IOException {
         Paragraph p = new Paragraph()
             .setMultipliedLeading(1.0f)
-            .add(new Text(who).setFont(bold())).add(NEWLINE)
-            .add(name).add(NEWLINE)
-            .add(address).add(NEWLINE);
+            .add(new Text(who).setFont(bold())).add("\n")
+            .add(name).add("\n")
+            .add(address).add("\n");
         Cell cell = new Cell()
             .setBorder(Border.NO_BORDER)
             .add(p);
@@ -93,7 +101,7 @@ public class InvoicePdfService {
         } else {
             int n = taxId.length;
             for (int i = 0; i < n; i++) {
-                p.add(NEWLINE)
+                p.add("\n")
                     .add(String.format("%s: %s", taxSchema[i], taxId[i]));
             }
         }
@@ -201,8 +209,8 @@ public class InvoicePdfService {
         Paragraph p = new Paragraph(String.format(
             "Bank account numbers :",
             invoice.getNumber()));
-        p.add(NEWLINE).add(String.format("Seller account number %s: ", invoice.getSeller().getAccountNumber()));
-        p.add(NEWLINE).add(String.format("Buyer account number %s: ", invoice.getBuyer().getAccountNumber()));
+        p.add("\n").add(String.format("Seller account number %s: ", invoice.getSeller().getAccountNumber()));
+        p.add("\n").add(String.format("Buyer account number %s: ", invoice.getBuyer().getAccountNumber()));
         return p;
     }
 
@@ -212,6 +220,79 @@ public class InvoicePdfService {
             .setMultipliedLeading(1)
             .add(new Text(String.format("%s %s\n", invoiceProfile.getName(), invoiceProfile.getId())))
             .setFont(bold());
+    }
+
+    private static Double[] add(Double[] first, Double[] second) {
+        int length = first.length < second.length ? first.length
+            : second.length;
+        Double[] result = new Double[length];
+
+        for (int i = 0; i < length; i++) {
+            result[i] = first[i] + second[i];
+        }
+
+        return result;
+    }
+
+    private static IBasicProfile createBasicProfileData(Invoice invoice) {
+        BasicProfileImp profileImp = new BasicProfileImp(true);
+        importInvoiceSellerBuyer(profileImp, invoice);
+        importItemsTotalPrizeValues(profileImp, invoice);
+        return profileImp;
+    }
+
+    private static void importInvoiceSellerBuyer(BasicProfileImp profileImp, Invoice invoice) {
+        profileImp.setId(String.format("I/%s", invoice.getNumber()));
+        profileImp.setName("INVOICE");
+        profileImp.setTypeCode(DocumentTypeCode.COMMERCIAL_INVOICE);
+        profileImp.setDate(Date.valueOf(invoice.getIssuedDate()), DateFormatCode.YYYYMMDD);
+        profileImp.setPaymentReference(String.format("%09d", invoice.getId()));
+
+        Company seller = invoice.getSeller();
+
+        profileImp.setSellerName(seller.getName());
+        profileImp.setSellerLineOne(invoice.getSeller().getAddress());
+        profileImp.addSellerTaxRegistration(TaxIDTypeCode.FISCAL_NUMBER, seller.getTaxId());
+
+        Company customer = invoice.getBuyer();
+
+        profileImp.setBuyerName(customer.getName());
+        profileImp.setBuyerLineOne(customer.getAddress());
+        profileImp.addBuyerTaxRegistration(TaxIDTypeCode.FISCAL_NUMBER, customer.getTaxId());
+
+        profileImp.setInvoiceCurrencyCode("PLN");
+    }
+
+    private static void importItemsTotalPrizeValues(BasicProfileImp profileImp, Invoice invoice) {
+        Map<Vat, Double[]> taxes = new TreeMap<>();
+        Vat tax;
+        for (InvoiceEntry item : invoice.getEntries()) {
+            tax = item.getVatRate();
+            if (taxes.containsKey(tax)) {
+                taxes.put(tax, add(taxes.get(tax),new Double[]{item.getGrossValue().doubleValue(),item.getNetValue().doubleValue()}));
+            } else {
+                taxes.put(tax, new Double[]{item.getGrossValue().doubleValue(),item.getNetValue().doubleValue()});
+            }
+            profileImp.addIncludedSupplyChainTradeLineItem(item.getQuantity().toString(), "C62", item.getDescription());
+        }
+
+        double grandTotal=0;
+        double baseTotal=0;
+        double taxTotal=0;
+        for (Map.Entry<Vat, Double[]> t : taxes.entrySet()) {
+            tax = t.getKey();
+            taxTotal=taxTotal+(t.getValue()[0] -t.getValue()[1]);
+            baseTotal=baseTotal+t.getValue()[1].doubleValue();
+            grandTotal=grandTotal+t.getValue()[0].doubleValue();
+            profileImp.addApplicableTradeTax( String.valueOf(BigDecimal.valueOf(t.getValue()[0]-t.getValue()[1]).setScale(2,RoundingMode.HALF_EVEN)), "PLN", TaxTypeCode.VALUE_ADDED_TAX, String.valueOf(BigDecimal.valueOf(t.getValue()[1]).setScale(2,RoundingMode.HALF_EVEN)), "PLN", String.format("%s%%",String.valueOf(tax.getValue()*100)));
+        }
+        profileImp.setMonetarySummation(String.valueOf(0), "PLN",
+            String.valueOf(0), "PLN",
+            String.valueOf(0), "PLN",
+            String.valueOf(BigDecimal.valueOf(baseTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN", /// suma wszystkiego netto
+            String.valueOf(BigDecimal.valueOf(taxTotal).setScale(2,RoundingMode.HALF_EVEN)), "PLN",  ///suma calego podatku
+            String.valueOf(BigDecimal.valueOf(grandTotal).setScale(2,RoundingMode.HALF_EVEN)), "PLN"); ///suma wszystkiego
+
     }
 
 }
