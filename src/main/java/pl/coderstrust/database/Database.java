@@ -2,10 +2,8 @@ package pl.coderstrust.database;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.springframework.stereotype.Repository;
 import pl.coderstrust.model.Invoice;
 
-@Repository
 public interface Database {
 
     Invoice save(Invoice invoice) throws DatabaseOperationException;
