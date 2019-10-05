@@ -19,17 +19,11 @@ public class MongoInvoice {
 
     @Indexed
     private final Long id;
-
     private final String number;
-
     private final LocalDate issuedDate;
-
     private final LocalDate dueDate;
-
     private final Company seller;
-
     private final Company buyer;
-
     private final List<InvoiceEntry> entries;
 
     @PersistenceConstructor

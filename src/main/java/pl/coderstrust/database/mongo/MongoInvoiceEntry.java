@@ -7,15 +7,10 @@ import org.springframework.data.annotation.PersistenceConstructor;
 public class MongoInvoiceEntry {
 
     private final String description;
-
     private final Long quantity;
-
     private final BigDecimal price;
-
     private final BigDecimal netValue;
-
     private final BigDecimal grossValue;
-
     private final MongoVat vatRate;
 
     @PersistenceConstructor
