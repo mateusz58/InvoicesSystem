@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class ApplicationConfiguration {
 
-    @Bean
     @Primary
+    @Bean
     public ObjectMapper getObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
