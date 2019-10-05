@@ -289,8 +289,5 @@ public class InvoicePdfService {
             String.valueOf(BigDecimal.valueOf(baseTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN", /// suma wszystkiego netto
             String.valueOf(BigDecimal.valueOf(taxTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN",  ///suma calego podatku
             String.valueOf(BigDecimal.valueOf(grandTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN"); ///suma wszystkiego
-
     }
 }
-
-
