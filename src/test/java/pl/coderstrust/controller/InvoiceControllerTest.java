@@ -139,14 +139,14 @@ class InvoiceControllerTest {
     }
 
     @Test
-    void shouldReturnBadRequestStatusWhileGettingInvoiceWithNullNumber() throws Exception {
+    void shouldReturnNotFoundStatusWhileGettingInvoiceWithNullNumber() throws Exception {
         //Given
-        doReturn(Optional.empty()).when(invoiceService).getByNumber(null);
-        String endPoint = String.format("byNumber?=number%s", null);
+        String endPoint = String.format("byNumber?number=%d", null);
+        doThrow(ServiceOperationException.class).when(invoiceService).getByNumber(null);
 
         //When
         mockMvc.perform(get(url + endPoint))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isNotFound());
 
         //Then
         verify(invoiceService, never()).getByNumber(null);
@@ -260,7 +260,7 @@ class InvoiceControllerTest {
 
         //When
         mockMvc.perform(delete(url))
-            .andExpect(status().isOk());
+            .andExpect(status().isNoContent());
 
         //Then
         verify(invoiceService, times(1)).deleteAll();
@@ -294,7 +294,7 @@ class InvoiceControllerTest {
     }
 
     @Test
-    public void shouldReturnInternalServerErrorWhileGettingAllInvoices() throws Exception {
+    void shouldReturnInternalServerErrorWhileGettingAllInvoices() throws Exception {
         //Given
         doThrow(ServiceOperationException.class).when(invoiceService).getAll();
 

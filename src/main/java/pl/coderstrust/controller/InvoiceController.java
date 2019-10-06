@@ -21,7 +21,7 @@ import pl.coderstrust.service.InvoiceService;
 @RequestMapping("/invoices")
 public class InvoiceController {
 
-    private final InvoiceService invoiceService;
+    InvoiceService invoiceService;
 
     @Autowired
     public InvoiceController(InvoiceService invoiceService) {
@@ -29,9 +29,9 @@ public class InvoiceController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> add(@RequestBody Invoice invoice) {
+    public ResponseEntity<?> add(@RequestBody(required = false) Invoice invoice) {
         if (invoice == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
             if (invoice.getId() != null && invoiceService.exists(invoice.getId())) {
@@ -44,9 +44,9 @@ public class InvoiceController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Invoice invoice) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody(required = false) Invoice invoice) {
         if (invoice == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
             if(!id.equals(invoice.getId())) {
@@ -75,23 +75,23 @@ public class InvoiceController {
     public ResponseEntity<?> getById(@PathVariable("id") long id) {
         try {
             Optional<Invoice> invoice = invoiceService.getById(id);
-            if (!invoice.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (invoice.isPresent()) {
+                return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
             }
-            return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping(value = "/byNumber", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getByNumber(@RequestParam String number) {
+    public ResponseEntity<?> getByNumber(@RequestParam(required = false) String number) {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
-            if (!invoice.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (invoice.isPresent()) {
+                return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
             }
-            return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -101,7 +101,7 @@ public class InvoiceController {
     public ResponseEntity<?> deleteAll() {
         try {
             invoiceService.deleteAll();
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -110,11 +110,11 @@ public class InvoiceController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         try {
-            if (!invoiceService.exists(id)) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (invoiceService.exists(id)) {
+                invoiceService.deleteById(id);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            invoiceService.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
