@@ -27,7 +27,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/invoices/**").hasRole("USER")
             .and()
-            .csrf();
+            .httpBasic();
     }
 
     @Autowired
