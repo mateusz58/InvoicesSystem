@@ -109,7 +109,7 @@ public class InFileDatabase implements Database {
         try {
             return getInvoices();
         } catch (IOException e) {
-            log.error("An error occurred during getting all invoices");
+            log.error("An error occurred during getting all invoices",e);
             throw new DatabaseOperationException("An error occurred while getting all invoices from database");
         }
     }

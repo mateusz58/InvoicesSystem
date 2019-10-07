@@ -38,7 +38,7 @@ public class HibernateDatabase implements Database {
     @Override
     public Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
-            log.error("Database has been initialized");
+            log.error("Attempt to add null invoice to database");
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
         try {
