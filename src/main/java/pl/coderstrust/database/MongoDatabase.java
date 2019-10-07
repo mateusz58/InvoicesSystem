@@ -14,15 +14,7 @@ import pl.coderstrust.model.Invoice;
 public class MongoDatabase implements Database {
     private final MongoTemplate mongoTemplate;
     private final MongoModelMapper modelMapper;
-    private AtomicLong nextId = new AtomicLong(0);
-
-    private AtomicLong init() {
-        Query query = new Query();
-        query.with(new Sort(Sort.Direction.DESC, "idField"));
-        query.limit(1);
-        nextId = getAndIncrement((mongoTemplate.findOne(query, MongoInvoice.class)).getId());
-        return null;
-    }
+    private AtomicLong lastId;
 
     public MongoDatabase(MongoTemplate mongoTemplate, MongoModelMapper modelMapper) throws DatabaseOperationException {
         if (mongoTemplate == null) {
@@ -33,6 +25,7 @@ public class MongoDatabase implements Database {
         }
         this.mongoTemplate = mongoTemplate;
         this.modelMapper = modelMapper;
+        init();
     }
 
     @Override
@@ -41,12 +34,30 @@ public class MongoDatabase implements Database {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
         try {
-            MongoInvoice savedInvoice = mongoTemplate.save(modelMapper.mapToMongoInvoice(invoice));
-            //create private Invoice insertInvoice(Invoice invoice) and private Invoice updateInvoice(Invoice invoice, String mongoId) method
-            return modelMapper.mapToInvoice(savedInvoice);
+            MongoInvoice invoiceInDatabase = getInvoiceById(invoice.getId());
+            if (invoiceInDatabase == null) {
+                return insertInvoice(invoice);
+            }
+            return updateInvoice(invoice, invoiceInDatabase.getMongoId());
         } catch (Exception e) {
             throw new DatabaseOperationException("An error occurred during saving invoice.", e);
         }
+    }
+
+    private Invoice insertInvoice(Invoice invoice) {
+        Invoice invoiceToBeInserted = Invoice.builder()
+            .withInvoice(invoice)
+            .withId(lastId.incrementAndGet())
+            .build();
+        return modelMapper.mapToInvoice(mongoTemplate.insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted)));
+    }
+
+    private Invoice updateInvoice(Invoice invoice, String mongoId) {
+        MongoInvoice updatedInvoice = modelMapper.mapToMongoInvoice(Invoice.builder()
+            .withInvoice(invoice)
+            .withId(Long.parseLong(mongoId))
+            .build());
+        return modelMapper.mapToInvoice(mongoTemplate.findAndReplace(Query.query(Criteria.where("id").is(mongoId)), updatedInvoice));
     }
 
     @Override
@@ -81,8 +92,7 @@ public class MongoDatabase implements Database {
     }
 
     private MongoInvoice getInvoiceById(Long id) {
-        Optional<MongoInvoice> invoice = Optional.ofNullable(mongoTemplate.findOne(Query.query(Criteria.where("id").is(id)), MongoInvoice.class));
-        return invoice.get();
+        return mongoTemplate.findOne(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
     }
 
     @Override
@@ -92,7 +102,7 @@ public class MongoDatabase implements Database {
         }
         try {
             MongoInvoice invoice = mongoTemplate.findOne(Query.query(Criteria.where("number").is(number)), MongoInvoice.class);
-                return Optional.ofNullable(modelMapper.mapToInvoice(invoice));
+            return Optional.ofNullable(modelMapper.mapToInvoice(invoice));
         } catch (Exception e) {
             throw new DatabaseOperationException("An error occurred during getting invoice by number.", e);
         }
@@ -135,5 +145,17 @@ public class MongoDatabase implements Database {
         } catch (Exception e) {
             throw new DatabaseOperationException("An error occurred during getting number of invoices.", e);
         }
+    }
+
+    private void init() throws DatabaseOperationException {
+        Query query = new Query();
+        query.with(new Sort(Sort.Direction.DESC, "id"));
+        query.limit(1);
+        MongoInvoice invoice = mongoTemplate.findOne(query, MongoInvoice.class);
+        if(invoice == null){
+            lastId = new AtomicLong(0);
+            return;
+        }
+        lastId = new AtomicLong(invoice.getId());
     }
 }

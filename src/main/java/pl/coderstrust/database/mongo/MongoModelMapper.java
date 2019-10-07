@@ -16,6 +16,7 @@ public interface MongoModelMapper {
     Collection<Invoice> mapToInvoices(Collection<MongoInvoice> invoices);
 
     @Mapping(target = "withMongoId", constant = "")
+    @Mapping(target = "withId", source = "id")
     @Mapping(target = "withNumber", source = "number")
     @Mapping(target = "withIssuedDate", source = "issuedDate")
     @Mapping(target = "withDueDate", source = "dueDate")
