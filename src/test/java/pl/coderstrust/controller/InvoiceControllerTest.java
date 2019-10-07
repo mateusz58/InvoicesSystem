@@ -55,7 +55,7 @@ class InvoiceControllerTest {
         doReturn(Optional.of(invoiceToGet)).when(invoiceService).getById(invoiceToGet.getId());
 
         //When
-        mockMvc.perform(get(url + invoiceToGet.getId())
+        mockMvc.perform(get(String.format("%s%d",url,invoiceToGet.getId()))
             .accept(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(status().isForbidden());
 

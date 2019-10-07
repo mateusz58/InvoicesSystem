@@ -24,10 +24,22 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+            .cors()
+            .disable()
+            .csrf()
+            .disable()
             .authorizeRequests()
-            .antMatchers("/invoices/**").hasRole("USER")
+            .anyRequest().fullyAuthenticated()
+            .anyRequest()
+            .hasRole("USER")
             .and()
-            .httpBasic();
+            .httpBasic()
+            .and()
+            .formLogin()
+            .permitAll()
+            .and()
+            .logout()
+            .permitAll();
     }
 
     @Autowired
