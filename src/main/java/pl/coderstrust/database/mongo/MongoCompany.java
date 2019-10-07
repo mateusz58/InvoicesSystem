@@ -3,7 +3,7 @@ package pl.coderstrust.database.mongo;
 import java.util.Objects;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-public class MongoCompany {
+public final class MongoCompany {
 
     private final String name;
     private final String address;
@@ -13,7 +13,7 @@ public class MongoCompany {
     private final String email;
 
     @PersistenceConstructor
-    public MongoCompany(String name, String address, String taxId, String accountNumber, String phoneNumber, String email) {
+    private MongoCompany(String name, String address, String taxId, String accountNumber, String phoneNumber, String email) {
         this.name = name;
         this.address = address;
         this.taxId = taxId;
@@ -22,16 +22,7 @@ public class MongoCompany {
         this.email = email;
     }
 
-    private MongoCompany() {
-        name = null;
-        address = null;
-        taxId = null;
-        accountNumber = null;
-        phoneNumber = null;
-        email = null;
-    }
-
-    private MongoCompany(MongoCompany.Builder builder) {
+    private MongoCompany(Builder builder) {
         name = builder.name;
         address = builder.address;
         taxId = builder.taxId;

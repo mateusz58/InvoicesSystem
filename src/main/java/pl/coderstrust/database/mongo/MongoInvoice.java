@@ -12,12 +12,12 @@ import pl.coderstrust.model.Company;
 import pl.coderstrust.model.InvoiceEntry;
 
 @Document
-public class MongoInvoice {
+public final class MongoInvoice {
 
     @Id
     private final String mongoId;
 
-    @Indexed
+    @Indexed(unique = true)
     private final Long id;
     private final String number;
     private final LocalDate issuedDate;
@@ -27,7 +27,7 @@ public class MongoInvoice {
     private final List<InvoiceEntry> entries;
 
     @PersistenceConstructor
-    public MongoInvoice(String mongoId, Long id, String number, LocalDate issuedDate, LocalDate dueDate, Company seller, Company buyer, List<InvoiceEntry> entries) {
+    private MongoInvoice(String mongoId, Long id, String number, LocalDate issuedDate, LocalDate dueDate, Company seller, Company buyer, List<InvoiceEntry> entries) {
         this.mongoId = mongoId;
         this.id = id;
         this.number = number;
@@ -38,18 +38,7 @@ public class MongoInvoice {
         this.entries = entries;
     }
 
-    private MongoInvoice() {
-        mongoId = null;
-        id = null;
-        number = null;
-        issuedDate = null;
-        dueDate = null;
-        seller = null;
-        buyer = null;
-        entries = null;
-    }
-
-    private MongoInvoice(MongoInvoice.Builder builder) {
+    private MongoInvoice(Builder builder) {
         mongoId = builder.mongoId;
         id = builder.id;
         number = builder.number;

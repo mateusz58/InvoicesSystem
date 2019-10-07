@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-public class MongoInvoiceEntry {
+public final class MongoInvoiceEntry {
 
     private final String description;
     private final Long quantity;
@@ -14,7 +14,7 @@ public class MongoInvoiceEntry {
     private final MongoVat vatRate;
 
     @PersistenceConstructor
-    public MongoInvoiceEntry(String description, Long quantity, BigDecimal price, BigDecimal netValue, BigDecimal grossValue, MongoVat vatRate) {
+    private MongoInvoiceEntry(String description, Long quantity, BigDecimal price, BigDecimal netValue, BigDecimal grossValue, MongoVat vatRate) {
         this.description = description;
         this.quantity = quantity;
         this.price = price;
@@ -23,16 +23,7 @@ public class MongoInvoiceEntry {
         this.vatRate = vatRate;
     }
 
-    private MongoInvoiceEntry() {
-        description = null;
-        quantity = null;
-        price = null;
-        netValue = null;
-        grossValue = null;
-        vatRate = null;
-    }
-
-    private MongoInvoiceEntry(MongoInvoiceEntry.Builder builder) {
+    private MongoInvoiceEntry(Builder builder) {
         description = builder.description;
         quantity = builder.quantity;
         price = builder.price;

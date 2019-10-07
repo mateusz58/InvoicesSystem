@@ -15,7 +15,7 @@ public interface MongoModelMapper {
 
     Collection<Invoice> mapToInvoices(Collection<MongoInvoice> invoices);
 
-    @Mapping(target = "withId", source = "id")
+    @Mapping(target = "withMongoId", constant = "")
     @Mapping(target = "withNumber", source = "number")
     @Mapping(target = "withIssuedDate", source = "issuedDate")
     @Mapping(target = "withDueDate", source = "dueDate")
@@ -65,7 +65,7 @@ public interface MongoModelMapper {
     @Mapping(target = "withVatRate", source = "vatRate")
     InvoiceEntry mapToInvoiceEntry(MongoInvoiceEntry invoiceEntry);
 
-    Vat mapToMongoVat(Vat vat);
+    MongoVat mapToMongoVat(Vat vat);
 
-    MongoVat maptoVat(MongoVat vat);
+    Vat maptoVat(MongoVat vat);
 }
