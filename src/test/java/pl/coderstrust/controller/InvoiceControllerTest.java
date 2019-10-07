@@ -33,6 +33,7 @@ import pl.coderstrust.service.ServiceOperationException;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(InvoiceController.class)
+@WithMockUser(roles = "USER")
 class InvoiceControllerTest {
 
     @MockBean
@@ -47,7 +48,22 @@ class InvoiceControllerTest {
     String url = "/invoices/";
 
     @Test
-    @WithMockUser(roles = "invalidRole")
+    @WithMockUser(roles = "InvalidRole")
+    void shouldReturnStatusForbiddenWhileGettingInvoiceByIdWithIncorrectAuthenticationRole() throws Exception {
+        //Given
+        Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
+        doReturn(Optional.of(invoiceToGet)).when(invoiceService).getById(invoiceToGet.getId());
+
+        //When
+        mockMvc.perform(get(url + invoiceToGet.getId())
+            .accept(MediaType.APPLICATION_JSON_UTF8))
+            .andExpect(status().isForbidden());
+
+        //Then
+        verify(invoiceService, never()).getById(invoiceToGet.getId());
+    }
+
+    @Test
     void shouldReturnInvoiceById() throws Exception {
         //Given
         Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();

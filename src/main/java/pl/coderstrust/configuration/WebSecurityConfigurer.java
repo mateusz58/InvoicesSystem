@@ -25,13 +25,13 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
             .authorizeRequests()
-            .anyRequest().denyAll();
+            .antMatchers("/invoices/**").hasRole("USER")
+            .and()
+            .csrf();
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authentication)
-        throws Exception
-    {
+    public void configureGlobal(AuthenticationManagerBuilder authentication) throws Exception {
         authentication.inMemoryAuthentication()
             .withUser(username)
             .password(passwordEncoder().encode(password))
