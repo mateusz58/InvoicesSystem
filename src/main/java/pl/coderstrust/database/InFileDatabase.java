@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
@@ -24,25 +26,32 @@ public class InFileDatabase implements Database {
     private FileHelper fileHelper;
     private AtomicLong nextId;
 
+    private static Logger log = LoggerFactory.getLogger(InFileDatabase.class);
+
     @Autowired
     public InFileDatabase(InFileDatabaseProperties inFileDatabaseProperties, ObjectMapper mapper, FileHelper fileHelper) throws IOException {
         this.filePath = inFileDatabaseProperties.getFilePath();
         this.mapper = mapper;
         this.fileHelper = fileHelper;
         initFile();
+        log.info("Database has been initialized");
     }
 
     @Override
     public synchronized Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
+            log.error("Attempt to add null invoice to database");
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
         try {
             if (invoice.getId() == null || !exists(invoice.getId())) {
+                log.error("Attempt to add existing invoice to database");
                 return insertInvoice(invoice);
             }
+            log.info("Invoice has been successfully added to database");
             return updateInvoice(invoice);
         } catch (IOException e) {
+            log.error("An error occurred during adding invoice",e);
             throw new DatabaseOperationException("An error occurred while saving invoice to database");
         }
     }
@@ -50,11 +59,14 @@ public class InFileDatabase implements Database {
     @Override
     public synchronized void delete(Long id) throws DatabaseOperationException {
         if (id == null) {
+            log.error("Attempt to get invoice by null id");
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
         try {
             fileHelper.removeLine(filePath, getPositionInDatabase(id));
+            log.info("Invoice has been successfully deleted");
         } catch (IOException e) {
+            log.error("An error occurred during deleting invoice",e);
             throw new DatabaseOperationException(String.format("An error occurred while deleting invoice with id: %d from database", id));
         }
     }
@@ -62,6 +74,7 @@ public class InFileDatabase implements Database {
     @Override
     public Optional<Invoice> getById(Long id) throws DatabaseOperationException {
         if (id == null) {
+            log.error("Attempt to get invoice by null id");
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
         try {
@@ -69,6 +82,7 @@ public class InFileDatabase implements Database {
                 .filter(s -> s.getId().equals(id))
                 .findFirst();
         } catch (IOException e) {
+            log.error("An error occurred during getting invoice by id",e);
             throw new DatabaseOperationException(String.format("An error occurred while getting invoice with id: %d from database", id));
         }
     }
@@ -76,6 +90,7 @@ public class InFileDatabase implements Database {
     @Override
     public Optional<Invoice> getByNumber(String number) throws DatabaseOperationException {
         if (number == null) {
+            log.error("Attempt to get invoice by null number");
             throw new IllegalArgumentException("Invoice number cannot be null.");
         }
         try {
@@ -83,6 +98,7 @@ public class InFileDatabase implements Database {
                 .filter(s -> s.getNumber().equals(number))
                 .findFirst();
         } catch (IOException e) {
+            log.error("An error occurred during getting invoice by number",e);
             throw new DatabaseOperationException(String.format("An error occurred while getting invoice with number: %s from database", number));
         }
 
@@ -93,6 +109,7 @@ public class InFileDatabase implements Database {
         try {
             return getInvoices();
         } catch (IOException e) {
+            log.error("An error occurred during getting all invoices");
             throw new DatabaseOperationException("An error occurred while getting all invoices from database");
         }
     }
@@ -101,7 +118,9 @@ public class InFileDatabase implements Database {
     public synchronized void deleteAll() throws DatabaseOperationException {
         try {
             fileHelper.clear(filePath);
+            log.info("All invoices have been successfully deleted");
         } catch (IOException e) {
+            log.error("An error occurred during deleting all invoices");
             throw new DatabaseOperationException("An error occurred while deleting all invoices from database");
         }
     }
@@ -109,6 +128,7 @@ public class InFileDatabase implements Database {
     @Override
     public boolean exists(Long id) throws DatabaseOperationException {
         if (id == null) {
+            log.error("Attempt to check if null invoice exists");
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
         try {
@@ -116,6 +136,7 @@ public class InFileDatabase implements Database {
                 .stream()
                 .anyMatch(invoice -> invoice.getId().equals(id));
         } catch (IOException e) {
+            log.error("An error occurred during checking if invoice exist",e);
             throw new DatabaseOperationException("An error occurred while checking if invoice exists in database");
         }
     }
@@ -125,6 +146,7 @@ public class InFileDatabase implements Database {
         try {
             return getInvoices().size();
         } catch (IOException e) {
+            log.error("An error occurred during counting invoices",e);
             throw new DatabaseOperationException("An error occurred during getting number of invoices.");
         }
     }

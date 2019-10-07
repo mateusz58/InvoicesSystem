@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Repository;
@@ -17,26 +19,34 @@ public class HibernateDatabase implements Database {
     private final InvoiceRepository invoiceRepository;
     private final HibernateModelMapper modelMapper;
 
+    private static Logger log = LoggerFactory.getLogger(HibernateDatabase.class);
+
     public HibernateDatabase(InvoiceRepository invoiceRepository, HibernateModelMapper modelMapper) {
         if (invoiceRepository == null) {
+            log.error("Database is empty");
             throw new IllegalArgumentException("Database is empty.");
         }
         if (modelMapper == null) {
+            log.error("Attempt to initialize database with null mapper");
             throw new IllegalArgumentException("Mapper cannot be null.");
         }
         this.invoiceRepository = invoiceRepository;
         this.modelMapper = modelMapper;
+        log.info("Database has been initialized");
     }
 
     @Override
     public Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
+            log.error("Database has been initialized");
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
         try {
             HibernateInvoice savedInvoice = invoiceRepository.save(modelMapper.mapToHibernateInvoice(invoice));
+            log.info("Invoice has been successfully added to database");
             return modelMapper.mapToInvoice(savedInvoice);
         } catch (NonTransientDataAccessException e) {
+            log.error("An error occurred during adding invoice",e);
             throw new DatabaseOperationException("An error occurred during saving invoice.", e);
         }
     }
@@ -44,14 +54,18 @@ public class HibernateDatabase implements Database {
     @Override
     public void delete(Long id) throws DatabaseOperationException {
         if (id == null) {
+            log.error("Attempt to delete null invoice");
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
         if (!invoiceRepository.existsById(id)) {
+            log.error("Attempt to delete not existing invoice to database");
             throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
         }
         try {
             invoiceRepository.deleteById(id);
+            log.info("Invoice has been successfully deleted");
         } catch (NonTransientDataAccessException | NoSuchElementException e) {
+            log.error("An error occurred during deleting invoice",e);
             throw new DatabaseOperationException("An error occurred during deleting invoice.", e);
         }
     }
@@ -59,6 +73,7 @@ public class HibernateDatabase implements Database {
     @Override
     public Optional<Invoice> getById(Long id) throws DatabaseOperationException {
         if (id == null) {
+            log.error("Attempt to get invoice by null id");
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
@@ -68,6 +83,7 @@ public class HibernateDatabase implements Database {
             }
             return Optional.empty();
         } catch (NoSuchElementException e) {
+            log.error("An error occurred during getting invoice by id",e);
             throw new DatabaseOperationException("An error occurred during getting invoice by id.", e);
         }
     }
@@ -75,6 +91,7 @@ public class HibernateDatabase implements Database {
     @Override
     public Optional<Invoice> getByNumber(String number) throws DatabaseOperationException {
         if (number == null) {
+            log.error("Attempt to get invoice by null number");
             throw new IllegalArgumentException("Number cannot be null.");
         }
         try {
@@ -85,6 +102,7 @@ public class HibernateDatabase implements Database {
             }
             return Optional.empty();
         } catch (NonTransientDataAccessException e) {
+            log.error("An error occurred during getting invoice by number",e);
             throw new DatabaseOperationException("An error occurred during getting invoice by number.", e);
         }
     }
@@ -94,6 +112,7 @@ public class HibernateDatabase implements Database {
         try {
             return modelMapper.mapToInvoices(invoiceRepository.findAll());
         } catch (NonTransientDataAccessException e) {
+            log.error("An error occurred during getting all invoices");
             throw new DatabaseOperationException("An error occurred during getting all invoices.", e);
         }
     }
@@ -102,7 +121,9 @@ public class HibernateDatabase implements Database {
     public void deleteAll() throws DatabaseOperationException {
         try {
             invoiceRepository.deleteAll();
+            log.info("All invoices have been successfully deleted");
         } catch (NonTransientDataAccessException e) {
+            log.error("An error occurred during deleting all invoices",e);
             throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
         }
     }
@@ -110,11 +131,13 @@ public class HibernateDatabase implements Database {
     @Override
     public boolean exists(Long id) throws DatabaseOperationException {
         if (id == null) {
+            log.error("Attempt to check if null invoice exists");
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
             return invoiceRepository.existsById(id);
         } catch (NonTransientDataAccessException e) {
+            log.error("An error occurred during checking if invoice exist",e);
             throw new DatabaseOperationException("An error occurred during checking if invoice exists.", e);
         }
     }
@@ -124,6 +147,7 @@ public class HibernateDatabase implements Database {
         try {
             return invoiceRepository.count();
         } catch (NonTransientDataAccessException e) {
+            log.error("An error occurred during counting invoices",e);
             throw new DatabaseOperationException("An error occurred during getting number of invoices.", e);
         }
     }
