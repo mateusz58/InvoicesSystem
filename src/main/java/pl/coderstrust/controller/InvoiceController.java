@@ -21,7 +21,7 @@ import pl.coderstrust.service.InvoiceService;
 @RequestMapping("/invoices")
 public class InvoiceController {
 
-    InvoiceService invoiceService;
+    private InvoiceService invoiceService;
 
     @Autowired
     public InvoiceController(InvoiceService invoiceService) {
@@ -59,7 +59,6 @@ public class InvoiceController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -85,7 +84,10 @@ public class InvoiceController {
     }
 
     @GetMapping(value = "/byNumber", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getByNumber(@RequestParam(required = false) String number) {
+    public ResponseEntity<?> getByNumber(@RequestParam String number) {
+        if (number == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
