@@ -7,7 +7,7 @@ import pl.coderstrust.model.InvoiceEntry;
 
 public class InvoiceGenerator {
 
-    private static List<InvoiceEntry> generateEntries(int count) {
+    private static List<InvoiceEntry> generateEntries(long count) {
         List<InvoiceEntry> entries = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             entries.add(InvoiceEntryGenerator.getRandomEntry());
@@ -23,7 +23,7 @@ public class InvoiceGenerator {
             .withSeller(CompanyGenerator.generateRandomCompany())
             .withDueDate(LocalDateGenerator.generateRandomLocalDate())
             .withIssuedDate(LocalDateGenerator.generateRandomLocalDate())
-            .withEntries(generateEntries(Math.toIntExact(NumberGenerator.generateRandomNumber(1)) + 1))
+            .withEntries(generateEntries(NumberGenerator.generateRandomNumber(1) + 1))
             .build();
     }
 

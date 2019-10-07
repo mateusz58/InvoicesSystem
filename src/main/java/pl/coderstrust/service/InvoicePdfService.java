@@ -39,12 +39,12 @@ public class InvoicePdfService {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
+        try {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         PdfDocument pdfDocument = new PdfDocument(new PdfWriter(byteStream));
         IBasicProfile invoiceProfile = createBasicProfileData(invoice);
         pdfDocument.setDefaultPageSize(PageSize.A4);
         Document document = new Document(pdfDocument);
-        try {
             document.add(getHeaderInfo(invoiceProfile).add(new Text(getInvoicesIssueDueDates(invoice))));
             document.add(getAddressTable(invoiceProfile));
             document.add(new Paragraph("\n"));
@@ -251,7 +251,7 @@ public class InvoicePdfService {
         profileImp.setPaymentReference(String.format("%09d", invoice.getId()));
         Company seller = invoice.getSeller();
         profileImp.setSellerName(seller.getName());
-        profileImp.setSellerLineOne(invoice.getSeller().getAddress());
+        profileImp.setSellerLineOne(seller.getAddress());
         profileImp.addSellerTaxRegistration(TaxIDTypeCode.FISCAL_NUMBER, seller.getTaxId());
         Company customer = invoice.getBuyer();
         profileImp.setBuyerName(customer.getName());
@@ -286,8 +286,8 @@ public class InvoicePdfService {
         profileImp.setMonetarySummation(String.valueOf(0), "PLN",
             String.valueOf(0), "PLN",
             String.valueOf(0), "PLN",
-            String.valueOf(BigDecimal.valueOf(baseTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN", /// suma wszystkiego netto
-            String.valueOf(BigDecimal.valueOf(taxTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN",  ///suma calego podatku
-            String.valueOf(BigDecimal.valueOf(grandTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN"); ///suma wszystkiego
+            String.valueOf(BigDecimal.valueOf(baseTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN",
+            String.valueOf(BigDecimal.valueOf(taxTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN",
+            String.valueOf(BigDecimal.valueOf(grandTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN");
     }
 }
