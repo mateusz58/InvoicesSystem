@@ -11,7 +11,7 @@ import pl.coderstrust.model.Invoice;
 
 class InvoicePdfServiceTest {
 
-    InvoicePdfService invoicePdfService;
+    private InvoicePdfService invoicePdfService;
 
     @BeforeEach
     void setUp() {

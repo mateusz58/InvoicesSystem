@@ -40,21 +40,21 @@ public class InvoicePdfService {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
         try {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        PdfDocument pdfDocument = new PdfDocument(new PdfWriter(byteStream));
-        IBasicProfile invoiceProfile = createBasicProfileData(invoice);
-        pdfDocument.setDefaultPageSize(PageSize.A4);
-        Document document = new Document(pdfDocument);
-            document.add(getHeaderInfo(invoiceProfile).add(new Text(getInvoicesIssueDueDates(invoice))));
-            document.add(getAddressTable(invoiceProfile));
-            document.add(new Paragraph("\n"));
-            document.add(new Paragraph("\n"));
-            document.add(getLineItemTable(invoice));
-            document.add(getTotalsTable(invoiceProfile));
-            document.add(getPaymentInfo(invoice));
-            document.close();
-            return byteStream.toByteArray();
-        } catch (IOException e) {
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            PdfDocument pdfDocument = new PdfDocument(new PdfWriter(byteStream));
+            IBasicProfile invoiceProfile = createBasicProfileData(invoice);
+            pdfDocument.setDefaultPageSize(PageSize.A4);
+            try(Document document = new Document(pdfDocument)) {
+                document.add(getHeaderInfo(invoiceProfile).add(new Text(getInvoicesIssueDueDates(invoice))));
+                document.add(getAddressTable(invoiceProfile));
+                document.add(new Paragraph("\n"));
+                document.add(new Paragraph("\n"));
+                document.add(getLineItemTable(invoice));
+                document.add(getTotalsTable(invoiceProfile));
+                document.add(getPaymentInfo(invoice));
+                document.close();
+                return byteStream.toByteArray();
+            }} catch (IOException e) {
             throw new ServiceOperationException("An error occured during generating pdf", e);
         }
     }
