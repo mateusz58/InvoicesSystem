@@ -49,7 +49,7 @@ public class InvoiceController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
-            if(!id.equals(invoice.getId())) {
+            if (! id.equals(invoice.getId())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             if (!invoiceService.exists(id)) {
@@ -84,7 +84,7 @@ public class InvoiceController {
     }
 
     @GetMapping(value = "/byNumber", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getByNumber(@RequestParam String number) {
+    public ResponseEntity<?> getByNumber(@RequestParam(required = false) String number) {
         if (number == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
