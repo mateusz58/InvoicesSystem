@@ -298,7 +298,7 @@ class InvoiceServiceTest {
     void shouldReturnNumberOfInvoices() throws ServiceOperationException, DatabaseOperationException {
         doReturn(10L).when(database).count();
 
-        Long result = invoiceService.count();
+        long result = invoiceService.count();
 
         assertEquals(10L, result);
         verify(database).count();

@@ -49,7 +49,7 @@ public class InvoiceController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
-            if (! id.equals(invoice.getId())) {
+            if (!id.equals(invoice.getId())) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             if (!invoiceService.exists(id)) {
