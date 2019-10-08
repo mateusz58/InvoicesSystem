@@ -136,7 +136,7 @@ public class InFileDatabase implements Database {
                 .stream()
                 .anyMatch(invoice -> invoice.getId().equals(id));
         } catch (IOException e) {
-            log.error("An error occurred during checking if invoice exist",e);
+            log.error("An error occurred during checking if invoice exist", e);
             throw new DatabaseOperationException("An error occurred while checking if invoice exists in database");
         }
     }
@@ -146,7 +146,7 @@ public class InFileDatabase implements Database {
         try {
             return getInvoices().size();
         } catch (IOException e) {
-            log.error("An error occurred during counting invoices",e);
+            log.error("An error occurred during counting invoices", e);
             throw new DatabaseOperationException("An error occurred during getting number of invoices.");
         }
     }

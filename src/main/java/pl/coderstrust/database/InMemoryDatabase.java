@@ -14,10 +14,9 @@ import pl.coderstrust.model.Invoice;
 @ConditionalOnProperty(name = "pl.coderstrust.database", havingValue = "in-memory")
 public class InMemoryDatabase implements Database {
 
+    private static Logger log = LoggerFactory.getLogger(InMemoryDatabase.class);
     private Map<Long, Invoice> database;
     private AtomicLong nextId = new AtomicLong(0);
-
-    private static Logger log = LoggerFactory.getLogger(InMemoryDatabase.class);
 
     public InMemoryDatabase(Map<Long, Invoice> database) {
         if (database == null) {

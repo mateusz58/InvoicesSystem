@@ -35,7 +35,7 @@ public class InvoiceService {
             log.info("Invoice has been successfully added to database");
             return database.save(invoice);
         } catch (DatabaseOperationException e) {
-            log.error("An error occurred during adding invoice",e);
+            log.error("An error occurred during adding invoice", e);
             throw new ServiceOperationException("An error occurred during adding invoice", e);
         }
     }
@@ -53,7 +53,7 @@ public class InvoiceService {
             log.info("Invoice has been successfully updated to database");
             return database.save(invoice);
         } catch (DatabaseOperationException e) {
-            log.error("An error occured during updating Invoice to Database",e);
+            log.error("An error occured during updating Invoice to Database", e);
             throw new ServiceOperationException("An error occurred during updating invoice", e);
         }
     }
@@ -71,7 +71,7 @@ public class InvoiceService {
             database.delete(id);
             log.info("Invoice has been successfully deleted");
         } catch (DatabaseOperationException e) {
-            log.error("An error occurred during deleting invoice",e);
+            log.error("An error occurred during deleting invoice", e);
             throw new ServiceOperationException("An error occurred during deleting invoice", e);
         }
     }
@@ -88,7 +88,7 @@ public class InvoiceService {
             }
             return database.getById(id);
         } catch (DatabaseOperationException e) {
-            log.error("An error occurred during getting invoice by id",e);
+            log.error("An error occurred during getting invoice by id", e);
             throw new ServiceOperationException("An error occurred during getting invoice by id", e);
         }
     }
@@ -101,7 +101,7 @@ public class InvoiceService {
         try {
             return database.getByNumber(number);
         } catch (DatabaseOperationException e) {
-            log.error("An error occurred during getting invoice by number",e);
+            log.error("An error occurred during getting invoice by number", e);
             throw new ServiceOperationException("An error occurred during getting invoice by number", e);
         }
     }
@@ -120,7 +120,7 @@ public class InvoiceService {
             database.deleteAll();
             log.info("All invoices have been successfully deleted");
         } catch (DatabaseOperationException e) {
-            log.error("An error occurred during deleting all invoices",e);
+            log.error("An error occurred during deleting all invoices", e);
             throw new ServiceOperationException("An error occurred during deleting all invoices", e);
         }
     }
@@ -133,7 +133,7 @@ public class InvoiceService {
         try {
             return database.exists(id);
         } catch (DatabaseOperationException e) {
-            log.error("An error occurred during checking if invoice exist",e);
+            log.error("An error occurred during checking if invoice exist", e);
             throw new ServiceOperationException("An error occurred during checking if invoice exist", e);
         }
     }
@@ -142,7 +142,7 @@ public class InvoiceService {
         try {
             return database.count();
         } catch (DatabaseOperationException e) {
-            log.error("An error occurred during counting invoices",e);
+            log.error("An error occurred during counting invoices", e);
             throw new ServiceOperationException("An error occurred during counting invoices", e);
         }
     }
