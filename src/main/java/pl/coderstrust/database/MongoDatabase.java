@@ -53,11 +53,17 @@ public class MongoDatabase implements Database {
     }
 
     private Invoice updateInvoice(Invoice invoice, String mongoId) {
-        MongoInvoice updatedInvoice = modelMapper.mapToMongoInvoice(Invoice.builder()
-            .withInvoice(invoice)
-            .withId(Long.parseLong(mongoId))
-            .build());
-        return modelMapper.mapToInvoice(mongoTemplate.findAndReplace(Query.query(Criteria.where("id").is(mongoId)), updatedInvoice));
+        MongoInvoice updatedInvoice = MongoInvoice.builder()
+                .withMongoId(mongoId)
+                .withId(invoice.getId())
+                .withNumber(invoice.getNumber())
+                .withBuyer(invoice.getBuyer())
+                .withSeller(invoice.getSeller())
+                .withDueDate(invoice.getDueDate())
+                .withIssuedDate(invoice.getIssuedDate())
+                .withEntries(invoice.getEntries())
+                .build();
+        return modelMapper.mapToInvoice(mongoTemplate.findAndReplace(Query.query(Criteria.where("id").is(invoice.getId())), updatedInvoice));
     }
 
     @Override
@@ -141,13 +147,13 @@ public class MongoDatabase implements Database {
     @Override
     public long count() throws DatabaseOperationException {
         try {
-            return mongoTemplate.count(new Query(), MongoInvoice.class);
+            return mongoTemplate.count(Query.query(Criteria.where("id").regex("/[0-9]+/")), MongoInvoice.class);
         } catch (Exception e) {
             throw new DatabaseOperationException("An error occurred during getting number of invoices.", e);
         }
     }
 
-    private void init() throws DatabaseOperationException {
+    private void init() {
         Query query = new Query();
         query.with(new Sort(Sort.Direction.DESC, "id"));
         query.limit(1);
