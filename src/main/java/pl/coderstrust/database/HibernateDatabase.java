@@ -32,7 +32,6 @@ public class HibernateDatabase implements Database {
         }
         this.invoiceRepository = invoiceRepository;
         this.modelMapper = modelMapper;
-        log.info("Database has been initialized");
     }
 
     @Override

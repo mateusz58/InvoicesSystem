@@ -34,7 +34,6 @@ public class InFileDatabase implements Database {
         this.mapper = mapper;
         this.fileHelper = fileHelper;
         initFile();
-        log.info("Database has been initialized");
     }
 
     @Override

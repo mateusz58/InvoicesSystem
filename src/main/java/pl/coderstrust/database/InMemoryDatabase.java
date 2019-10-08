@@ -24,7 +24,6 @@ public class InMemoryDatabase implements Database {
             throw new IllegalArgumentException("Database is empty.");
         }
         this.database = database;
-        log.info("Database has been initialized");
     }
 
     @Override
