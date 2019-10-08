@@ -147,7 +147,7 @@ public class MongoDatabase implements Database {
     @Override
     public long count() throws DatabaseOperationException {
         try {
-            return mongoTemplate.count(Query.query(Criteria.where("id").regex("/[0-9]+/")), MongoInvoice.class);
+            return mongoTemplate.count(new Query(), MongoInvoice.class);
         } catch (Exception e) {
             throw new DatabaseOperationException("An error occurred during getting number of invoices.", e);
         }

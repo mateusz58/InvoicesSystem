@@ -356,24 +356,24 @@ class MongoDatabaseTest {
     @Test
     void shouldReturnNumberOfInvoices() throws DatabaseOperationException {
         //given
-        when(mongoTemplate.count(findAnyId, MongoInvoice.class)).thenReturn(10L);
+        when(mongoTemplate.count(new Query(), MongoInvoice.class)).thenReturn(10L);
 
         //when
         long numberOfInvoices = database.count();
 
         //then
         assertEquals(10L, numberOfInvoices);
-        verify(mongoTemplate).count(findAnyId, MongoInvoice.class);
+        verify(mongoTemplate).count(new Query(), MongoInvoice.class);
     }
 
     @Test
     void countMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringGettingNumberOfInvoices() {
         //given
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).count(findAnyId, MongoInvoice.class);
+        }).when(mongoTemplate).count(new Query(), MongoInvoice.class);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.count());
-        verify(mongoTemplate).count(findAnyId, MongoInvoice.class);
+        verify(mongoTemplate).count(new Query(), MongoInvoice.class);
     }
 }
