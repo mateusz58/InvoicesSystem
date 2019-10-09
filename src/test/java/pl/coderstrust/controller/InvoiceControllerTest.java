@@ -75,7 +75,6 @@ class InvoiceControllerTest {
 
         //Then
         verify(invoiceService, never()).getAll();
-
     }
 
     @Test
@@ -104,7 +103,6 @@ class InvoiceControllerTest {
 
         //Then
         verify(invoiceService, times(1)).getById(invoiceToGet.getId());
-
     }
 
     @Test
@@ -349,7 +347,6 @@ class InvoiceControllerTest {
             .content(mapper.writeValueAsBytes(invoiceToAdd))
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isConflict());
-
 
         //Then
         verify(invoiceService, times(1)).exists(invoiceToAdd.getId());
