@@ -44,7 +44,7 @@ public class InvoicePdfService {
             PdfDocument pdfDocument = new PdfDocument(new PdfWriter(byteStream));
             IBasicProfile invoiceProfile = createBasicProfileData(invoice);
             pdfDocument.setDefaultPageSize(PageSize.A4);
-            try(Document document = new Document(pdfDocument)) {
+            try (Document document = new Document(pdfDocument)) {
                 document.add(getHeaderInfo(invoiceProfile).add(new Text(getInvoicesIssueDueDates(invoice))));
                 document.add(getAddressTable(invoiceProfile));
                 document.add(new Paragraph("\n"));
@@ -54,7 +54,8 @@ public class InvoicePdfService {
                 document.add(getPaymentInfo(invoice));
                 document.close();
                 return byteStream.toByteArray();
-            }} catch (IOException e) {
+            }
+        } catch (IOException e) {
             throw new ServiceOperationException("An error occured during generating pdf", e);
         }
     }
