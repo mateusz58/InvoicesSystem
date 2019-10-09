@@ -211,9 +211,7 @@ public class InvoicePdfService {
     }
 
     private static Paragraph getPaymentInfo(Invoice invoice) {
-        Paragraph p = new Paragraph(String.format(
-            "Bank account numbers :",
-            invoice.getNumber()));
+        Paragraph p = new Paragraph("Bank account numbers :");
         p.add("\n").add(String.format("Seller account number %s: ", invoice.getSeller().getAccountNumber()));
         p.add("\n").add(String.format("Buyer account number %s: ", invoice.getBuyer().getAccountNumber()));
         return p;
