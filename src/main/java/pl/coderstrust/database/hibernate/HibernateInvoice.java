@@ -13,8 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import pl.coderstrust.model.Company;
-import pl.coderstrust.model.InvoiceEntry;
 
 @Entity
 @Table(name = "invoice")
@@ -31,13 +29,13 @@ public class HibernateInvoice {
     private final LocalDate dueDate;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private final Company seller;
+    private final HibernateCompany seller;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private final Company buyer;
+    private final HibernateCompany buyer;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private final List<InvoiceEntry> entries;
+    private final List<HibernateInvoiceEntry> entries;
 
     private HibernateInvoice() {
         id = null;
@@ -79,15 +77,15 @@ public class HibernateInvoice {
         return dueDate;
     }
 
-    public Company getSeller() {
+    public HibernateCompany getSeller() {
         return seller;
     }
 
-    public Company getBuyer() {
+    public HibernateCompany getBuyer() {
         return buyer;
     }
 
-    public List<InvoiceEntry> getEntries() {
+    public List<HibernateInvoiceEntry> getEntries() {
         return entries != null ? new ArrayList(entries) : new ArrayList();
     }
 
@@ -133,9 +131,9 @@ public class HibernateInvoice {
         private String number;
         private LocalDate issuedDate;
         private LocalDate dueDate;
-        private Company seller;
-        private Company buyer;
-        private List<InvoiceEntry> entries;
+        private HibernateCompany seller;
+        private HibernateCompany buyer;
+        private List<HibernateInvoiceEntry> entries;
 
         public HibernateInvoice.Builder withId(Long id) {
             this.id = id;
@@ -157,17 +155,17 @@ public class HibernateInvoice {
             return this;
         }
 
-        public HibernateInvoice.Builder withSeller(Company seller) {
+        public HibernateInvoice.Builder withSeller(HibernateCompany seller) {
             this.seller = seller;
             return this;
         }
 
-        public HibernateInvoice.Builder withBuyer(Company buyer) {
+        public HibernateInvoice.Builder withBuyer(HibernateCompany buyer) {
             this.buyer = buyer;
             return this;
         }
 
-        public HibernateInvoice.Builder withEntries(List<InvoiceEntry> entries) {
+        public HibernateInvoice.Builder withEntries(List<HibernateInvoiceEntry> entries) {
             this.entries = entries;
             return this;
         }
