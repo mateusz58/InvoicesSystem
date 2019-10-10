@@ -46,9 +46,9 @@ public class MongoDatabase implements Database {
 
     private Invoice insertInvoice(Invoice invoice) {
         Invoice invoiceToBeInserted = Invoice.builder()
-            .withInvoice(invoice)
-            .withId(lastId.incrementAndGet())
-            .build();
+                .withInvoice(invoice)
+                .withId(lastId.incrementAndGet())
+                .build();
         return modelMapper.mapToInvoice(mongoTemplate.insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted)));
     }
 
@@ -158,7 +158,7 @@ public class MongoDatabase implements Database {
         query.with(new Sort(Sort.Direction.DESC, "id"));
         query.limit(1);
         MongoInvoice invoice = mongoTemplate.findOne(query, MongoInvoice.class);
-        if(invoice == null){
+        if (invoice == null) {
             lastId = new AtomicLong(0);
             return;
         }
