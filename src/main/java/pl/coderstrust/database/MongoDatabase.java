@@ -98,7 +98,7 @@ public class MongoDatabase implements Database {
     }
 
     private MongoInvoice getInvoiceById(Long id) {
-        return mongoTemplate.findById(id, MongoInvoice.class);
+        return mongoTemplate.findOne(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
     }
 
     @Override
