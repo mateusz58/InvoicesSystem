@@ -187,5 +187,4 @@ public class InFileDatabase implements Database {
         }
         return invoices.indexOf(invoice.get()) + 1;
     }
-
 }
