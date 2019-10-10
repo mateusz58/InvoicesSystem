@@ -33,8 +33,6 @@ class MongoDatabaseTest {
 
     private MongoDatabase database;
     private MongoModelMapper modelMapper;
-    Query findId = Query.query(Criteria.where("id").is(10L));
-    Query findAnyId = Query.query(Criteria.where("id").regex("/[0-9]+/"));
 
     @Mock
     private MongoTemplate mongoTemplate;
@@ -46,7 +44,7 @@ class MongoDatabaseTest {
     }
 
     @Test
-    void constructorShouldThrowExceptionForNullInvoiceRepository() {
+    void constructorShouldThrowExceptionForNullMongoTemplate() {
         assertThrows(IllegalArgumentException.class, () -> new MongoDatabase(null, modelMapper));
     }
 
@@ -59,7 +57,7 @@ class MongoDatabaseTest {
     void shouldInsert() throws DatabaseOperationException {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        doReturn(null).when(mongoTemplate).findOne(Query.query(Criteria.where("id").is(invoice.getId())), MongoInvoice.class);
+        doReturn(null).when(mongoTemplate).findById(invoice.getId(), MongoInvoice.class);
         Invoice invoiceToBeInserted = Invoice.builder().withInvoice(invoice).withId(1L).build();
         doReturn(modelMapper.mapToMongoInvoice(invoiceToBeInserted)).when(mongoTemplate).insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted));
 
@@ -76,18 +74,18 @@ class MongoDatabaseTest {
         //given
         Invoice invoiceInDatabase = InvoiceGenerator.generateRandomInvoice();
         MongoInvoice mongoInvoiceInDatabase = modelMapper.mapToMongoInvoice(invoiceInDatabase);
-        doReturn(mongoInvoiceInDatabase).when(mongoTemplate).findOne(Query.query(Criteria.where("id").is(invoiceInDatabase.getId())), MongoInvoice.class);
+        doReturn(mongoInvoiceInDatabase).when(mongoTemplate).findById(invoiceInDatabase.getId(), MongoInvoice.class);
         Invoice invoiceUpdate = InvoiceGenerator.generateRandomInvoice();
         invoiceUpdate = Invoice.builder().withInvoice(invoiceUpdate).withId(invoiceInDatabase.getId()).build();
         MongoInvoice mongoInvoiceUpdate = modelMapper.mapToMongoInvoice(invoiceUpdate);
-        doReturn(mongoInvoiceUpdate).when(mongoTemplate).findAndReplace(Query.query(Criteria.where("id").is(invoiceInDatabase.getId())), mongoInvoiceUpdate);
+        doReturn(mongoInvoiceUpdate).when(mongoTemplate).save(mongoInvoiceUpdate);
 
         //when
         Invoice updatedInvoice = database.save(invoiceUpdate);
 
         //then
         assertEquals(invoiceUpdate, updatedInvoice);
-        verify(mongoTemplate).findAndReplace(Query.query(Criteria.where("id").is(invoiceInDatabase.getId())), mongoInvoiceUpdate);
+        verify(mongoTemplate).save(mongoInvoiceUpdate);
     }
 
     @Test
@@ -99,8 +97,7 @@ class MongoDatabaseTest {
     void saveMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringSearchingForInvoice() {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findOne(findId, MongoInvoice.class);
+        doThrow(new MockitoException("") {}).when(mongoTemplate).findById(invoice.getId(), MongoInvoice.class);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
@@ -123,9 +120,9 @@ class MongoDatabaseTest {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
-        doReturn(mongoInvoice).when(mongoTemplate).findOne(Query.query(Criteria.where("id").is(invoice.getId())), MongoInvoice.class);
+        doReturn(mongoInvoice).when(mongoTemplate).findById(invoice.getId(), MongoInvoice.class);
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findAndReplace(findId, mongoInvoice);
+        }).when(mongoTemplate).save(mongoInvoice);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
@@ -154,6 +151,7 @@ class MongoDatabaseTest {
     @Test
     void deleteMethodShouldThrowExceptionDuringDeletingNotExistingInvoice() {
         //given
+        Query findId = Query.query(Criteria.where("id").is(10L));
         when(mongoTemplate.findAndRemove(findId, MongoInvoice.class)).thenReturn(null);
 
         //then
@@ -164,8 +162,8 @@ class MongoDatabaseTest {
     @Test
     void deleteMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringDeletingInvoice() {
         //given
-        doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findAndRemove(findId, MongoInvoice.class);
+        Query findId = Query.query(Criteria.where("id").is(10L));
+        doThrow(new MockitoException("") {}).when(mongoTemplate).findAndRemove(findId, MongoInvoice.class);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.delete(10L));
@@ -176,9 +174,8 @@ class MongoDatabaseTest {
     void shouldReturnInvoiceById() throws DatabaseOperationException {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        Query findById = Query.query(Criteria.where("id").is(invoice.getId()));
         MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
-        doReturn(mongoInvoice).when(mongoTemplate).findOne(findById, MongoInvoice.class);
+        doReturn(mongoInvoice).when(mongoTemplate).findById(invoice.getId(), MongoInvoice.class);
 
         //when
         Optional<Invoice> gotInvoice = database.getById(invoice.getId());
@@ -186,31 +183,30 @@ class MongoDatabaseTest {
         //then
         assertTrue(gotInvoice.isPresent());
         assertEquals(invoice, gotInvoice.get());
-        verify(mongoTemplate).findOne(findById, MongoInvoice.class);
+        verify(mongoTemplate).findById(invoice.getId(), MongoInvoice.class);
     }
 
     @Test
     void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceById() throws DatabaseOperationException {
         //given
-        when(mongoTemplate.findOne(findId, MongoInvoice.class)).thenReturn(null);
+        when(mongoTemplate.findById(10L, MongoInvoice.class)).thenReturn(null);
 
         //when
         Optional<Invoice> gotInvoice = database.getById(10L);
 
         //then
         assertTrue(gotInvoice.isEmpty());
-        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).findById(10L, MongoInvoice.class);
     }
 
     @Test
     void getByIdMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringGettingInvoiceById() {
         //given
-        doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findOne(findId, MongoInvoice.class);
+        doThrow(new MockitoException("") {}).when(mongoTemplate).findById(10L, MongoInvoice.class);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getById(10L));
-        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).findById(10L, MongoInvoice.class);
     }
 
     @Test
@@ -256,10 +252,9 @@ class MongoDatabaseTest {
     }
 
     @Test
-    void shouldThrowDatabaseOperationExceptionWhenExceptionIsThrownWhenGettingByNumber() {
+    void getByNumberMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringGettingInvoiceByNumber() {
         //given
-        doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findOne(Query.query(Criteria.where("number").is("123")), MongoInvoice.class);
+        doThrow(new MockitoException("") {}).when(mongoTemplate).findOne(Query.query(Criteria.where("number").is("123")), MongoInvoice.class);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getByNumber("123"));
@@ -320,6 +315,7 @@ class MongoDatabaseTest {
     @Test
     void shouldReturnTrueForExistingInvoice() throws DatabaseOperationException {
         //given
+        Query findId = Query.query(Criteria.where("id").is(10L));
         when(mongoTemplate.exists(findId, MongoInvoice.class)).thenReturn(true);
 
         //then
@@ -330,6 +326,7 @@ class MongoDatabaseTest {
     @Test
     void shouldReturnFalseForNotExistingInvoice() throws DatabaseOperationException {
         //given
+        Query findId = Query.query(Criteria.where("id").is(10L));
         when(mongoTemplate.exists(findId, MongoInvoice.class)).thenReturn(false);
 
         //then
@@ -345,6 +342,7 @@ class MongoDatabaseTest {
     @Test
     void existsMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringCheckingIfInvoiceExists() {
         //given
+        Query findId = Query.query(Criteria.where("id").is(10L));
         doThrow(new MockitoException("") {
         }).when(mongoTemplate).exists(findId, MongoInvoice.class);
 

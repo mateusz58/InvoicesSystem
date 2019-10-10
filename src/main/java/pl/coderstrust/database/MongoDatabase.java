@@ -16,9 +16,9 @@ public class MongoDatabase implements Database {
     private final MongoModelMapper modelMapper;
     private AtomicLong lastId;
 
-    public MongoDatabase(MongoTemplate mongoTemplate, MongoModelMapper modelMapper) throws DatabaseOperationException {
+    public MongoDatabase(MongoTemplate mongoTemplate, MongoModelMapper modelMapper) {
         if (mongoTemplate == null) {
-            throw new IllegalArgumentException("Database is empty.");
+            throw new IllegalArgumentException("Mongo template cannot be null.");
         }
         if (modelMapper == null) {
             throw new IllegalArgumentException("Mapper cannot be null.");
@@ -46,24 +46,24 @@ public class MongoDatabase implements Database {
 
     private Invoice insertInvoice(Invoice invoice) {
         Invoice invoiceToBeInserted = Invoice.builder()
-                .withInvoice(invoice)
-                .withId(lastId.incrementAndGet())
-                .build();
+            .withInvoice(invoice)
+            .withId(lastId.incrementAndGet())
+            .build();
         return modelMapper.mapToInvoice(mongoTemplate.insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted)));
     }
 
     private Invoice updateInvoice(Invoice invoice, String mongoId) {
         MongoInvoice updatedInvoice = MongoInvoice.builder()
-                .withMongoId(mongoId)
-                .withId(invoice.getId())
-                .withNumber(invoice.getNumber())
-                .withBuyer(invoice.getBuyer())
-                .withSeller(invoice.getSeller())
-                .withDueDate(invoice.getDueDate())
-                .withIssuedDate(invoice.getIssuedDate())
-                .withEntries(invoice.getEntries())
-                .build();
-        return modelMapper.mapToInvoice(mongoTemplate.findAndReplace(Query.query(Criteria.where("id").is(invoice.getId())), updatedInvoice));
+            .withMongoId(mongoId)
+            .withId(invoice.getId())
+            .withNumber(invoice.getNumber())
+            .withBuyer(invoice.getBuyer())
+            .withSeller(invoice.getSeller())
+            .withDueDate(invoice.getDueDate())
+            .withIssuedDate(invoice.getIssuedDate())
+            .withEntries(invoice.getEntries())
+            .build();
+        return modelMapper.mapToInvoice(mongoTemplate.save(updatedInvoice));
     }
 
     @Override
@@ -98,7 +98,7 @@ public class MongoDatabase implements Database {
     }
 
     private MongoInvoice getInvoiceById(Long id) {
-        return mongoTemplate.findOne(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
+        return mongoTemplate.findById(id, MongoInvoice.class);
     }
 
     @Override
@@ -108,7 +108,10 @@ public class MongoDatabase implements Database {
         }
         try {
             MongoInvoice invoice = mongoTemplate.findOne(Query.query(Criteria.where("number").is(number)), MongoInvoice.class);
-            return Optional.ofNullable(modelMapper.mapToInvoice(invoice));
+            if (invoice != null) {
+                return Optional.of(modelMapper.mapToInvoice(invoice));
+            }
+            return Optional.empty();
         } catch (Exception e) {
             throw new DatabaseOperationException("An error occurred during getting invoice by number.", e);
         }
