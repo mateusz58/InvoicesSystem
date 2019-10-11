@@ -78,8 +78,7 @@ class MongoDatabaseTest {
         MongoInvoice mongoInvoiceInDatabase = modelMapper.mapToMongoInvoice(invoiceInDatabase);
         Query findId = Query.query(Criteria.where("id").is(invoiceInDatabase.getId()));
         doReturn(mongoInvoiceInDatabase).when(mongoTemplate).findOne(findId, MongoInvoice.class);
-        Invoice invoiceUpdate = InvoiceGenerator.generateRandomInvoice();
-        invoiceUpdate = Invoice.builder().withInvoice(invoiceUpdate).withId(invoiceInDatabase.getId()).build();
+        Invoice invoiceUpdate = InvoiceGenerator.getRandomInvoiceWithSpecificId(invoiceInDatabase.getId());
         MongoInvoice mongoInvoiceUpdate = modelMapper.mapToMongoInvoice(invoiceUpdate);
         doReturn(mongoInvoiceUpdate).when(mongoTemplate).save(mongoInvoiceUpdate);
 
@@ -101,10 +100,12 @@ class MongoDatabaseTest {
     void saveMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringSearchingForInvoice() {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        doThrow(new MockitoException("") {}).when(mongoTemplate).findOne(Query.query(Criteria.where("id").is(invoice.getId())), MongoInvoice.class);
+        Query findId = Query.query(Criteria.where("id").is(invoice.getId()));
+        doThrow(new MockitoException("") {}).when(mongoTemplate).findOne(findId, MongoInvoice.class);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
+        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
     }
 
     @Test
@@ -116,6 +117,7 @@ class MongoDatabaseTest {
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
+        verify(mongoTemplate).insert(modelMapper.mapToMongoInvoice(Invoice.builder().withInvoice(invoice).withId(1L).build()));
     }
 
     @Test
@@ -130,6 +132,7 @@ class MongoDatabaseTest {
         //then
         assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
         verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).save(mongoInvoice);
     }
 
     @Test
@@ -180,7 +183,8 @@ class MongoDatabaseTest {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
-        doReturn(mongoInvoice).when(mongoTemplate).findOne(Query.query(Criteria.where("id").is(invoice.getId())), MongoInvoice.class);
+        Query findId = Query.query(Criteria.where("id").is(invoice.getId()));
+        doReturn(mongoInvoice).when(mongoTemplate).findOne(findId, MongoInvoice.class);
 
         //when
         Optional<Invoice> gotInvoice = database.getById(invoice.getId());
@@ -188,7 +192,7 @@ class MongoDatabaseTest {
         //then
         assertTrue(gotInvoice.isPresent());
         assertEquals(invoice, gotInvoice.get());
-        verify(mongoTemplate).findOne(Query.query(Criteria.where("id").is(invoice.getId())), MongoInvoice.class);
+        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
     }
 
     @Test
