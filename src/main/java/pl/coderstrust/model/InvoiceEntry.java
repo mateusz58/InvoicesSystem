@@ -11,7 +11,7 @@ import java.util.Objects;
 @ApiModel(value = "Invoice Entry", description = "Name, quantity and values of sold product")
 public final class InvoiceEntry {
 
-    @ApiModelProperty(value = "The unique identifier of the Invoice Entry", position = -1, dataType = "Long")
+    @ApiModelProperty(value = "The unique identifier of the Invoice Entry", position = - 1, dataType = "Long")
     private final Long id;
     @ApiModelProperty(value = "Description of what is sold", example = "Siatka ogrodzeniowa")
     private final String description;
@@ -27,7 +27,6 @@ public final class InvoiceEntry {
     private final Vat vatRate;
 
     private InvoiceEntry(Builder builder) {
-
         id = builder.id;
         description = builder.description;
         quantity = builder.quantity;
@@ -70,6 +69,11 @@ public final class InvoiceEntry {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, description, quantity, price, netValue, grossValue, vatRate);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -85,11 +89,6 @@ public final class InvoiceEntry {
             && Objects.equals(netValue, that.netValue)
             && Objects.equals(grossValue, that.grossValue)
             && Objects.equals(vatRate, that.vatRate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, description, quantity, price, netValue, grossValue, vatRate);
     }
 
     @Override

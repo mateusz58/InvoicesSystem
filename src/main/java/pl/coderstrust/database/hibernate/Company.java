@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "company")
-public class HibernateCompany {
+public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class HibernateCompany {
 
     private final String email;
 
-    private HibernateCompany() {
+    private Company() {
         id = null;
         name = null;
         address = null;
@@ -37,7 +37,7 @@ public class HibernateCompany {
         email = null;
     }
 
-    private HibernateCompany(HibernateCompany.Builder builder) {
+    private Company(Company.Builder builder) {
         id = builder.id;
         name = builder.name;
         address = builder.address;
@@ -45,6 +45,10 @@ public class HibernateCompany {
         accountNumber = builder.accountNumber;
         phoneNumber = builder.phoneNumber;
         email = builder.email;
+    }
+
+    public static Company.Builder builder() {
+        return new Company.Builder();
     }
 
     public Long getId() {
@@ -76,6 +80,11 @@ public class HibernateCompany {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, name, address, taxId, accountNumber, phoneNumber, email);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -83,7 +92,7 @@ public class HibernateCompany {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        HibernateCompany company = (HibernateCompany) o;
+        Company company = (Company) o;
         return Objects.equals(id, company.id)
             && Objects.equals(name, company.name)
             && Objects.equals(address, company.address)
@@ -94,13 +103,8 @@ public class HibernateCompany {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, name, address, taxId, accountNumber, phoneNumber, email);
-    }
-
-    @Override
     public String toString() {
-        return "HibernateCompany{"
+        return "Company{"
             + "id=" + id
             + ", name='" + name + '\''
             + ", address='" + address + '\''
@@ -109,10 +113,6 @@ public class HibernateCompany {
             + ", phoneNumber='" + phoneNumber + '\''
             + ", email='" + email + '\''
             + '}';
-    }
-
-    public static HibernateCompany.Builder builder() {
-        return new HibernateCompany.Builder();
     }
 
     public static class Builder {
@@ -125,43 +125,43 @@ public class HibernateCompany {
         private String phoneNumber;
         private String email;
 
-        public HibernateCompany.Builder withId(Long id) {
+        public Company.Builder withId(Long id) {
             this.id = id;
             return this;
         }
 
-        public HibernateCompany.Builder withName(String name) {
+        public Company.Builder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public HibernateCompany.Builder withAddress(String address) {
+        public Company.Builder withAddress(String address) {
             this.address = address;
             return this;
         }
 
-        public HibernateCompany.Builder withTaxId(String taxId) {
+        public Company.Builder withTaxId(String taxId) {
             this.taxId = taxId;
             return this;
         }
 
-        public HibernateCompany.Builder withAccountNumber(String accountNumber) {
+        public Company.Builder withAccountNumber(String accountNumber) {
             this.accountNumber = accountNumber;
             return this;
         }
 
-        public HibernateCompany.Builder withPhoneNumber(String phoneNumber) {
+        public Company.Builder withPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
             return this;
         }
 
-        public HibernateCompany.Builder withEmail(String email) {
+        public Company.Builder withEmail(String email) {
             this.email = email;
             return this;
         }
 
-        public HibernateCompany build() {
-            return new HibernateCompany(this);
+        public Company build() {
+            return new Company(this);
         }
     }
 }

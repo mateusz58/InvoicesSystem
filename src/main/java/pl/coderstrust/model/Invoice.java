@@ -13,7 +13,7 @@ import java.util.Objects;
 @ApiModel(value = "Invoice", description = "Vat Invoice")
 public final class Invoice {
 
-    @ApiModelProperty(value = "The unique identifier of the invoice", position = -1, dataType = "Long")
+    @ApiModelProperty(value = "The unique identifier of the invoice", position = - 1, dataType = "Long")
     private final Long id;
     @ApiModelProperty(value = "Invoice number", example = "FV/1/05/2019")
     private final String number;
@@ -71,6 +71,11 @@ public final class Invoice {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, number, issuedDate, dueDate, seller, buyer, entries);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -86,11 +91,6 @@ public final class Invoice {
             && Objects.equals(seller, invoice.seller)
             && Objects.equals(buyer, invoice.buyer)
             && Objects.equals(entries, invoice.entries);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, number, issuedDate, dueDate, seller, buyer, entries);
     }
 
     @Override

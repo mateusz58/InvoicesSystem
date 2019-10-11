@@ -20,7 +20,7 @@ public enum MongoVat {
     @Override
     public String toString() {
         return "MongoVat{"
-                + "value=" + value
-                + '}';
+            + "value=" + value
+            + '}';
     }
 }

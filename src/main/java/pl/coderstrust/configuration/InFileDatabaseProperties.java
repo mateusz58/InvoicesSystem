@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "pl.coderstrust.database.in-file")
-@PropertySource("classpath:in-file.properties")
+@PropertySource("classpath:application-infile.properties")
 public class InFileDatabaseProperties {
     private String filePath;
 

@@ -30,7 +30,6 @@ public class InvoiceEmailService {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
-
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);

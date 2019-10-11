@@ -37,6 +37,18 @@ public class MongoDatabase implements Database {
         init();
     }
 
+    private void init() {
+        Query query = new Query();
+        query.with(new Sort(Sort.Direction.DESC, "id"));
+        query.limit(1);
+        MongoInvoice invoice = mongoTemplate.findOne(query, MongoInvoice.class);
+        if (invoice == null) {
+            lastId = new AtomicLong(0);
+            return;
+        }
+        lastId = new AtomicLong(invoice.getId());
+    }
+
     @Override
     public Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
@@ -56,28 +68,6 @@ public class MongoDatabase implements Database {
             log.error(message, e);
             throw new DatabaseOperationException(message, e);
         }
-    }
-
-    private Invoice insertInvoice(Invoice invoice) {
-        Invoice invoiceToBeInserted = Invoice.builder()
-            .withInvoice(invoice)
-            .withId(lastId.incrementAndGet())
-            .build();
-        return modelMapper.mapToInvoice(mongoTemplate.insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted)));
-    }
-
-    private Invoice updateInvoice(Invoice invoice, String mongoId) {
-        MongoInvoice updatedInvoice = MongoInvoice.builder()
-            .withMongoId(mongoId)
-            .withId(invoice.getId())
-            .withNumber(invoice.getNumber())
-            .withBuyer(invoice.getBuyer())
-            .withSeller(invoice.getSeller())
-            .withDueDate(invoice.getDueDate())
-            .withIssuedDate(invoice.getIssuedDate())
-            .withEntries(invoice.getEntries())
-            .build();
-        return modelMapper.mapToInvoice(mongoTemplate.save(updatedInvoice));
     }
 
     @Override
@@ -117,10 +107,6 @@ public class MongoDatabase implements Database {
             log.error(message, e);
             throw new DatabaseOperationException(message, e);
         }
-    }
-
-    private MongoInvoice getInvoiceById(Long id) {
-        return mongoTemplate.findOne(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
     }
 
     @Override
@@ -191,15 +177,29 @@ public class MongoDatabase implements Database {
         }
     }
 
-    private void init() {
-        Query query = new Query();
-        query.with(new Sort(Sort.Direction.DESC, "id"));
-        query.limit(1);
-        MongoInvoice invoice = mongoTemplate.findOne(query, MongoInvoice.class);
-        if (invoice == null) {
-            lastId = new AtomicLong(0);
-            return;
-        }
-        lastId = new AtomicLong(invoice.getId());
+    private MongoInvoice getInvoiceById(Long id) {
+        return mongoTemplate.findOne(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
+    }
+
+    private Invoice insertInvoice(Invoice invoice) {
+        Invoice invoiceToBeInserted = Invoice.builder()
+            .withInvoice(invoice)
+            .withId(lastId.incrementAndGet())
+            .build();
+        return modelMapper.mapToInvoice(mongoTemplate.insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted)));
+    }
+
+    private Invoice updateInvoice(Invoice invoice, String mongoId) {
+        MongoInvoice updatedInvoice = MongoInvoice.builder()
+            .withMongoId(mongoId)
+            .withId(invoice.getId())
+            .withNumber(invoice.getNumber())
+            .withBuyer(invoice.getBuyer())
+            .withSeller(invoice.getSeller())
+            .withDueDate(invoice.getDueDate())
+            .withIssuedDate(invoice.getIssuedDate())
+            .withEntries(invoice.getEntries())
+            .build();
+        return modelMapper.mapToInvoice(mongoTemplate.save(updatedInvoice));
     }
 }

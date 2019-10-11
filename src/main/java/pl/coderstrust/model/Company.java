@@ -10,7 +10,7 @@ import java.util.Objects;
 @ApiModel(value = "Company", description = "Company")
 public final class Company {
 
-    @ApiModelProperty(value = "The unique identifier of the company.", position = -1, dataType = "Long")
+    @ApiModelProperty(value = "The unique identifier of the company.", position = - 1, dataType = "Long")
     private final Long id;
     @ApiModelProperty(value = "Company name.", example = "CodersTrust")
     private final String name;
@@ -68,6 +68,11 @@ public final class Company {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, name, address, taxId, accountNumber, phoneNumber, email);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -83,11 +88,6 @@ public final class Company {
             && Objects.equals(accountNumber, company.accountNumber)
             && Objects.equals(phoneNumber, company.phoneNumber)
             && Objects.equals(email, company.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, address, taxId, accountNumber, phoneNumber, email);
     }
 
     @Override

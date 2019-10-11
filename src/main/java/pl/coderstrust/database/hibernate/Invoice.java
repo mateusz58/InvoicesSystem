@@ -10,13 +10,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "invoice")
-public class HibernateInvoice {
+public class Invoice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,15 +31,18 @@ public class HibernateInvoice {
     private final LocalDate dueDate;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private final HibernateCompany seller;
+    private final Company seller;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private final HibernateCompany buyer;
+    private final Company buyer;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private final List<HibernateInvoiceEntry> entries;
+    @JoinTable(name = "invoice_entries",
+        joinColumns = {@JoinColumn(name = "invoice_id")},
+        inverseJoinColumns = {@JoinColumn(name = "entries_id")})
+    private final List<InvoiceEntry> entries;
 
-    private HibernateInvoice() {
+    private Invoice() {
         id = null;
         number = null;
         issuedDate = null;
@@ -47,7 +52,7 @@ public class HibernateInvoice {
         entries = null;
     }
 
-    private HibernateInvoice(HibernateInvoice.Builder builder) {
+    private Invoice(Invoice.Builder builder) {
         id = builder.id;
         number = builder.number;
         issuedDate = builder.issuedDate;
@@ -57,8 +62,8 @@ public class HibernateInvoice {
         entries = builder.entries;
     }
 
-    public static HibernateInvoice.Builder builder() {
-        return new HibernateInvoice.Builder();
+    public static Invoice.Builder builder() {
+        return new Invoice.Builder();
     }
 
     public Long getId() {
@@ -77,16 +82,21 @@ public class HibernateInvoice {
         return dueDate;
     }
 
-    public HibernateCompany getSeller() {
+    public Company getSeller() {
         return seller;
     }
 
-    public HibernateCompany getBuyer() {
+    public Company getBuyer() {
         return buyer;
     }
 
-    public List<HibernateInvoiceEntry> getEntries() {
+    public List<InvoiceEntry> getEntries() {
         return entries != null ? new ArrayList(entries) : new ArrayList();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, number, issuedDate, dueDate, seller, buyer, entries);
     }
 
     @Override
@@ -97,7 +107,7 @@ public class HibernateInvoice {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        HibernateInvoice invoice = (HibernateInvoice) o;
+        Invoice invoice = (Invoice) o;
         return Objects.equals(id, invoice.id)
             && Objects.equals(number, invoice.number)
             && Objects.equals(issuedDate, invoice.issuedDate)
@@ -108,13 +118,8 @@ public class HibernateInvoice {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, number, issuedDate, dueDate, seller, buyer, entries);
-    }
-
-    @Override
     public String toString() {
-        return "HibernateInvoice{"
+        return "Invoice{"
             + "id=" + id
             + ", number='" + number + '\''
             + ", issuedDate=" + issuedDate
@@ -131,47 +136,47 @@ public class HibernateInvoice {
         private String number;
         private LocalDate issuedDate;
         private LocalDate dueDate;
-        private HibernateCompany seller;
-        private HibernateCompany buyer;
-        private List<HibernateInvoiceEntry> entries;
+        private Company seller;
+        private Company buyer;
+        private List<InvoiceEntry> entries;
 
-        public HibernateInvoice.Builder withId(Long id) {
+        public Invoice.Builder withId(Long id) {
             this.id = id;
             return this;
         }
 
-        public HibernateInvoice.Builder withNumber(String number) {
+        public Invoice.Builder withNumber(String number) {
             this.number = number;
             return this;
         }
 
-        public HibernateInvoice.Builder withIssuedDate(LocalDate issuedDate) {
+        public Invoice.Builder withIssuedDate(LocalDate issuedDate) {
             this.issuedDate = issuedDate;
             return this;
         }
 
-        public HibernateInvoice.Builder withDueDate(LocalDate dueDate) {
+        public Invoice.Builder withDueDate(LocalDate dueDate) {
             this.dueDate = dueDate;
             return this;
         }
 
-        public HibernateInvoice.Builder withSeller(HibernateCompany seller) {
+        public Invoice.Builder withSeller(Company seller) {
             this.seller = seller;
             return this;
         }
 
-        public HibernateInvoice.Builder withBuyer(HibernateCompany buyer) {
+        public Invoice.Builder withBuyer(Company buyer) {
             this.buyer = buyer;
             return this;
         }
 
-        public HibernateInvoice.Builder withEntries(List<HibernateInvoiceEntry> entries) {
+        public Invoice.Builder withEntries(List<InvoiceEntry> entries) {
             this.entries = entries;
             return this;
         }
 
-        public HibernateInvoice build() {
-            return new HibernateInvoice(this);
+        public Invoice build() {
+            return new Invoice(this);
         }
     }
 }
