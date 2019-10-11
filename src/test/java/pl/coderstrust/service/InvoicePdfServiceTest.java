@@ -27,10 +27,8 @@ class InvoicePdfServiceTest {
     void shouldCreatePdfFileInMemory() throws ServiceOperationException {
         //Given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-
         //When
         byte[] result = invoicePdfService.createPdf(invoice);
-
         //Then
         assertNotNull(result);
         assertTrue(result.length > 0);

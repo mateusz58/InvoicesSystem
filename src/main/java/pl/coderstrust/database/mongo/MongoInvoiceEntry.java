@@ -61,6 +61,11 @@ public final class MongoInvoiceEntry {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(description, quantity, price, netValue, grossValue, vatRate);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -75,11 +80,6 @@ public final class MongoInvoiceEntry {
             && Objects.equals(netValue, that.netValue)
             && Objects.equals(grossValue, that.grossValue)
             && Objects.equals(vatRate, that.vatRate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(description, quantity, price, netValue, grossValue, vatRate);
     }
 
     @Override

@@ -62,8 +62,19 @@ public class InvoicePdfService {
         }
     }
 
-    private static PdfFont bold() throws IOException {
-        return PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+    private static IBasicProfile createBasicProfileData(Invoice invoice) {
+        BasicProfileImp profileImp = new BasicProfileImp(true);
+        importSellerBuyerFromInvoice(profileImp, invoice);
+        importItemsTotalPrizeValuesFromInvoice(profileImp, invoice);
+        return profileImp;
+    }
+
+    private static Paragraph getHeaderInfo(IBasicProfile invoiceProfile) throws IOException {
+        return new Paragraph()
+            .setTextAlignment(TextAlignment.RIGHT)
+            .setMultipliedLeading(1)
+            .add(new Text(String.format("%s %s\n", invoiceProfile.getName(), invoiceProfile.getId())))
+            .setFont(bold());
     }
 
     private static String getInvoicesIssueDueDates(Invoice invoice) {
@@ -88,34 +99,6 @@ public class InvoicePdfService {
         table.addCell(getPartyTax(basic.getBuyerTaxRegistrationID(),
             basic.getBuyerTaxRegistrationSchemeID()));
         return table;
-    }
-
-    private static Cell getPartyAddress(String who, String name, String address) throws IOException {
-        Paragraph p = new Paragraph()
-            .setMultipliedLeading(1.0f)
-            .add(new Text(who).setFont(bold())).add("\n")
-            .add(name).add("\n")
-            .add(address).add("\n");
-        Cell cell = new Cell()
-            .setBorder(Border.NO_BORDER)
-            .add(p);
-        return cell;
-    }
-
-    private static Cell getPartyTax(String[] taxId, String[] taxSchema) throws IOException {
-        Paragraph p = new Paragraph()
-            .setFontSize(10).setMultipliedLeading(1.0f)
-            .add(new Text("Tax ID(s):").setFont(bold()));
-        if (taxId.length == 0) {
-            p.add("\nNot applicable");
-        } else {
-            int n = taxId.length;
-            for (int i = 0; i < n; i++) {
-                p.add("\n")
-                    .add(String.format("%s: %s", taxSchema[i], taxId[i]));
-            }
-        }
-        return new Cell().setBorder(Border.NO_BORDER).add(p);
     }
 
     private static Table getLineItemTable(Invoice invoice) throws IOException {
@@ -154,18 +137,6 @@ public class InvoicePdfService {
                 .setTextAlignment(TextAlignment.RIGHT);
         }
         return table;
-    }
-
-    private static Cell createCell(String text) {
-        return new Cell().setPadding(0.8f)
-            .add(new Paragraph(text)
-                .setMultipliedLeading(1));
-    }
-
-    private static Cell createCell(String text, PdfFont font) {
-        return new Cell().setPadding(0.8f)
-            .add(new Paragraph(text)
-                .setFont(font).setMultipliedLeading(1));
     }
 
     private static Table getTotalsTable(IBasicProfile basic) throws IOException {
@@ -219,31 +190,6 @@ public class InvoicePdfService {
         return p;
     }
 
-    private static Paragraph getHeaderInfo(IBasicProfile invoiceProfile) throws IOException {
-        return new Paragraph()
-            .setTextAlignment(TextAlignment.RIGHT)
-            .setMultipliedLeading(1)
-            .add(new Text(String.format("%s %s\n", invoiceProfile.getName(), invoiceProfile.getId())))
-            .setFont(bold());
-    }
-
-    private static Double[] add(Double[] first, Double[] second) {
-        int length = first.length < second.length ? first.length
-            : second.length;
-        Double[] result = new Double[length];
-        for (int i = 0; i < length; i++) {
-            result[i] = first[i] + second[i];
-        }
-        return result;
-    }
-
-    private static IBasicProfile createBasicProfileData(Invoice invoice) {
-        BasicProfileImp profileImp = new BasicProfileImp(true);
-        importSellerBuyerFromInvoice(profileImp, invoice);
-        importItemsTotalPrizeValuesFromInvoice(profileImp, invoice);
-        return profileImp;
-    }
-
     private static void importSellerBuyerFromInvoice(BasicProfileImp profileImp, Invoice invoice) {
         profileImp.setId(String.format("I/%s", invoice.getNumber()));
         profileImp.setName("INVOICE");
@@ -290,5 +236,59 @@ public class InvoicePdfService {
             String.valueOf(BigDecimal.valueOf(baseTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN",
             String.valueOf(BigDecimal.valueOf(taxTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN",
             String.valueOf(BigDecimal.valueOf(grandTotal).setScale(2, RoundingMode.HALF_EVEN)), "PLN");
+    }
+
+    private static PdfFont bold() throws IOException {
+        return PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+    }
+
+    private static Cell getPartyAddress(String who, String name, String address) throws IOException {
+        Paragraph p = new Paragraph()
+            .setMultipliedLeading(1.0f)
+            .add(new Text(who).setFont(bold())).add("\n")
+            .add(name).add("\n")
+            .add(address).add("\n");
+        Cell cell = new Cell()
+            .setBorder(Border.NO_BORDER)
+            .add(p);
+        return cell;
+    }
+
+    private static Cell getPartyTax(String[] taxId, String[] taxSchema) throws IOException {
+        Paragraph p = new Paragraph()
+            .setFontSize(10).setMultipliedLeading(1.0f)
+            .add(new Text("Tax ID(s):").setFont(bold()));
+        if (taxId.length == 0) {
+            p.add("\nNot applicable");
+        } else {
+            int n = taxId.length;
+            for (int i = 0; i < n; i++) {
+                p.add("\n")
+                    .add(String.format("%s: %s", taxSchema[i], taxId[i]));
+            }
+        }
+        return new Cell().setBorder(Border.NO_BORDER).add(p);
+    }
+
+    private static Cell createCell(String text, PdfFont font) {
+        return new Cell().setPadding(0.8f)
+            .add(new Paragraph(text)
+                .setFont(font).setMultipliedLeading(1));
+    }
+
+    private static Cell createCell(String text) {
+        return new Cell().setPadding(0.8f)
+            .add(new Paragraph(text)
+                .setMultipliedLeading(1));
+    }
+
+    private static Double[] add(Double[] first, Double[] second) {
+        int length = first.length < second.length ? first.length
+            : second.length;
+        Double[] result = new Double[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = first[i] + second[i];
+        }
+        return result;
     }
 }

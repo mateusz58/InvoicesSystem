@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @ConditionalOnProperty(name = "pl.coderstrust.database", havingValue = "hibernate")
-@PropertySource("classpath:hibernate.properties")
+@PropertySource("classpath:application-hibernate.properties")
 @Import({DataSourceAutoConfiguration.class,
     DataSourceTransactionManagerAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class})

@@ -1,0 +1,1 @@
+SELECT EXISTS(SELECT id FROM invoice_entry WHERE ID=?);

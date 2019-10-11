@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @ConditionalOnProperty(name = "pl.coderstrust.database", havingValue = "mongo")
-@PropertySource("classpath:hibernate.properties")
+@PropertySource("classpath:application-mongo.properties")
 @Import({MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class MongoConfiguration {
 }

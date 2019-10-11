@@ -19,4 +19,16 @@ public class CompanyGenerator {
             .withTaxId(faker.regexify("[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}"))
             .build();
     }
+
+    public static Company generateRandomCompanyWithSpecificId(Long id) {
+        return Company.builder()
+            .withId(id)
+            .withEmail(faker.internet().emailAddress())
+            .withAddress(AddressGenerator.generateRandomAddress())
+            .withAccountNumber(String.valueOf(NumberGenerator.generateRandomNumber(11)))
+            .withName(faker.company().name())
+            .withPhoneNumber(faker.phoneNumber().phoneNumber())
+            .withTaxId(faker.regexify("[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}"))
+            .build();
+    }
 }
