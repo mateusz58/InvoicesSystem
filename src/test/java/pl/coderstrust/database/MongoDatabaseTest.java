@@ -112,12 +112,13 @@ class MongoDatabaseTest {
     void saveMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringInsertingInvoice() {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        MongoInvoice addedInvoice = modelMapper.mapToMongoInvoice(Invoice.builder().withInvoice(invoice).withId(1L).build());
         MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
         doThrow(new MockitoException("") {}).when(mongoTemplate).insert(mongoInvoice);
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
-        verify(mongoTemplate).insert(modelMapper.mapToMongoInvoice(Invoice.builder().withInvoice(invoice).withId(1L).build()));
+        verify(mongoTemplate).insert(addedInvoice);
     }
 
     @Test
