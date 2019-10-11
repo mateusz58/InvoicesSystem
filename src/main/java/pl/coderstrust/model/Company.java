@@ -2,17 +2,27 @@ package pl.coderstrust.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 @JsonDeserialize(builder = Company.Builder.class)
+@ApiModel(value = "Company", description = "Data of Company")
 public final class Company {
 
+    @ApiModelProperty(value = "Identification number")
     private final Long id;
+    @ApiModelProperty(value = "Company name")
     private final String name;
+    @ApiModelProperty(value = "Address of Company", example = "Postcode, City, Street, Premises")
     private final String address;
+    @ApiModelProperty(value = "Company Tax Id number")
     private final String taxId;
+    @ApiModelProperty(value = "Bank account number", example = "'PLNN NNNN NNNN NNNN NNNN NNNN NNNN' N-number")
     private final String accountNumber;
+    @ApiModelProperty(value = "Telephone number")
     private final String phoneNumber;
+    @ApiModelProperty(value = "Email address", example = "example@post.com.pl")
     private final String email;
 
     private Company(Builder builder) {

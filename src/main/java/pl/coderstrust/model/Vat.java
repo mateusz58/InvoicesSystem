@@ -1,5 +1,8 @@
 package pl.coderstrust.model;
 
+import io.swagger.annotations.ApiModel;
+
+@ApiModel(value = "VAT", description = "Provides basic Vat rates")
 public enum Vat {
 
     VAT_0(0.00f),

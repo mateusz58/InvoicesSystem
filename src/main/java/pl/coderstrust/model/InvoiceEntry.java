@@ -2,10 +2,12 @@ package pl.coderstrust.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.swagger.annotations.ApiModel;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @JsonDeserialize(builder = InvoiceEntry.Builder.class)
+@ApiModel(value = "Invoice Entry", description = "Name, quantity and values of sold product")
 public final class InvoiceEntry {
 
     private final Long id;

@@ -2,12 +2,15 @@ package pl.coderstrust.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import io.swagger.annotations.ApiModel;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @JsonDeserialize(builder = Invoice.Builder.class)
+@ApiModel(value = "Vat Invoice")
+
 public final class Invoice {
 
     private final Long id;

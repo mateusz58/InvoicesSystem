@@ -1,5 +1,8 @@
 package pl.coderstrust.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import pl.coderstrust.service.InvoiceService;
 
 @RestController
 @RequestMapping("/invoices")
+@Api(tags = "Invoices", description = "Operations on invoices")
 public class InvoiceController {
 
     private InvoiceService invoiceService;
@@ -28,6 +32,7 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
+    @ApiOperation(value = "Add Invoice", notes = "Creates new Invoice")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody(required = false) Invoice invoice) {
         if (invoice == null) {
@@ -43,8 +48,9 @@ public class InvoiceController {
         }
     }
 
+    @ApiOperation(value = "Update Invoice", notes = "Saves changes in the Invoice")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody(required = false) Invoice invoice) {
+    public ResponseEntity<?> update(@PathVariable @ApiParam(value = "Invoice Identification number") Long id, @RequestBody(required = false) Invoice invoice) {
         if (invoice == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -61,6 +67,7 @@ public class InvoiceController {
         }
     }
 
+    @ApiOperation(value = "Get all Invoices", notes = "Downloads all Invoices")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAll() {
         try {
@@ -70,8 +77,9 @@ public class InvoiceController {
         }
     }
 
+    @ApiOperation(value = "Find by Id", notes = "Finds Invoice by given Id")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getById(@PathVariable("id") long id) {
+    public ResponseEntity<?> getById(@PathVariable("id") @ApiParam(value = "Invoice Identification number") long id) {
         try {
             Optional<Invoice> invoice = invoiceService.getById(id);
             if (invoice.isPresent()) {
@@ -83,8 +91,9 @@ public class InvoiceController {
         }
     }
 
+    @ApiOperation(value = "Find by number", notes = "Finds Invoice by given number")
     @GetMapping(value = "/byNumber", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getByNumber(@RequestParam(required = false) String number) {
+    public ResponseEntity<?> getByNumber(@RequestParam(required = false) @ApiParam(value = "Invoice Number")String number) {
         if (number == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -100,6 +109,7 @@ public class InvoiceController {
     }
 
     @DeleteMapping
+    @ApiOperation(value = "Delete all Invoices", notes = "Erases all data in database")
     public ResponseEntity<?> deleteAll() {
         try {
             invoiceService.deleteAll();
@@ -110,7 +120,8 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Long id) {
+    @ApiOperation(value = "Delete by Id", notes = "Deletes Invoice with specific Id")
+    public ResponseEntity<?> deleteById(@PathVariable @ApiParam(value = "Invoice Identification number") Long id) {
         try {
             if (invoiceService.exists(id)) {
                 invoiceService.deleteById(id);
