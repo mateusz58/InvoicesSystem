@@ -28,11 +28,13 @@ import java.sql.Date;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.TreeMap;
+import org.springframework.stereotype.Service;
 import pl.coderstrust.model.Company;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;
 import pl.coderstrust.model.Vat;
 
+@Service
 public class InvoicePdfService {
 
     public static byte[] createPdf(Invoice invoice) throws ServiceOperationException {
