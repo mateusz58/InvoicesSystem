@@ -15,11 +15,11 @@ public class InvoiceEntryGenerator {
 
     public static InvoiceEntry getRandomEntry() {
         Long quantity = NumberGenerator.generateRandomNumber(1) + 1;
-        BigDecimal price = BigDecimal.valueOf(NumberGenerator.generateRandomNumber(2) + 1);
-        BigDecimal netValue = price.multiply(BigDecimal.valueOf(quantity));
+        BigDecimal price = BigDecimal.valueOf(NumberGenerator.generateRandomNumber(2) + 1).setScale(2, RoundingMode.HALF_EVEN);
+        BigDecimal netValue = price.multiply(BigDecimal.valueOf(quantity)).setScale(2, RoundingMode.HALF_EVEN);
         Vat vatRate = VatRateGenerator.getRandomVatRate(Vat.class);
         BigDecimal vatValue = netValue.multiply(BigDecimal.valueOf(vatRate.getValue())).setScale(2, RoundingMode.HALF_EVEN);
-        BigDecimal grossValue = netValue.add(vatValue);
+        BigDecimal grossValue = netValue.add(vatValue).setScale(2, RoundingMode.HALF_EVEN);
         return InvoiceEntry.builder()
             .withId(getRandomId())
             .withDescription(faker.commerce().productName())

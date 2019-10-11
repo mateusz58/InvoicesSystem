@@ -2,10 +2,13 @@ package pl.coderstrust.generators;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;
 
 public class InvoiceGenerator {
+
+    private static Random random=new Random();
 
     private static List<InvoiceEntry> generateEntries(long count) {
         List<InvoiceEntry> entries = new ArrayList<>();
@@ -23,7 +26,7 @@ public class InvoiceGenerator {
             .withSeller(CompanyGenerator.generateRandomCompany())
             .withDueDate(LocalDateGenerator.generateRandomLocalDate())
             .withIssuedDate(LocalDateGenerator.generateRandomLocalDate())
-            .withEntries(generateEntries(NumberGenerator.generateRandomNumber(1) + 1))
+            .withEntries(generateEntries(random.nextInt(5)+1))
             .build();
     }
 

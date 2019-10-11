@@ -26,4 +26,13 @@ public enum Vat {
             + "value=" + value
             + '}';
     }
+
+    public static Vat getVatType(float vat) {
+        for (Vat vatType : values()) {
+            if (vatType.value==vat) {
+                return vatType;
+            }
+        }
+        throw new IllegalArgumentException("Invalid value");
+    }
 }
