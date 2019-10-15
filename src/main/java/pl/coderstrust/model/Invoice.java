@@ -3,6 +3,7 @@ package pl.coderstrust.model;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +11,21 @@ import java.util.Objects;
 
 @JsonDeserialize(builder = Invoice.Builder.class)
 @ApiModel(value = "Vat Invoice")
-
 public final class Invoice {
 
+    @ApiModelProperty(value = "Invoice Identification number")
     private final Long id;
+    @ApiModelProperty(value = "Invoice number")
     private final String number;
+    @ApiModelProperty(value = "Date of Invoice creation", example = "2019-11-21")
     private final LocalDate issuedDate;
+    @ApiModelProperty(value = "Term of payment", example = "2019-11-21")
     private final LocalDate dueDate;
+    @ApiModelProperty(value = "Data of vendor")
     private final Company seller;
+    @ApiModelProperty(value = "Data of customer")
     private final Company buyer;
+    @ApiModelProperty(value = "Merchandise")
     private final List<InvoiceEntry> entries;
 
     private Invoice(Builder builder) {

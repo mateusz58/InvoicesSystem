@@ -28,11 +28,11 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-            "My REST API",
-            "Some custom description of API.",
-            "API TOS",
-            "Terms of service",
-            new Contact("John Doe", "www.example.com", "myeaddress@company.com"),
-            "License of API", "API license URL", Collections.emptyList());
+            "Invoice service",
+            "Service providing basic operations on Vat Invoices.",
+            "1.0",
+            "",
+            new Contact("Andrzej Psiuk, Jakub Kasprzak, Mateusz Pilarczyk", "https://github.com/CodersTrustPL/project-14-andrzej-jakub-mateusz", "andrzejpsiuk91@gmail.com, matp321@gmail.com, kasprzakjak@poczta.onet.pl"),
+            "", "", Collections.emptyList());
     }
 }

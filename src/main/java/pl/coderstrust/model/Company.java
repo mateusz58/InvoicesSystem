@@ -10,7 +10,7 @@ import java.util.Objects;
 @ApiModel(value = "Company", description = "Data of Company")
 public final class Company {
 
-    @ApiModelProperty(value = "Identification number")
+    @ApiModelProperty(value = "Company Identification number")
     private final Long id;
     @ApiModelProperty(value = "Company name")
     private final String name;
