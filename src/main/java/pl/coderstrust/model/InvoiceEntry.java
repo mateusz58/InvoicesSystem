@@ -8,14 +8,14 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @JsonDeserialize(builder = InvoiceEntry.Builder.class)
-@ApiModel(value = "Invoice Entry", description = "Name, quantity and values of sold products")
+@ApiModel(value = "Invoice Entry", description = "Name, quantity and values of sold product")
 public final class InvoiceEntry {
 
-    @ApiModelProperty(value = "Invoice Entry Identification number")
+    @ApiModelProperty(value = "The unique identifier of the Invoice Entry")
     private final Long id;
-    @ApiModelProperty(value = "What is sold")
+    @ApiModelProperty(value = "Description of what is sold")
     private final String description;
-    @ApiModelProperty(value = "How much")
+    @ApiModelProperty(value = "How much is sold", example = "5szt")
     private final Long quantity;
     @ApiModelProperty(value = "Value per unit")
     private final BigDecimal price;

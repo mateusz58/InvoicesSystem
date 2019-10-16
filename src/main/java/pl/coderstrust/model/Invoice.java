@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Objects;
 
 @JsonDeserialize(builder = Invoice.Builder.class)
-@ApiModel(value = "Vat Invoice")
+@ApiModel(value = "Invoice", description = "Vat Invoice")
 public final class Invoice {
 
-    @ApiModelProperty(value = "Invoice Identification number")
+    @ApiModelProperty(value = "The unique identifier of the invoice", position = -1, dataType = "Long")
     private final Long id;
-    @ApiModelProperty(value = "Invoice number")
+    @ApiModelProperty(value = "Invoice number", example = "FV/1/05/2019")
     private final String number;
     @ApiModelProperty(value = "Date of Invoice creation", example = "2019-11-21")
     private final LocalDate issuedDate;

@@ -7,22 +7,22 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 @JsonDeserialize(builder = Company.Builder.class)
-@ApiModel(value = "Company", description = "Data of Company")
+@ApiModel(value = "Company", description = "Company")
 public final class Company {
 
-    @ApiModelProperty(value = "Company Identification number")
+    @ApiModelProperty(value = "The unique identifier of the company.", position = -1, dataType = "Long")
     private final Long id;
-    @ApiModelProperty(value = "Company name")
+    @ApiModelProperty(value = "Company name.", example = "CodersTrust")
     private final String name;
-    @ApiModelProperty(value = "Address of Company", example = "Postcode, City, Street, Premises")
+    @ApiModelProperty(value = "Company address.", example = "ul. Bukowińska 24 d/7, 02-703 Warszawa")
     private final String address;
-    @ApiModelProperty(value = "Company Tax Id number")
+    @ApiModelProperty(value = "Company tax id.", example = "7010416384")
     private final String taxId;
-    @ApiModelProperty(value = "Bank account number", example = "'PLNN NNNN NNNN NNNN NNNN NNNN NNNN' N-number")
+    @ApiModelProperty(value = "Company bank account number.", example = "27 1030 0019 0109 8503 0014 2668")
     private final String accountNumber;
-    @ApiModelProperty(value = "Telephone number")
+    @ApiModelProperty(value = "Company telephone number")
     private final String phoneNumber;
-    @ApiModelProperty(value = "Email address", example = "example@post.com.pl")
+    @ApiModelProperty(value = "Company email address", example = "example@post.com.pl")
     private final String email;
 
     private Company(Builder builder) {
