@@ -20,7 +20,7 @@ public final class Company {
     private final String taxId;
     @ApiModelProperty(value = "Company bank account number.", example = "27 1030 0019 0109 8503 0014 2668")
     private final String accountNumber;
-    @ApiModelProperty(value = "Company telephone number")
+    @ApiModelProperty(value = "Company telephone number", example = "22 788-83-22")
     private final String phoneNumber;
     @ApiModelProperty(value = "Company email address", example = "example@post.com.pl")
     private final String email;

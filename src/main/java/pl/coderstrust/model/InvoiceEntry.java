@@ -11,19 +11,19 @@ import java.util.Objects;
 @ApiModel(value = "Invoice Entry", description = "Name, quantity and values of sold product")
 public final class InvoiceEntry {
 
-    @ApiModelProperty(value = "The unique identifier of the Invoice Entry")
+    @ApiModelProperty(value = "The unique identifier of the Invoice Entry", position = -1, dataType = "Long")
     private final Long id;
-    @ApiModelProperty(value = "Description of what is sold")
+    @ApiModelProperty(value = "Description of what is sold", example = "Siatka ogrodzeniowa")
     private final String description;
-    @ApiModelProperty(value = "How much is sold", example = "5szt")
+    @ApiModelProperty(value = "How much is sold", example = "5")
     private final Long quantity;
-    @ApiModelProperty(value = "Value per unit")
+    @ApiModelProperty(value = "Value per unit", example = "123")
     private final BigDecimal price;
-    @ApiModelProperty(value = "Total value before taxation")
+    @ApiModelProperty(value = "Total value before taxation", example = "500")
     private final BigDecimal netValue;
-    @ApiModelProperty(value = "Total value after taxation")
+    @ApiModelProperty(value = "Total value after taxation", example = "615")
     private final BigDecimal grossValue;
-    @ApiModelProperty(value = "Percentage level of taxation")
+    @ApiModelProperty(value = "Percentage level of taxation", example = "23")
     private final Vat vatRate;
 
     private InvoiceEntry(Builder builder) {
