@@ -93,7 +93,6 @@ public class InvoiceController {
     @ApiOperation(value = "Get all invoices", notes = "Retrieving the collection of all invoices in database", response = Invoice[].class)
     @ApiResponses( {
         @ApiResponse(code = 200, message = "OK", response = Invoice[].class),
-        @ApiResponse(code = 400, message = "Bad request"),
         @ApiResponse(code = 500, message = "Internal server error")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
