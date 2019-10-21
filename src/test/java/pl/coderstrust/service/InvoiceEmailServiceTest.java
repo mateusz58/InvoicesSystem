@@ -50,7 +50,7 @@ public class InvoiceEmailServiceTest {
     }
 
     @Test
-    void sendMailWithInvoiceMethodShouldThrowExceptionForNullFilePathArgument() {
+    void sendMailWithInvoiceMethodShouldThrowExceptionForNullInvoiceArgument() {
         assertThrows(IllegalArgumentException.class, () -> emailSender.sendMailWithInvoice(null));
     }
 
