@@ -139,7 +139,10 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getById(id);
             if (invoice.isPresent()) {
-                return getResponsePdfEntity(invoice);
+                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
+                HttpHeaders responseHeaders = new HttpHeaders();
+                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
+                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
