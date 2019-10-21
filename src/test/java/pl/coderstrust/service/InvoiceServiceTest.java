@@ -166,36 +166,23 @@ class InvoiceServiceTest {
     }
 
     @Test
-    void getByIdMethodShouldThrowExceptionWhenInvoiceDoesNotExist() throws DatabaseOperationException {
-        doReturn(false).when(database).exists(1L);
-
-        assertThrows(ServiceOperationException.class, () -> invoiceService.getById(1L));
-        verify(database).exists(1L);
-        verify(database, never()).getById(1L);
-    }
-
-    @Test
     void shouldGetInvoiceById() throws DatabaseOperationException, ServiceOperationException {
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        doReturn(true).when(database).exists(1L);
-        doReturn(Optional.of(invoice)).when(database).getById(1L);
+        Invoice invoice = InvoiceGenerator.getRandomInvoiceWithSpecificId(1L);
+        doReturn(Optional.of(invoice)).when(database).getById(invoice.getId());
 
         Optional<Invoice> result = invoiceService.getById(1L);
 
         assertTrue(result.isPresent());
         assertEquals(invoice, result.get());
-        verify(database).exists(1L);
         verify(database).getById(1L);
     }
 
     @Test
     void getByIdMethodShouldThrowExceptionWhenAnErrorOccurDuringGettingInvoiceByIdFromDatabase() throws DatabaseOperationException {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        when(database.exists(invoice.getId())).thenReturn(true);
         when(database.getById(invoice.getId())).thenThrow(DatabaseOperationException.class);
 
         assertThrows(ServiceOperationException.class, () -> invoiceService.getById(invoice.getId()));
-        verify(database).exists(invoice.getId());
         verify(database).getById(invoice.getId());
     }
 

@@ -38,7 +38,7 @@ public class InvoiceController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Add new invoice", notes = "Add new invoice to database", response = Invoice.class)
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 201, message = "Created", response = Invoice.class),
         @ApiResponse(code = 400, message = "Bad request"),
         @ApiResponse(code = 406, message = "Not acceptable format"),
@@ -62,13 +62,13 @@ public class InvoiceController {
     }
 
     @ApiOperation(value = "Update invoice", notes = "Update invoice with provided id", response = Invoice.class)
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 200, message = "Updated", response = Invoice.class),
         @ApiResponse(code = 404, message = "Invoice not found"),
         @ApiResponse(code = 406, message = "Not acceptable format"),
         @ApiResponse(code = 500, message = "Internal server error")
     })
-    @ApiImplicitParams( {
+    @ApiImplicitParams({
         @ApiImplicitParam(required = true, name = "id", value = "Id of invoice to update", dataType = "Long"),
         @ApiImplicitParam(required = true, name = "invoice", value = "Invoice with updated data", dataType = "Invoice")
     })
@@ -91,7 +91,7 @@ public class InvoiceController {
     }
 
     @ApiOperation(value = "Get all invoices", notes = "Retrieving the collection of all invoices in database", response = Invoice[].class)
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 200, message = "OK", response = Invoice[].class),
         @ApiResponse(code = 500, message = "Internal server error")
     })
@@ -105,7 +105,7 @@ public class InvoiceController {
     }
 
     @ApiOperation(value = "Find by Id", notes = "Finds Invoice by given Id", response = Invoice.class)
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 200, message = "OK", response = Invoice.class),
         @ApiResponse(code = 404, message = "Invoice not found"),
         @ApiResponse(code = 500, message = "Internal server error")
@@ -125,7 +125,7 @@ public class InvoiceController {
     }
 
     @ApiOperation(value = "Find by number", notes = "Finds Invoice by given number", response = Invoice.class)
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 200, message = "OK", response = Invoice.class),
         @ApiResponse(code = 400, message = "Bad request"),
         @ApiResponse(code = 404, message = "Invoice not found"),
@@ -150,7 +150,7 @@ public class InvoiceController {
 
     @DeleteMapping
     @ApiOperation(value = "Delete all Invoices", notes = "Erases all data in database")
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 200, message = "Deleted all", response = Invoice.class),
         @ApiResponse(code = 500, message = "Internal server error")
     })
@@ -166,7 +166,7 @@ public class InvoiceController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Delete by Id", notes = "Deletes Invoice with specific Id")
-    @ApiResponses( {
+    @ApiResponses({
         @ApiResponse(code = 204, message = "Removed"),
         @ApiResponse(code = 404, message = "Invoice not found"),
         @ApiResponse(code = 500, message = "Internal server error")

@@ -23,7 +23,7 @@ public final class InvoiceEntry {
     private final BigDecimal netValue;
     @ApiModelProperty(value = "Total value after taxation", example = "615")
     private final BigDecimal grossValue;
-    @ApiModelProperty(value = "Percentage level of taxation", example = "23")
+    @ApiModelProperty(value = "Percentage level of taxation", example = "VAT_23")
     private final Vat vatRate;
 
     private InvoiceEntry(Builder builder) {
