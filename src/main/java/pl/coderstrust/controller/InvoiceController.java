@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.service.InvoiceEmailService;
+import pl.coderstrust.service.InvoicePdfService;
 import pl.coderstrust.service.InvoiceService;
 
 @RestController
@@ -32,11 +34,13 @@ public class InvoiceController {
 
     private InvoiceService invoiceService;
     private InvoiceEmailService invoiceEmailService;
+    private InvoicePdfService invoicePdfService;
 
     @Autowired
-    public InvoiceController(InvoiceService invoiceService, InvoiceEmailService invoiceEmailService) {
+    public InvoiceController(InvoiceService invoiceService, InvoiceEmailService invoiceEmailService, InvoicePdfService invoicePdfService) {
         this.invoiceService = invoiceService;
         this.invoiceEmailService = invoiceEmailService;
+        this.invoicePdfService = invoicePdfService;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -122,6 +126,22 @@ public class InvoiceController {
             Optional<Invoice> invoice = invoiceService.getById(id);
             if (invoice.isPresent()) {
                 return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/pdf/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<?> getByIdAsPdf(@PathVariable("id") long id) {
+        try {
+            Optional<Invoice> invoice = invoiceService.getById(id);
+            if (invoice.isPresent()) {
+                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
+                HttpHeaders responseHeaders = new HttpHeaders();
+                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
+                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {

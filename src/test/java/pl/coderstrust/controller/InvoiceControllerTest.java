@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.coderstrust.generators.InvoiceGenerator;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.service.InvoiceEmailService;
+import pl.coderstrust.service.InvoicePdfService;
 import pl.coderstrust.service.InvoiceService;
 import pl.coderstrust.service.ServiceOperationException;
 
@@ -42,6 +43,9 @@ class InvoiceControllerTest {
 
     @MockBean
     private InvoiceEmailService invoiceEmailService;
+
+    @MockBean
+    private InvoicePdfService invoicePdfService;
 
     @Autowired
     private MockMvc mockMvc;
