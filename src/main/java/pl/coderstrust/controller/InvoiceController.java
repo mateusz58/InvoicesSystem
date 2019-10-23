@@ -165,6 +165,25 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
+                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
+                HttpHeaders responseHeaders = new HttpHeaders();
+                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
+                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/pdf/byNumber", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<?> getByNumberAsPdf(@RequestParam(required = false) String number) {
+        if (number == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Optional<Invoice> invoice = invoiceService.getByNumber(number);
+            if (invoice.isPresent()) {
                 return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
