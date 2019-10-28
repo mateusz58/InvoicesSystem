@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderstrust.generators.InvoiceGenerator;
@@ -28,13 +29,16 @@ import pl.coderstrust.generators.InvoiceGenerator;
 @ExtendWith(SpringExtension.class)
 public class InvoiceEmailServiceTest {
 
-    private  GreenMail server;
+    private GreenMail server;
 
     @Autowired
     private InvoiceEmailService emailSender;
 
     @Autowired
     private MailProperties mailProperties;
+
+    @MockBean
+    private InvoicePdfService invoicePdfService;
 
     @BeforeEach
     void setup() {
@@ -55,7 +59,7 @@ public class InvoiceEmailServiceTest {
     }
 
     @Test
-    void shouldSendEmail() throws MessagingException {
+    void shouldSendEmail() throws MessagingException, ServiceOperationException {
         // When
         emailSender.sendMailWithInvoice(InvoiceGenerator.generateRandomInvoice());
 

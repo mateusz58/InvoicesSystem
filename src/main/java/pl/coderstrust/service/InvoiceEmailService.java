@@ -30,6 +30,7 @@ public class InvoiceEmailService {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -37,9 +38,9 @@ public class InvoiceEmailService {
             helper.setTo(mailProperties.getProperties().get("to"));
             helper.setSubject(mailProperties.getProperties().get("title"));
             helper.setText(mailProperties.getProperties().get("content"));
-            helper.addAttachment("InvoicePdf", new ByteArrayResource(invoicePdfService.createPdf(invoice)));
+            helper.addAttachment(String.format("%s.pdf", invoice.getNumber()), new ByteArrayResource(invoicePdfService.createPdf(invoice)));
             mailSender.send(message);
-        } catch (MessagingException | ServiceOperationException e) {
+        } catch (ServiceOperationException | MessagingException e) {
             e.printStackTrace();
         }
     }

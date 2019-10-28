@@ -28,6 +28,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.coderstrust.generators.InvoiceGenerator;
 import pl.coderstrust.model.Invoice;
+import pl.coderstrust.service.InvoiceEmailService;
 import pl.coderstrust.service.InvoiceService;
 import pl.coderstrust.service.ServiceOperationException;
 
@@ -38,6 +39,9 @@ class InvoiceControllerTest {
 
     @MockBean
     private InvoiceService invoiceService;
+
+    @MockBean
+    private InvoiceEmailService invoiceEmailService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -321,6 +325,7 @@ class InvoiceControllerTest {
         //Given
         Invoice invoiceToAdd = InvoiceGenerator.generateRandomInvoice();
         doReturn(false).when(invoiceService).exists(invoiceToAdd.getId());
+        doNothing().when(invoiceEmailService).sendMailWithInvoice(invoiceToAdd);
         doReturn(invoiceToAdd).when(invoiceService).add(invoiceToAdd);
 
         //When
@@ -333,6 +338,7 @@ class InvoiceControllerTest {
         //Then
         verify(invoiceService, times(1)).exists(invoiceToAdd.getId());
         verify(invoiceService, times(1)).add(invoiceToAdd);
+        verify(invoiceEmailService, times(1)).sendMailWithInvoice(invoiceToAdd);
     }
 
     @Test
@@ -350,6 +356,7 @@ class InvoiceControllerTest {
 
         //Then
         verify(invoiceService, never()).add(invoiceToAdd);
+        verify(invoiceEmailService, never()).sendMailWithInvoice(invoiceToAdd);
     }
 
     @Test
@@ -357,7 +364,6 @@ class InvoiceControllerTest {
         //Given
         Invoice invoiceToAdd = InvoiceGenerator.generateRandomInvoice();
         doReturn(true).when(invoiceService).exists(invoiceToAdd.getId());
-        doThrow(ServiceOperationException.class).when(invoiceService).add(invoiceToAdd);
 
         //When
         mockMvc.perform(post(url)
@@ -369,6 +375,7 @@ class InvoiceControllerTest {
         //Then
         verify(invoiceService, times(1)).exists(invoiceToAdd.getId());
         verify(invoiceService, never()).add(invoiceToAdd);
+        verify(invoiceEmailService, never()).sendMailWithInvoice(invoiceToAdd);
     }
 
     @Test
@@ -376,7 +383,6 @@ class InvoiceControllerTest {
         //Given
         Invoice invoiceToAdd = InvoiceGenerator.generateRandomInvoice();
         doReturn(true).when(invoiceService).exists(invoiceToAdd.getId());
-        doThrow(ServiceOperationException.class).when(invoiceService).add(invoiceToAdd);
 
         //When
         mockMvc.perform(post(url)
@@ -388,6 +394,7 @@ class InvoiceControllerTest {
         //Then
         verify(invoiceService, times(1)).exists(invoiceToAdd.getId());
         verify(invoiceService, never()).add(invoiceToAdd);
+        verify(invoiceEmailService, never()).sendMailWithInvoice(invoiceToAdd);
     }
 
     @Test
@@ -407,6 +414,7 @@ class InvoiceControllerTest {
         //Then
         verify(invoiceService, times(1)).exists(invoiceToAdd.getId());
         verify(invoiceService, times(1)).add(invoiceToAdd);
+        verify(invoiceEmailService, never()).sendMailWithInvoice(invoiceToAdd);
     }
 
     @Test
