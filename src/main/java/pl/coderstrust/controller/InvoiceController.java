@@ -1,28 +1,16 @@
 package pl.coderstrust.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import java.util.Optional;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.coderstrust.model.Invoice;
+import pl.coderstrust.service.InvoiceEmailService;
 import pl.coderstrust.service.InvoiceService;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/invoices")
@@ -30,10 +18,12 @@ import pl.coderstrust.service.InvoiceService;
 public class InvoiceController {
 
     private InvoiceService invoiceService;
+    private InvoiceEmailService invoiceEmailService;
 
     @Autowired
-    public InvoiceController(InvoiceService invoiceService) {
+    public InvoiceController(InvoiceService invoiceService, InvoiceEmailService invoiceEmailService) {
         this.invoiceService = invoiceService;
+        this.invoiceEmailService = invoiceEmailService;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -55,7 +45,9 @@ public class InvoiceController {
             if (invoice.getId() != null && invoiceService.exists(invoice.getId())) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
-            return new ResponseEntity<>(invoiceService.add(invoice), HttpStatus.CREATED);
+            Invoice addedInvoice = invoiceService.add(invoice);
+            invoiceEmailService.sendMailWithInvoice(addedInvoice);
+            return new ResponseEntity<>(addedInvoice, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
