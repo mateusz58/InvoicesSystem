@@ -59,7 +59,7 @@ public class InvoiceEmailServiceTest {
     }
 
     @Test
-    void shouldSendEmail() throws MessagingException, ServiceOperationException {
+    void shouldSendEmail() throws MessagingException {
         // When
         emailSender.sendMailWithInvoice(InvoiceGenerator.generateRandomInvoice());
 
