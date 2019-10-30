@@ -192,7 +192,7 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
-                return getResponsePdfEntity(invoice);
+                return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -201,11 +201,6 @@ public class InvoiceController {
     }
 
     @DeleteMapping
-    @ApiOperation(value = "Delete all Invoices", notes = "Erases all data in database")
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "Deleted all", response = Invoice.class),
-        @ApiResponse(code = 500, message = "Internal server error")
-    })
     public ResponseEntity<?> deleteAll() {
         try {
             invoiceService.deleteAll();
@@ -216,13 +211,6 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation(value = "Delete by Id", notes = "Deletes Invoice with specific Id")
-    @ApiResponses({
-        @ApiResponse(code = 204, message = "Removed"),
-        @ApiResponse(code = 404, message = "Invoice not found"),
-        @ApiResponse(code = 500, message = "Internal server error")
-    })
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         try {
             if (invoiceService.exists(id)) {
