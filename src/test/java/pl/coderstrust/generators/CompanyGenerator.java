@@ -7,7 +7,7 @@ import pl.coderstrust.model.Company;
 public class CompanyGenerator {
 
     private static Faker faker = new Faker(new Locale("pl"));
-    
+
     public static Company generateRandomCompany() {
         return Company.builder()
             .withId(IdGenerator.getRandomId())

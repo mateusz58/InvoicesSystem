@@ -10,7 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.ReversedLinesFileReader;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FileHelper {
 
     private static final String ENCODING = "UTF-8";

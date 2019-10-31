@@ -3,14 +3,18 @@ package pl.coderstrust.database;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
 import pl.coderstrust.database.mongo.MongoInvoice;
 import pl.coderstrust.database.mongo.MongoModelMapper;
 import pl.coderstrust.model.Invoice;
 
+@Repository
+@ConditionalOnProperty(name = "pl.coderstrust.database", havingValue = "mongo")
 public class MongoDatabase implements Database {
     private final MongoTemplate mongoTemplate;
     private final MongoModelMapper modelMapper;
