@@ -24,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -58,7 +57,7 @@ class InvoiceControllerTest {
 
     String url = "/invoices/";
     String urlPdf = "/invoices/pdf/";
-    byte[] invoiceAsPdf = "xc45#2f".getBytes();
+
 
     @Test
     @WithMockUser(roles = "InvalidRole")
@@ -69,8 +68,8 @@ class InvoiceControllerTest {
 
         //When
         mockMvc.perform(get(String.format("%s%d", url, invoiceToGet.getId()))
-            .accept(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(status().isForbidden());
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isForbidden());
 
         //Then
         verify(invoiceService, never()).getById(invoiceToGet.getId());
@@ -84,10 +83,10 @@ class InvoiceControllerTest {
 
         //When
         mockMvc.perform(get(String.format("%s%d", url, invoiceToGet.getId()))
-            .accept(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(content().json(mapper.writeValueAsString(invoiceToGet)));
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().json(mapper.writeValueAsString(invoiceToGet)));
 
         //Then
         verify(invoiceService, times(1)).getById(invoiceToGet.getId());
@@ -101,8 +100,8 @@ class InvoiceControllerTest {
 
         //When
         mockMvc.perform(get(String.format("%s%d", url, invoiceToGet.getId()))
-            .accept(MediaType.APPLICATION_ATOM_XML))
-            .andExpect(status().isNotAcceptable());
+                .accept(MediaType.APPLICATION_ATOM_XML))
+                .andExpect(status().isNotAcceptable());
 
         //Then
         verify(invoiceService, never()).getAll();
@@ -116,7 +115,7 @@ class InvoiceControllerTest {
 
         //When
         mockMvc.perform(get(String.format("%s%d", url, invoiceToGet.getId())))
-            .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
 
         //Then
         verify(invoiceService, times(1)).getById(invoiceToGet.getId());
@@ -130,7 +129,7 @@ class InvoiceControllerTest {
 
         //When
         mockMvc.perform(get(String.format("%s%d", url, invoiceToGet.getId())))
-            .andExpect(status().isInternalServerError());
+                .andExpect(status().isInternalServerError());
 
         //Then
         verify(invoiceService, times(1)).getById(invoiceToGet.getId());
@@ -139,27 +138,68 @@ class InvoiceControllerTest {
     @Test
     void shouldReturnInvoiceAsPdfById() throws Exception {
         //Given
-        InvoicePdfService iPdfS = new InvoicePdfService();
+        InvoicePdfService invoicePdfService = new InvoicePdfService();
         Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
         doReturn(Optional.of(invoiceToGet)).when(invoiceService).getById(invoiceToGet.getId());
-        byte[] invoiceAsPdf = iPdfS.createPdf(invoiceToGet);
-        doReturn(invoiceAsPdf).when(invoicePdfService).createPdf(invoiceToGet);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.APPLICATION_PDF);
+        byte[] invoiceAsPdf = invoicePdfService.createPdf(invoiceToGet);
+        doReturn(invoiceAsPdf).when(this.invoicePdfService).createPdf(invoiceToGet);
 
         //When
-        mockMvc.perform(get(String.format("%s%d", url, invoiceToGet.getId()))
+        mockMvc.perform(get(String.format("%s%d", "/invoices/pdf/", invoiceToGet.getId()))
                 .accept(MediaType.APPLICATION_PDF_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_PDF_VALUE))
-                .andExpect(content().
-                        json(mapper.writeValueAsString(invoiceToGet)));
+                .andExpect(content().bytes(invoiceAsPdf));
 
         //Then
         assertNotNull(invoiceAsPdf);
         assertTrue(invoiceAsPdf.length > 0);
         verify(invoiceService, times(1)).getById(invoiceToGet.getId());
-        verify(invoicePdfService, times(1)).createPdf(invoiceToGet);
+        verify(this.invoicePdfService, times(1)).createPdf(invoiceToGet);
+    }
+
+    @Test
+    void shouldReturnNotAcceptableStatusDuringGettingInvoiceAsPdfByIdWithNotSupportedMediaType() throws Exception {
+        //Given
+        Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
+        doReturn(Optional.of(invoiceToGet)).when(invoiceService).getById(invoiceToGet.getId());
+
+        //When
+        mockMvc.perform(get(String.format("%s%d", urlPdf, invoiceToGet.getId()))
+                .accept(MediaType.APPLICATION_ATOM_XML))
+                .andExpect(status().isNotAcceptable());
+
+        //Then
+        verify(invoiceService, never()).getAll();
+    }
+
+
+    @Test
+    void shouldReturnNotFoundStatusWhileGettingNonExistingInvoiceAsPdfById() throws Exception {
+        //Given
+        Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
+        doReturn(Optional.empty()).when(invoiceService).getById(invoiceToGet.getId());
+
+        //When
+        mockMvc.perform(get(String.format("%s%d", urlPdf, invoiceToGet.getId())))
+                .andExpect(status().isNotFound());
+
+        //Then
+        verify(invoiceService, times(1)).getById(invoiceToGet.getId());
+    }
+
+    @Test
+    void shouldReturnInternalServerErrorStatusDuringGettingInvoiceAsPdfByIdWhenSomethingWentWrongOnServer() throws Exception {
+        //Given
+        Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
+        doThrow(ServiceOperationException.class).when(invoiceService).getById(invoiceToGet.getId());
+
+        //When
+        mockMvc.perform(get(String.format("%s%d", urlPdf, invoiceToGet.getId())))
+                .andExpect(status().isInternalServerError());
+
+        //Then
+        verify(invoiceService, times(1)).getById(invoiceToGet.getId());
     }
 
     @Test
@@ -238,9 +278,11 @@ class InvoiceControllerTest {
     @Test
     void shouldReturnInvoiceAsPdfByNumber() throws Exception {
         //Given
+        InvoicePdfService invoicePdfService = new InvoicePdfService();
         Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
         String endPoint = String.format("byNumber?number=%s", invoiceToGet.getNumber());
         doReturn(Optional.of(invoiceToGet)).when(invoiceService).getByNumber(invoiceToGet.getNumber());
+        byte[] invoiceAsPdf = invoicePdfService.createPdf(invoiceToGet);
         doReturn(invoiceAsPdf).when(this.invoicePdfService).createPdf(invoiceToGet);
 
         //When
@@ -311,32 +353,6 @@ class InvoiceControllerTest {
 
         //Then
         verify(invoiceService, times(1)).getByNumber(invoiceToGet.getNumber());
-    }
-
-    @Test
-    void shouldReturnInvoiceAsPdfByNumber() throws Exception {
-        //Given
-        InvoicePdfService iPdfS = new InvoicePdfService();
-        Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
-        String endPoint = String.format("byNumber?number=%s", invoiceToGet.getNumber());
-        doReturn(Optional.of(invoiceToGet)).when(invoiceService).getByNumber(invoiceToGet.getNumber());
-        byte[] invoiceAsPdf = iPdfS.createPdf(invoiceToGet);
-        doReturn(invoiceAsPdf).when(invoicePdfService).createPdf(invoiceToGet);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.APPLICATION_PDF);
-
-        //When
-        mockMvc.perform(get(String.format("%s%s", "/invoices/pdf/", endPoint))
-            .accept(MediaType.APPLICATION_PDF_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_PDF_VALUE))
-            .andExpect(content().bytes(invoiceAsPdf));
-
-        //Then
-        assertNotNull(invoiceAsPdf);
-        assertTrue(invoiceAsPdf.length > 0);
-        verify(invoiceService, times(1)).getByNumber(invoiceToGet.getNumber());
-        verify(invoicePdfService, times(1)).createPdf(invoiceToGet);
     }
 
     @Test
