@@ -104,7 +104,7 @@ class InvoiceControllerTest {
                 .andExpect(status().isNotAcceptable());
 
         //Then
-        verify(invoiceService, never()).getAll();
+        verify(invoiceService, never()).getById(invoiceToGet.getId());
     }
 
     @Test
