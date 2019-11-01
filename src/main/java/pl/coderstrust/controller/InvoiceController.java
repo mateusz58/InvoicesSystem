@@ -150,13 +150,6 @@ public class InvoiceController {
         }
     }
 
-    private ResponseEntity<?> getResponsePdfEntity(Optional<Invoice> invoice) throws ServiceOperationException {
-        byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.APPLICATION_PDF);
-        return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
-    }
-
     @ApiOperation(value = "Find by number", notes = "Finds Invoice by given number", response = Invoice.class)
     @ApiResponses({
         @ApiResponse(code = 200, message = "OK", response = Invoice.class),
@@ -173,10 +166,7 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
-                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
-                HttpHeaders responseHeaders = new HttpHeaders();
-                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
-                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
+                return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -192,7 +182,10 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
-                return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
+                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
+                HttpHeaders responseHeaders = new HttpHeaders();
+                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
+                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
