@@ -26,6 +26,7 @@ import pl.coderstrust.model.Invoice;
 import pl.coderstrust.service.InvoiceEmailService;
 import pl.coderstrust.service.InvoicePdfService;
 import pl.coderstrust.service.InvoiceService;
+import pl.coderstrust.service.ServiceOperationException;
 
 @RestController
 @RequestMapping("/invoices")
@@ -138,15 +139,19 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getById(id);
             if (invoice.isPresent()) {
-                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
-                HttpHeaders responseHeaders = new HttpHeaders();
-                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
-                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
+                return getResponsePdfEntity(invoice);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private ResponseEntity<?> getResponsePdfEntity(Optional<Invoice> invoice) throws ServiceOperationException {
+        byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.APPLICATION_PDF);
+        return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Find by number", notes = "Finds Invoice by given number", response = Invoice.class)
@@ -181,10 +186,7 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
-                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
-                HttpHeaders responseHeaders = new HttpHeaders();
-                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
-                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
+                return getResponsePdfEntity(invoice);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {

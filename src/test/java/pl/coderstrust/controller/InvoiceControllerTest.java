@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Random;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +57,7 @@ class InvoiceControllerTest {
 
     String url = "/invoices/";
     String urlPdf = "/invoices/pdf/";
+    byte[] invoiceAsPdf = "xc45#2f".getBytes();
 
     @Test
     @WithMockUser(roles = "InvalidRole")
@@ -140,9 +140,6 @@ class InvoiceControllerTest {
         //Given
         Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
         doReturn(Optional.of(invoiceToGet)).when(invoiceService).getById(invoiceToGet.getId());
-        byte[] invoiceAsPdf = new byte[4];
-        Random random = new Random();
-        random.nextBytes(invoiceAsPdf);
         doReturn(invoiceAsPdf).when(this.invoicePdfService).createPdf(invoiceToGet);
 
         //When
@@ -282,9 +279,6 @@ class InvoiceControllerTest {
         Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
         String endPoint = String.format("byNumber?number=%s", invoiceToGet.getNumber());
         doReturn(Optional.of(invoiceToGet)).when(invoiceService).getByNumber(invoiceToGet.getNumber());
-        byte[] invoiceAsPdf = new byte[4];
-        Random random = new Random();
-        random.nextBytes(invoiceAsPdf);
         doReturn(invoiceAsPdf).when(this.invoicePdfService).createPdf(invoiceToGet);
 
         //When
