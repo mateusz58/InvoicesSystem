@@ -133,6 +133,22 @@ public class InvoiceController {
         }
     }
 
+    @GetMapping(value = "/pdf/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<?> getByIdAsPdf(@PathVariable("id") long id) {
+        try {
+            Optional<Invoice> invoice = invoiceService.getById(id);
+            if (invoice.isPresent()) {
+                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
+                HttpHeaders responseHeaders = new HttpHeaders();
+                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
+                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ApiOperation(value = "Find by number", notes = "Finds Invoice by given number", response = Invoice.class)
     @ApiResponses({
         @ApiResponse(code = 200, message = "OK", response = Invoice.class),
@@ -149,10 +165,7 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
-                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
-                HttpHeaders responseHeaders = new HttpHeaders();
-                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
-                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
+                return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -168,7 +181,10 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
-                return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
+                byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
+                HttpHeaders responseHeaders = new HttpHeaders();
+                responseHeaders.setContentType(MediaType.APPLICATION_PDF);
+                return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
