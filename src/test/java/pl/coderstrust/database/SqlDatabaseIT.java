@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.containers.PostgreSQLContainer;
 import pl.coderstrust.config.TestDataBaseConfiguration;
 import pl.coderstrust.generators.InvoiceGenerator;
 import pl.coderstrust.generators.NumberGenerator;
@@ -39,6 +39,8 @@ public class SqlDatabaseIT {
     private static final String ENCODING = "UTF-8";
     private final String CREATE_TABLE = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/CREATE-TABLES.sql"), ENCODING);
     private final String DROP_TABLE = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/DROP-ALL-TABLES.sql"), ENCODING);
+    private final String TRIGGERS = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/TRIGGERS.sql"), ENCODING);
+    private final String DROP_TRIGGERS = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/DROP-TRIGGERS.sql"), ENCODING);
     @Autowired
     JdbcTemplate jdbcTemplate;
     @Autowired
@@ -54,10 +56,12 @@ public class SqlDatabaseIT {
 
     @BeforeEach
     void prepareDatabaseForTest() throws IOException {
+        jdbcTemplate.execute(CREATE_TABLE);
+        jdbcTemplate.execute(TRIGGERS);
+
         random = new Random();
         listOfInvoicesAddedToDatabase = new ArrayList<>();
         List<InvoiceEntry> listOfInvoiceEntries = new ArrayList<>();
-        jdbcTemplate.execute(CREATE_TABLE);
         SimpleJdbcInsert simpleJdbcInsertCompany = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
             .withTableName("company")
             .usingGeneratedKeyColumns("id");
@@ -88,6 +92,7 @@ public class SqlDatabaseIT {
 
     @AfterEach
     void finish() throws IOException {
+        jdbcTemplate.execute(DROP_TRIGGERS);
         jdbcTemplate.execute(DROP_TABLE);
     }
 
@@ -108,14 +113,36 @@ public class SqlDatabaseIT {
     }
 
     @Test
-    void saveMethodShouldReturnAddedInvoiceWhenGivenInvoiceDoesNotExistInDataBase() throws DatabaseOperationException {
+    void saveMethodShouldReturnAddedInvoiceWhenGivenInvoiceDoesNotExistInDatabase() throws DatabaseOperationException {
         //Given
         Invoice givenInvoice = InvoiceGenerator.generateRandomInvoice();
+
         //When
         Invoice actual = sqlDatabase.save(givenInvoice);
         Invoice expected = buildInvoice(actual.getId(), givenInvoice, actual.getBuyer(), actual.getSeller(), actual.getEntries());
+
         //Then
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void saveMethodShouldThrowDatabaseOperationExceptionWhenTryingToAddInvoiceWithEqualOrGreaterIssuedDateValueToDueDateValue() throws DatabaseOperationException {
+        //Given
+        Invoice givenInvoice = InvoiceGenerator.generateRandomInvoice();
+        Invoice actual = buildInvoice(givenInvoice.getId(), givenInvoice, testedInvoice.getBuyer(), testedInvoice.getSeller(), givenInvoice.getEntries(),LocalDate.now().minusDays(20),LocalDate.now().plusDays(20));
+
+        //Then
+        assertThrows(DatabaseOperationException.class, () -> sqlDatabase.save(actual));
+    }
+
+    @Test
+    void saveMethodShouldThrowDatabaseOperationExceptionWhenTryingToAddInvoiceWithTheSameBuyerAndSeller() throws DatabaseOperationException {
+        //Given
+        Invoice givenInvoice = InvoiceGenerator.generateRandomInvoice();
+        Invoice actual = buildInvoice(givenInvoice.getId(), givenInvoice, testedInvoice.getBuyer(), testedInvoice.getBuyer(), givenInvoice.getEntries());
+
+        //Then
+        assertThrows(DatabaseOperationException.class, () -> sqlDatabase.save(actual));
     }
 
     @Test
@@ -128,6 +155,7 @@ public class SqlDatabaseIT {
     void deleteMethodShouldDeleteInvoice() throws DatabaseOperationException {
         //When
         sqlDatabase.delete(testedInvoice.getId());
+
         //Then
         assertFalse(jdbcTemplate.queryForObject("SELECT EXISTS(SELECT invoice_id FROM invoice_entries WHERE invoice_id= ?)", new Object[] {testedInvoice.getId()}, Boolean.class));
     }
@@ -249,6 +277,18 @@ public class SqlDatabaseIT {
             .withSeller(seller)
             .withDueDate(invoice.getDueDate())
             .withIssuedDate(invoice.getIssuedDate())
+            .build();
+    }
+
+    private Invoice buildInvoice(long invoiceId, Invoice invoice, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries, LocalDate dueDate, LocalDate issuedDate) {
+        return Invoice.builder()
+            .withId(invoiceId)
+            .withEntries(invoiceEntries)
+            .withNumber(invoice.getNumber())
+            .withBuyer(buyer)
+            .withSeller(seller)
+            .withDueDate(dueDate)
+            .withIssuedDate(issuedDate)
             .build();
     }
 

@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -49,13 +50,17 @@ public class SqlDatabase implements Database {
         if (invoice == null) {
             throw new IllegalArgumentException("invoice cannot be null.");
         }
-        if (exists(invoice.getId())) {
-            return updateInvoice(invoice);
+        try {
+            if (exists(invoice.getId())) {
+                return updateInvoice(invoice);
+            }
+            return insertInvoice(invoice);
+        }catch (Exception e) {
+            throw new DatabaseOperationException("An error occured during adding invoice to database");
         }
-        return insertInvoice(invoice);
     }
 
-    private Invoice insertInvoice(Invoice invoice) throws DatabaseOperationException {
+    private Invoice insertInvoice(Invoice invoice) throws Exception {
         List<InvoiceEntry> invoiceEntries = insertAllInvoiceEntries(invoice.getEntries());
         if (!companyExists(invoice.getBuyer().getId())) {
             if (!companyExists(invoice.getSeller().getId())) {
@@ -233,7 +238,7 @@ public class SqlDatabase implements Database {
         }
     }
 
-    private Invoice insertInvoiceTable(Invoice invoice, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries) {
+    private Invoice insertInvoiceTable(Invoice invoice, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries) throws Exception {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO INVOICE(due_date, issued_date, number, buyer_id, seller_id) VALUES(? ,?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);

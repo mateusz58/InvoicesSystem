@@ -1,5 +1,6 @@
 package pl.coderstrust.generators;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,13 +20,14 @@ public class InvoiceGenerator {
     }
 
     private static Invoice generateInvoice(Long id) {
+        LocalDate dateGenerated=LocalDateGenerator.generateRandomLocalDate();
         return Invoice.builder()
             .withId(id)
             .withNumber(WordGenerator.generateRandomWord())
             .withBuyer(CompanyGenerator.generateRandomCompany())
             .withSeller(CompanyGenerator.generateRandomCompany())
-            .withDueDate(LocalDateGenerator.generateRandomLocalDate())
-            .withIssuedDate(LocalDateGenerator.generateRandomLocalDate())
+            .withDueDate(dateGenerated.plusDays(10L))
+            .withIssuedDate(dateGenerated)
             .withEntries(generateEntries(random.nextInt(5)+1))
             .build();
     }
