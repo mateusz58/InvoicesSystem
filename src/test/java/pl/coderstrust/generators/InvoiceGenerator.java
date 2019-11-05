@@ -4,12 +4,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import pl.coderstrust.model.Company;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;
 
 public class InvoiceGenerator {
-
-    private static Random random=new Random();
 
     private static List<InvoiceEntry> generateEntries(long count) {
         List<InvoiceEntry> entries = new ArrayList<>();
@@ -20,7 +19,7 @@ public class InvoiceGenerator {
     }
 
     private static Invoice generateInvoice(Long id) {
-        LocalDate dateGenerated=LocalDateGenerator.generateRandomLocalDate();
+        LocalDate dateGenerated = LocalDateGenerator.generateRandomLocalDate();
         return Invoice.builder()
             .withId(id)
             .withNumber(WordGenerator.generateRandomWord())
@@ -28,7 +27,34 @@ public class InvoiceGenerator {
             .withSeller(CompanyGenerator.generateRandomCompany())
             .withDueDate(dateGenerated.plusDays(10L))
             .withIssuedDate(dateGenerated)
-            .withEntries(generateEntries(random.nextInt(5)+1))
+            .withEntries(generateEntries(5))
+            .build();
+    }
+
+    public static Invoice generateInvoiceWithTheSameBuyerAndSeller() {
+        LocalDate dateGenerated = LocalDateGenerator.generateRandomLocalDate();
+        Company company = CompanyGenerator.generateRandomCompanyWithSpecificId(5L);
+        return Invoice.builder()
+            .withId(IdGenerator.getRandomId())
+            .withNumber(WordGenerator.generateRandomWord())
+            .withBuyer(company)
+            .withSeller(company)
+            .withDueDate(dateGenerated.plusDays(10L))
+            .withIssuedDate(dateGenerated)
+            .withEntries(generateEntries(5))
+            .build();
+    }
+
+    public static Invoice generateRandomInvoiceWithGreaterIssuedDate() {
+        LocalDate dateGenerated = LocalDateGenerator.generateRandomLocalDate();
+        return Invoice.builder()
+            .withId(IdGenerator.getRandomId())
+            .withNumber(WordGenerator.generateRandomWord())
+            .withBuyer(CompanyGenerator.generateRandomCompany())
+            .withSeller(CompanyGenerator.generateRandomCompany())
+            .withDueDate(dateGenerated)
+            .withIssuedDate(dateGenerated.plusDays(10L))
+            .withEntries(generateEntries(5))
             .build();
     }
 

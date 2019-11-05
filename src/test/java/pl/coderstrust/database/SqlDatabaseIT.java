@@ -25,15 +25,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import pl.coderstrust.config.TestDataBaseConfiguration;
+import pl.coderstrust.generators.CompanyGenerator;
+import pl.coderstrust.generators.InvoiceEntryGenerator;
 import pl.coderstrust.generators.InvoiceGenerator;
-import pl.coderstrust.generators.NumberGenerator;
 import pl.coderstrust.model.Company;
 import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;
 
 @SpringBootTest(classes = TestDataBaseConfiguration.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ExtendWith( {SpringExtension.class})
+@ExtendWith({SpringExtension.class})
 public class SqlDatabaseIT {
 
     private static final String ENCODING = "UTF-8";
@@ -47,7 +48,6 @@ public class SqlDatabaseIT {
     SqlDatabase sqlDatabase;
     Random random;
     Invoice testedInvoice;
-    long numberOfGeneratedInvoices;
 
     Collection<Invoice> listOfInvoicesAddedToDatabase;
 
@@ -71,10 +71,9 @@ public class SqlDatabaseIT {
         SimpleJdbcInsert simpleJdbcInsertInvoiceEntry = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
             .withTableName("invoice_entry")
             .usingGeneratedKeyColumns("id");
-        SimpleJdbcInsert simpleJdbcInsertInvoiceEntries = new SimpleJdbcInsert(jdbcTemplate.getDataSource()).
-            withTableName("invoice_entries");
-        numberOfGeneratedInvoices = NumberGenerator.generateRandomNumber(1);
-        for (int i = 0; i < numberOfGeneratedInvoices; i++) {
+        SimpleJdbcInsert simpleJdbcInsertInvoiceEntries = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
+            .withTableName("invoice_entries");
+        for (int i = 0; i < 5; i++) {
             Invoice generatedInvoice = InvoiceGenerator.generateRandomInvoice();
             Number sellerKey = simpleJdbcInsertCompany.executeAndReturnKey(mapCompany(generatedInvoice.getSeller()));
             Number buyerKey = simpleJdbcInsertCompany.executeAndReturnKey(mapCompany(generatedInvoice.getBuyer()));
@@ -91,7 +90,7 @@ public class SqlDatabaseIT {
     }
 
     @AfterEach
-    void finish() throws IOException {
+    void finish() {
         jdbcTemplate.execute(DROP_TRIGGERS);
         jdbcTemplate.execute(DROP_TABLE);
     }
@@ -104,10 +103,9 @@ public class SqlDatabaseIT {
     @Test
     void saveMethodShouldReturnUpdatedInvoiceWhenGivenInvoiceExistInDataBase() throws DatabaseOperationException {
         //Given
-        Invoice givenInvoice = InvoiceGenerator.getRandomInvoiceWithSpecificId(testedInvoice.getId());
+        Invoice expected = InvoiceGenerator.getRandomInvoiceWithSpecificId(testedInvoice.getId());
         //When
-        Invoice actual = sqlDatabase.save(givenInvoice);
-        Invoice expected = buildInvoice(actual.getId(), givenInvoice, actual.getBuyer(), actual.getSeller(), actual.getEntries());
+        Invoice actual = sqlDatabase.save(expected);
         //Then
         assertEquals(expected, actual);
     }
@@ -115,34 +113,39 @@ public class SqlDatabaseIT {
     @Test
     void saveMethodShouldReturnAddedInvoiceWhenGivenInvoiceDoesNotExistInDatabase() throws DatabaseOperationException {
         //Given
-        Invoice givenInvoice = InvoiceGenerator.generateRandomInvoice();
+        Invoice expected = Invoice.builder()
+            .withId(6L)
+            .withNumber("Number")
+            .withBuyer(CompanyGenerator.generateRandomCompanyWithSpecificId(11L))
+            .withSeller(CompanyGenerator.generateRandomCompanyWithSpecificId(12L))
+            .withIssuedDate(LocalDate.now().minusDays(10))
+            .withDueDate(LocalDate.now().plusDays(10))
+            .withEntries(List.of(InvoiceEntryGenerator.getRandomEntryWithSpecificId(27L)))
+            .build();
 
         //When
-        Invoice actual = sqlDatabase.save(givenInvoice);
-        Invoice expected = buildInvoice(actual.getId(), givenInvoice, actual.getBuyer(), actual.getSeller(), actual.getEntries());
+        Invoice actual = sqlDatabase.save(expected);
 
         //Then
         assertEquals(expected, actual);
     }
 
     @Test
-    void saveMethodShouldThrowDatabaseOperationExceptionWhenTryingToAddInvoiceWithEqualOrGreaterIssuedDateValueToDueDateValue() throws DatabaseOperationException {
+    void saveMethodShouldThrowDatabaseOperationExceptionWhenTryingToAddInvoiceWithEqualOrGreaterIssuedDateValueToDueDateValue() {
         //Given
-        Invoice givenInvoice = InvoiceGenerator.generateRandomInvoice();
-        Invoice actual = buildInvoice(givenInvoice.getId(), givenInvoice, testedInvoice.getBuyer(), testedInvoice.getSeller(), givenInvoice.getEntries(),LocalDate.now().minusDays(20),LocalDate.now().plusDays(20));
+        Invoice givenInvoice = InvoiceGenerator.generateRandomInvoiceWithGreaterIssuedDate();
 
         //Then
-        assertThrows(DatabaseOperationException.class, () -> sqlDatabase.save(actual));
+        assertThrows(DatabaseOperationException.class, () -> sqlDatabase.save(givenInvoice));
     }
 
     @Test
-    void saveMethodShouldThrowDatabaseOperationExceptionWhenTryingToAddInvoiceWithTheSameBuyerAndSeller() throws DatabaseOperationException {
+    void saveMethodShouldThrowDatabaseOperationExceptionWhenTryingToAddInvoiceWithTheSameBuyerAndSeller() {
         //Given
-        Invoice givenInvoice = InvoiceGenerator.generateRandomInvoice();
-        Invoice actual = buildInvoice(givenInvoice.getId(), givenInvoice, testedInvoice.getBuyer(), testedInvoice.getBuyer(), givenInvoice.getEntries());
+        Invoice givenInvoice = InvoiceGenerator.generateInvoiceWithTheSameBuyerAndSeller();
 
         //Then
-        assertThrows(DatabaseOperationException.class, () -> sqlDatabase.save(actual));
+        assertThrows(DatabaseOperationException.class, () -> sqlDatabase.save(givenInvoice));
     }
 
     @Test
@@ -167,7 +170,7 @@ public class SqlDatabaseIT {
     }
 
     @Test
-    void deleteMethodShouldThrowExceptionForDeletingNotExistingInvoice() throws DatabaseOperationException {
+    void deleteMethodShouldThrowExceptionForDeletingNotExistingInvoice() {
         assertThrows(DatabaseOperationException.class, () -> sqlDatabase.delete(listOfInvoicesAddedToDatabase.size() + 1L));
     }
 
@@ -216,6 +219,7 @@ public class SqlDatabaseIT {
     @Test
     void getByNumberMethodShouldThrowExceptionForNullId() {
         Exception e = assertThrows(Exception.class, () -> sqlDatabase.getByNumber(null));
+
         assertEquals(IllegalArgumentException.class, e.getCause().getClass());
     }
 
@@ -259,7 +263,7 @@ public class SqlDatabaseIT {
     @Test
     void countMethodShouldReturnNumberOfInvoices() throws DatabaseOperationException {
         //Given
-        long expected = listOfInvoicesAddedToDatabase.size();
+        long expected = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM INVOICE",Long.class);
 
         //When
         long actual = sqlDatabase.count();
@@ -277,18 +281,6 @@ public class SqlDatabaseIT {
             .withSeller(seller)
             .withDueDate(invoice.getDueDate())
             .withIssuedDate(invoice.getIssuedDate())
-            .build();
-    }
-
-    private Invoice buildInvoice(long invoiceId, Invoice invoice, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries, LocalDate dueDate, LocalDate issuedDate) {
-        return Invoice.builder()
-            .withId(invoiceId)
-            .withEntries(invoiceEntries)
-            .withNumber(invoice.getNumber())
-            .withBuyer(buyer)
-            .withSeller(seller)
-            .withDueDate(dueDate)
-            .withIssuedDate(issuedDate)
             .build();
     }
 
