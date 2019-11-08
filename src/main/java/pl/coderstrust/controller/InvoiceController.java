@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ import pl.coderstrust.service.ServiceOperationException;
 
 @RestController
 @RequestMapping("/invoices")
+@CrossOrigin
 @Api(value = "/invoices")
 public class InvoiceController {
 
@@ -139,7 +141,7 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getById(id);
             if (invoice.isPresent()) {
-                return getResponsePdfEntity(invoice);
+                return getResponsePdfEntity(invoice.get());
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -147,8 +149,8 @@ public class InvoiceController {
         }
     }
 
-    private ResponseEntity<?> getResponsePdfEntity(Optional<Invoice> invoice) throws ServiceOperationException {
-        byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice.get());
+    private ResponseEntity<?> getResponsePdfEntity(Invoice invoice) throws ServiceOperationException {
+        byte[] invoiceAsPdf = invoicePdfService.createPdf(invoice);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.APPLICATION_PDF);
         return new ResponseEntity<>(invoiceAsPdf, responseHeaders, HttpStatus.OK);
@@ -186,7 +188,7 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
-                return getResponsePdfEntity(invoice);
+                return getResponsePdfEntity(invoice.get());
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
