@@ -6,10 +6,12 @@
     <script src="hello.js"></script>
 </head>
 
-<body>
-<div ng-controller="Hello">
+<body ng-controller="Hello">
+<div>
     <p>The ID is {{invoices[0].id}}</p>
     <p>The content is {{invoices[0].number}}</p>
 </div>
+
+<h1 ng-repeat="invoice in invoices">{{invoice}}</h1>
 </body>
 </html>
