@@ -9,7 +9,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Repository;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.HibernateModelMapper;
-import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.model.Invoice;
 
 @Repository

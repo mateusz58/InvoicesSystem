@@ -26,7 +26,6 @@ import org.springframework.data.domain.Example;
 import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.HibernateModelMapper;
 import pl.coderstrust.database.hibernate.HibernateModelMapperImpl;
-import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.generators.InvoiceGenerator;
 import pl.coderstrust.model.Invoice;
 
