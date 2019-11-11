@@ -12,9 +12,11 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @Configuration
+@PropertySource(value = {"classpath:application.properties", "classpath:email.properties"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @EnableAsync

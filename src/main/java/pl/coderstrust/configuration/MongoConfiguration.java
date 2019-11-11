@@ -5,9 +5,11 @@ import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfigurat
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @ConditionalOnProperty(name = "pl.coderstrust.database", havingValue = "mongo")
+@PropertySource("classpath:hibernate.properties")
 @Import({MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 public class MongoConfiguration {
 }
