@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
@@ -66,9 +68,10 @@ public class InvoiceEmailServiceTest {
     }
 
     @Test
-    void shouldSendEmail() throws MessagingException, IOException {
+    void shouldSendEmail() throws MessagingException, IOException, ServiceOperationException {
         // When
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        doReturn("blablabla".getBytes()).when(invoicePdfService).createPdf(any());
         emailSender.sendMailWithInvoice(invoice);
 
         // Then
