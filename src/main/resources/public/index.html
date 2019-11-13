@@ -30,7 +30,29 @@
         <td>{{invoice.number}}</td>
         <td>{{invoice.seller.name}}</td>
         <td>{{invoice.buyer.name}}</td>
-        <td></td>
+        <td>
+            <div class="modal fade" id="invoiceModal{{invoice.id}}" tabindex="-1" role="dialog" aria-labelledby="invoiceModal{{invoice.id}}Label" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="invoiceModal{{invoice.id}}Label">{{invoice.number}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {{invoice.number}}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#invoiceModal{{invoice.id}}">
+                Show details
+            </button>
+        </td>
     </tr>
     </tbody>
 </table>
