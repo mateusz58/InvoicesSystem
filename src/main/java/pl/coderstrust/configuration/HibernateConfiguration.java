@@ -14,5 +14,6 @@ import org.springframework.context.annotation.PropertySource;
 @Import({DataSourceAutoConfiguration.class,
     DataSourceTransactionManagerAutoConfiguration.class,
     HibernateJpaAutoConfiguration.class})
+@PropertySource("classpath:hibernate-postgresql.properties")
 public class HibernateConfiguration {
 }

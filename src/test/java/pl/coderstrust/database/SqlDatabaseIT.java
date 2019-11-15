@@ -188,8 +188,10 @@ public class SqlDatabaseIT {
             .withDueDate(LocalDate.now().plusDays(10))
             .withEntries(List.of(InvoiceEntryGenerator.getRandomEntryWithSpecificId(27L)))
             .build();
+
         //When
         Invoice actual = sqlDatabase.save(expected);
+
         //Then
         assertEquals(expected, actual);
     }
@@ -203,6 +205,7 @@ public class SqlDatabaseIT {
     void saveMethodShouldThrowDatabaseOperationExceptionWhenTryingToAddInvoiceWithTheSameBuyerAndSeller() {
         //Given
         Invoice givenInvoice = InvoiceGenerator.generateInvoiceWithTheSameBuyerAndSeller();
+
         //Then
         assertThrows(DatabaseOperationException.class, () -> sqlDatabase.save(givenInvoice));
     }
@@ -216,6 +219,7 @@ public class SqlDatabaseIT {
     void deleteMethodShouldDeleteInvoice() throws DatabaseOperationException {
         //When
         sqlDatabase.delete(testedInvoice.getId());
+
         //Then
         assertFalse(jdbcTemplate.queryForObject("SELECT EXISTS(SELECT invoice_id FROM invoice_entries WHERE invoice_id= ?)", new Object[] {testedInvoice.getId()}, Boolean.class));
     }
@@ -234,6 +238,7 @@ public class SqlDatabaseIT {
     void getByIdMethodShouldReturnInvoiceById() throws DatabaseOperationException {
         //When
         Optional<Invoice> actualInvoice = sqlDatabase.getById(testedInvoice.getId());
+
         //Then
         assertEquals(testedInvoice, actualInvoice.get());
     }
@@ -242,6 +247,7 @@ public class SqlDatabaseIT {
     void getByIdMethodShouldReturnEmptyOptionalWhenNonExistingInvoiceIsGotById() throws DatabaseOperationException {
         //When
         Optional<Invoice> actualInvoice = sqlDatabase.getById(listOfInvoicesAddedToDatabase.size() + 1L);
+
         //Then
         assertTrue(actualInvoice.isEmpty());
     }
@@ -255,6 +261,7 @@ public class SqlDatabaseIT {
     void getByNumberMethodShouldReturnInvoiceByNumber() throws DatabaseOperationException {
         //When
         Optional<Invoice> actualInvoice = sqlDatabase.getByNumber(testedInvoice.getNumber());
+
         //Then
         assertEquals(testedInvoice, actualInvoice.get());
     }
@@ -263,6 +270,7 @@ public class SqlDatabaseIT {
     void getByNumberMethodShouldReturnEmptyOptionalWhenNonExistingInvoiceIsGotByNumber() throws DatabaseOperationException {
         //When
         Optional<Invoice> actualInvoice = sqlDatabase.getByNumber("No existent number");
+
         //Then
         assertTrue(actualInvoice.isEmpty());
     }
@@ -276,8 +284,10 @@ public class SqlDatabaseIT {
     void getAllMethodShouldReturnAllInvoices() throws DatabaseOperationException {
         //Given
         Collection<Invoice> expectedListOfInvoices = listOfInvoicesAddedToDatabase;
+
         //When
         Collection<Invoice> actualListOfInvoices = sqlDatabase.getAll();
+
         //Then
         assertEquals(expectedListOfInvoices, actualListOfInvoices);
     }
@@ -286,6 +296,7 @@ public class SqlDatabaseIT {
     void deleteAllMethodShouldDeleteAllInvoices() throws DatabaseOperationException {
         //When
         sqlDatabase.deleteAll();
+
         //Then
         assertFalse(jdbcTemplate.queryForObject("SELECT EXISTS(SELECT *FROM invoice,invoice_entry,invoice_entries,company)", Boolean.class));
     }
@@ -309,8 +320,10 @@ public class SqlDatabaseIT {
     void countMethodShouldReturnNumberOfInvoices() throws DatabaseOperationException {
         //Given
         long expected = 5L;
+
         //When
         long actual = sqlDatabase.count();
+
         //Then
         assertEquals(expected, actual);
     }

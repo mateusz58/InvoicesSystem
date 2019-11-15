@@ -85,10 +85,6 @@ public class InvoiceService {
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
-            if (!database.exists(id)) {
-                log.error("Attempt to get not existing invoice by id.");
-                throw new ServiceOperationException("Invoice does not exist in database.");
-            }
             log.debug("Found invoice with id {} in database.", id);
             return database.getById(id);
         } catch (DatabaseOperationException e) {
