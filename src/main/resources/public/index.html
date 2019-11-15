@@ -44,14 +44,7 @@
                             <table class="table-sm">
                                 <tbody>
                                 <tr>
-                                    <td class="bg-primary" colspan="6">
-                                        <h5>
-                                            <p class="text-center text-white font-weight-bold">Seller
-                                            </p>
-                                        </h5>
-                                    </td>
-                                </tr>
-                                <tr>
+                                    <td scope="col"></td>
                                     <td scope="col">Name:</td>
                                     <td scope="col">Address:</td>
                                     <td scope="col">Tax id:</td>
@@ -60,6 +53,7 @@
                                     <td scope="col">E-mail:</td>
                                 </tr>
                                 <tr>
+                                    <td class="bg-primary"><p class="text-center text-white font-weight-bold">Seller</p></td>
                                     <td><h6>{{invoice.seller.name}}</h6></td>
                                     <td><h6>{{invoice.seller.address}}</h6></td>
                                     <td><h6>{{invoice.seller.taxId}}</h6></td>
@@ -67,28 +61,8 @@
                                     <td><h6>{{invoice.seller.phoneNumber}}</h6></td>
                                     <td><h6>{{invoice.seller.email}}</h6></td>
                                 </tr>
-                                </tbody>
-                            </table>
-                            <p></p>
-                            <table class="table-sm">
-                                <tbody>
                                 <tr>
-                                    <td class="bg-primary" colspan="6">
-                                        <h5>
-                                            <p class="text-center text-white font-weight-bold">Buyer
-                                            </p>
-                                        </h5>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td scope="col">Name:</td>
-                                    <td scope="col">Address:</td>
-                                    <td scope="col">Tax id:</td>
-                                    <td scope="col">Account number:</td>
-                                    <td scope="col">Phone number:</td>
-                                    <td scope="col">E-mail:</td>
-                                </tr>
-                                <tr>
+                                    <td class="bg-primary"><p class="text-center text-white font-weight-bold">Buyer</p></td>
                                     <td><h6>{{invoice.buyer.name}}</h6></td>
                                     <td><h6>{{invoice.buyer.address}}</h6></td>
                                     <td><h6>{{invoice.buyer.taxId}}</h6></td>
@@ -108,13 +82,13 @@
                                     <th scope="col">Vat value:</th>
                                     <th scope="col">Gross value:</th>
                                 </tr>
-                                <tr ng-repeat="invoiceEntry in {{invoice}}">
-                                    <td>{{invoice.invoiceEntry.description}}</td>
-                                    <td>{{invoice.entries.quantity}}</td>
-                                    <td>{{invoice.entries.price}}</td>
-                                    <td>{{invoice.entries.vatRate}}</td>
-                                    <td>{{invoice.entries.netValue}}</td>
-                                    <td>{{invoice.entries.grossValue}}</td>
+                                <tr ng-repeat="entry in invoice.entries">
+                                    <td>{{entry.description}}</td>
+                                    <td>{{entry.quantity}}</td>
+                                    <td>{{entry.price}}</td>
+                                    <td>{{entry.vatRate}}</td>
+                                    <td>{{entry.netValue}}</td>
+                                    <td>{{entry.grossValue}}</td>
                                 </tr>
                             </table>
                         </div>
