@@ -48,5 +48,4 @@ public class InvoiceRowMapper implements RowMapper<Invoice> {
             .withTaxId(rs.getString("seller_tax_id"))
             .build();
     }
-
 }

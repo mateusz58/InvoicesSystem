@@ -52,6 +52,3 @@ create table invoice_entries
     constraint fke06o58iirxorpfhmvhu46opa4
       references invoice_entry ON DELETE CASCADE
 );
-
-
-

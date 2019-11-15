@@ -1,6 +1,8 @@
 package pl.coderstrust.database;
 
-import java.io.File;
+
+import static pl.coderstrust.database.SqlQueries.*;
+
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -10,11 +12,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -28,19 +28,13 @@ import pl.coderstrust.model.InvoiceEntry;
 @Repository
 @ConditionalOnProperty(name = "pl.coderstrust.database", havingValue = "postgresql")
 public class SqlDatabase implements Database {
-    private static final String ENCODING = "UTF-8";
+
     private final JdbcTemplate jdbcTemplate;
-    private final String GET_INVOICE_BY_ID = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/GET-INVOICE-BY-ID.sql"), ENCODING);
-    private final String GET_INVOICE_BY_NUMBER = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/GET-INVOICE-BY-NUM.sql"), ENCODING);
-    private final String GET_ALL_INVOICES = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/GET-ALL-INVOICES.sql"), ENCODING);
-    private final String DELETE_ALL_DATA = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/DELETE-ALL-DATA.sql"), ENCODING);
-    private final String GET_INVOICE_ENTRIES = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/GET-INVOICE-ENTRIES.sql"), ENCODING);
-    private final String DELETE_INVOICE_BY_ID = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/DELETE-INVOICE-BY-ID.sql"), ENCODING);
 
     @Autowired
     public SqlDatabase(JdbcTemplate jdbcTemplate) throws IOException {
         if (jdbcTemplate == null) {
-            throw new IllegalArgumentException("Database is empty.");
+            throw new IllegalArgumentException("JDBC template cannot be null.");
         }
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -55,7 +49,7 @@ public class SqlDatabase implements Database {
                 return updateInvoice(invoice);
             }
             return insertInvoice(invoice);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new DatabaseOperationException("An error occured during adding invoice to database");
         }
     }
@@ -115,11 +109,7 @@ public class SqlDatabase implements Database {
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
-            Optional<Invoice> invoice = jdbcTemplate.query(GET_INVOICE_BY_ID, new Object[] {id}, new InvoiceRowMapper()).stream().map(i -> buildInvoice(i, getInvoiceEntries(i.getId()))).findFirst();
-            if (invoice.isPresent()) {
-                return invoice;
-            }
-            return Optional.empty();
+            return jdbcTemplate.query(GET_INVOICE_BY_ID, new Object[] {id}, new InvoiceRowMapper()).stream().map(i -> buildInvoice(i, getInvoiceEntries(i.getId()))).findFirst();
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("An error occured during getting invoice by Id");
         }
@@ -131,11 +121,7 @@ public class SqlDatabase implements Database {
             throw new IllegalArgumentException("Number cannot be null.");
         }
         try {
-            Optional<Invoice> invoice = jdbcTemplate.query(GET_INVOICE_BY_NUMBER, new Object[] {number}, new InvoiceRowMapper()).stream().map(i -> buildInvoice(i, getInvoiceEntries(i.getId()))).findFirst();
-            if (invoice.isPresent()) {
-                return invoice;
-            }
-            return Optional.empty();
+            return  jdbcTemplate.query(GET_INVOICE_BY_NUMBER, new Object[] {number}, new InvoiceRowMapper()).stream().map(i -> buildInvoice(i, getInvoiceEntries(i.getId()))).findFirst();
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("An error occured during getting invoice by Number");
         }
@@ -165,7 +151,7 @@ public class SqlDatabase implements Database {
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
-            return jdbcTemplate.queryForObject("SELECT EXISTS(SELECT ID FROM invoice WHERE ID=?)", new Object[] {id}, Boolean.class);
+            return jdbcTemplate.queryForObject(EXISTS_INVOICE, new Object[] {id}, Boolean.class);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("An error occured during checking if invoice exists");
         }
@@ -174,24 +160,24 @@ public class SqlDatabase implements Database {
     @Override
     public long count() throws DatabaseOperationException {
         try {
-            return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM INVOICE", Integer.class);
+            return jdbcTemplate.queryForObject(COUNT_INVOICES, Integer.class);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("An error occured during counting all invoices");
         }
     }
 
     private boolean companyExists(Long id) throws DatabaseOperationException {
-        return jdbcTemplate.queryForObject("SELECT EXISTS(SELECT ID FROM COMPANY WHERE ID=?)", new Object[] {id}, Boolean.class);
+        return jdbcTemplate.queryForObject(EXISTS_COMPANY, new Object[] {id}, Boolean.class);
     }
 
     private boolean invoiceEntryExists(Long id) throws DatabaseOperationException {
-        return jdbcTemplate.queryForObject("SELECT EXISTS(SELECT id FROM invoice_entry WHERE ID=?)", new Object[] {id}, Boolean.class);
+        return jdbcTemplate.queryForObject(EXISTS_INVOICE_ENTRY, new Object[] {id}, Boolean.class);
     }
 
     private Company insertCompanyTable(Company company) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO COMPANY(account_number,address,email,name,phone_number,tax_id) VALUES(?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(INSERT_COMPANY, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, company.getAccountNumber());
             ps.setString(2, company.getAddress());
             ps.setString(3, company.getEmail());
@@ -206,7 +192,7 @@ public class SqlDatabase implements Database {
     private InvoiceEntry insertInvoiceEntryTable(InvoiceEntry invoiceEntry) {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO invoice_entry(description, gross_value, net_value, price,quantity, vat_rate) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(INSERT_INVOICE_ENTRY, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, invoiceEntry.getDescription());
             ps.setBigDecimal(2, invoiceEntry.getGrossValue());
             ps.setBigDecimal(3, invoiceEntry.getNetValue());
@@ -219,13 +205,7 @@ public class SqlDatabase implements Database {
     }
 
     private InvoiceEntry updateInvoiceEntryTable(InvoiceEntry invoiceEntry) {
-        jdbcTemplate.update("UPDATE  invoice_entry\n" +
-                "SET description= ?," +
-                "gross_value= ?,\n" +
-                "net_value= ?,\n" +
-                "price= ?,\n" +
-                "quantity = ?\n" +
-                "WHERE id=?",
+        jdbcTemplate.update(UPDATE_INVOICE_ENTRY,
             invoiceEntry.getDescription(), invoiceEntry.getGrossValue(), invoiceEntry.getNetValue(), invoiceEntry.getPrice(), invoiceEntry.getQuantity(), invoiceEntry.getId());
         return invoiceEntry;
     }
@@ -233,7 +213,7 @@ public class SqlDatabase implements Database {
     private void insertInvoiceEntriesTable(Long invoiceId, List<InvoiceEntry> invoiceEntries) {
         for (int i = 0; i < invoiceEntries.size(); i++) {
             jdbcTemplate.update(
-                "INSERT INTO invoice_entries(invoice_id,entries_id) VALUES(?,?)",
+                INSERT_INVOICE_ENTRIES,
                 invoiceId, invoiceEntries.get(i).getId());
         }
     }
@@ -241,7 +221,7 @@ public class SqlDatabase implements Database {
     private Invoice insertInvoiceTable(Invoice invoice, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries) throws Exception {
         KeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO INVOICE(due_date, issued_date, number, buyer_id, seller_id) VALUES(? ,?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(INSERT_INVOICE, Statement.RETURN_GENERATED_KEYS);
             ps.setDate(1, Date.valueOf(invoice.getDueDate()));
             ps.setDate(2, Date.valueOf(invoice.getIssuedDate()));
             ps.setString(3, invoice.getNumber());
@@ -254,12 +234,7 @@ public class SqlDatabase implements Database {
     }
 
     private Invoice updateInvoiceTable(Invoice invoice, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries) {
-        jdbcTemplate.update("UPDATE  invoice\n" +
-                "SET due_date= ?,issued_date= ?,\n" +
-                "    number= ?,\n" +
-                "    buyer_id= ?,\n" +
-                "    seller_id= ?\n" +
-                "WHERE id=?",
+        jdbcTemplate.update(UPDATE_INVOICE,
             invoice.getDueDate(), invoice.getIssuedDate(), invoice.getNumber(), buyer.getId(), seller.getId(), invoice.getId());
         insertInvoiceEntriesTable(invoice.getId(), invoiceEntries);
         return Invoice.builder()

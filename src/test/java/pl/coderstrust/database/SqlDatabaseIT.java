@@ -1,11 +1,12 @@
 package pl.coderstrust.database;
 
+import static pl.coderstrust.database.TestingSqlQueries.*;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,11 +37,6 @@ import pl.coderstrust.model.InvoiceEntry;
 @ExtendWith({SpringExtension.class})
 public class SqlDatabaseIT {
 
-    private static final String ENCODING = "UTF-8";
-    private final String CREATE_TABLE = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/CREATE-TABLES.sql"), ENCODING);
-    private final String DROP_TABLE = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/DROP-ALL-TABLES.sql"), ENCODING);
-    private final String TRIGGERS = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/TRIGGERS.sql"), ENCODING);
-    private final String DROP_TRIGGERS = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/DROP-TRIGGERS.sql"), ENCODING);
     @Autowired
     JdbcTemplate jdbcTemplate;
     @Autowired
@@ -263,7 +258,7 @@ public class SqlDatabaseIT {
     @Test
     void countMethodShouldReturnNumberOfInvoices() throws DatabaseOperationException {
         //Given
-        long expected = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM INVOICE",Long.class);
+        long expected = 5L;
 
         //When
         long actual = sqlDatabase.count();
