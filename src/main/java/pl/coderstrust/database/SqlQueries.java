@@ -43,7 +43,10 @@ public class SqlQueries {
             INSERT_INVOICE_ENTRIES = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/INSERT-INVOICE-ENTRIES.sql"), ENCODING);
             INSERT_COMPANY = FileUtils.readFileToString(new File("src/main/resources/sqlScripts/INSERT-COMPANY.sql"), ENCODING);
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                throw new DatabaseOperationException(String.format("An error occured during getting scripts from file: %s", e));
+            } catch (DatabaseOperationException ex) {
+            }
+        }
         }
     }
-}
