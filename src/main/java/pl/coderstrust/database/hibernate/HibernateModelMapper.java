@@ -3,22 +3,17 @@ package pl.coderstrust.database.hibernate;
 import java.util.Collection;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import pl.coderstrust.model.Company;
+import pl.coderstrust.model.Invoice;
+import pl.coderstrust.model.InvoiceEntry;
+import pl.coderstrust.model.Vat;
 
 @Mapper(componentModel = "spring")
 public interface HibernateModelMapper {
 
-    Collection<Invoice> mapToHibernateInvoices(Collection<pl.coderstrust.model.Invoice> invoices);
+    Collection<HibernateInvoice> mapToHibernateInvoices(Collection<Invoice> invoices);
 
-    Collection<pl.coderstrust.model.Invoice> mapToInvoices(Collection<Invoice> invoices);
-
-    @Mapping(target = "withId", source = "id")
-    @Mapping(target = "withNumber", source = "number")
-    @Mapping(target = "withIssuedDate", source = "issuedDate")
-    @Mapping(target = "withDueDate", source = "dueDate")
-    @Mapping(target = "withSeller", source = "seller")
-    @Mapping(target = "withBuyer", source = "buyer")
-    @Mapping(target = "withEntries", source = "entries")
-    Invoice mapToHibernateInvoice(pl.coderstrust.model.Invoice invoice);
+    Collection<Invoice> mapToInvoices(Collection<HibernateInvoice> invoices);
 
     @Mapping(target = "withId", source = "id")
     @Mapping(target = "withNumber", source = "number")
@@ -27,7 +22,16 @@ public interface HibernateModelMapper {
     @Mapping(target = "withSeller", source = "seller")
     @Mapping(target = "withBuyer", source = "buyer")
     @Mapping(target = "withEntries", source = "entries")
-    pl.coderstrust.model.Invoice mapToInvoice(Invoice invoice);
+    HibernateInvoice mapToHibernateInvoice(Invoice invoice);
+
+    @Mapping(target = "withId", source = "id")
+    @Mapping(target = "withNumber", source = "number")
+    @Mapping(target = "withIssuedDate", source = "issuedDate")
+    @Mapping(target = "withDueDate", source = "dueDate")
+    @Mapping(target = "withSeller", source = "seller")
+    @Mapping(target = "withBuyer", source = "buyer")
+    @Mapping(target = "withEntries", source = "entries")
+    Invoice mapToInvoice(HibernateInvoice invoice);
 
     @Mapping(target = "withId", source = "id")
     @Mapping(target = "withName", source = "name")
@@ -36,7 +40,7 @@ public interface HibernateModelMapper {
     @Mapping(target = "withAccountNumber", source = "accountNumber")
     @Mapping(target = "withPhoneNumber", source = "phoneNumber")
     @Mapping(target = "withEmail", source = "email")
-    Company mapToHibernateCompany(pl.coderstrust.model.Company company);
+    HibernateCompany mapToHibernateCompany(Company company);
 
     @Mapping(target = "withId", source = "id")
     @Mapping(target = "withName", source = "name")
@@ -45,7 +49,7 @@ public interface HibernateModelMapper {
     @Mapping(target = "withAccountNumber", source = "accountNumber")
     @Mapping(target = "withPhoneNumber", source = "phoneNumber")
     @Mapping(target = "withEmail", source = "email")
-    pl.coderstrust.model.Company mapToCompany(Company company);
+    Company mapToCompany(HibernateCompany company);
 
     @Mapping(target = "withId", source = "id")
     @Mapping(target = "withDescription", source = "description")
@@ -54,7 +58,7 @@ public interface HibernateModelMapper {
     @Mapping(target = "withNetValue", source = "netValue")
     @Mapping(target = "withGrossValue", source = "grossValue")
     @Mapping(target = "withVatRate", source = "vatRate")
-    InvoiceEntry mapToHibernateInvoiceEntry(pl.coderstrust.model.InvoiceEntry invoiceEntry);
+    HibernateInvoiceEntry mapToHibernateInvoiceEntry(InvoiceEntry invoiceEntry);
 
     @Mapping(target = "withId", source = "id")
     @Mapping(target = "withDescription", source = "description")
@@ -63,9 +67,9 @@ public interface HibernateModelMapper {
     @Mapping(target = "withNetValue", source = "netValue")
     @Mapping(target = "withGrossValue", source = "grossValue")
     @Mapping(target = "withVatRate", source = "vatRate")
-    pl.coderstrust.model.InvoiceEntry mapToInvoiceEntry(InvoiceEntry invoiceEntry);
+    InvoiceEntry mapToInvoiceEntry(HibernateInvoiceEntry invoiceEntry);
 
-    Vat mapToHibernateVat(pl.coderstrust.model.Vat vat);
+    HibernateVat mapToHibernateVat(Vat vat);
 
-    pl.coderstrust.model.Vat maptoVat(Vat vat);
+    Vat maptoVat(HibernateVat vat);
 }

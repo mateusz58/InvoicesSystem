@@ -4,28 +4,31 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-@ConditionalOnExpression("'${pl.coderstrust.database}' == 'hibernate'")
-public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
-
-    @Value("${spring.security.user.name}")
-    String username;
-
-    @Value("${spring.security.user.password}")
-    String password;
+@ConditionalOnExpression("'${pl.coderstrust.database}' == 'locked'")
+public class WebSecurityConfigurerHibernate extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    BCryptPasswordEncoder encoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Value("${spring.queries.users-query}")
+    private String usersQuery;
+
+    @Value("${spring.queries.roles-query}")
+    private String rolesQuery;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -37,7 +40,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .anyRequest().fullyAuthenticated()
             .anyRequest()
-            .hasRole("USER")
+            .hasAuthority("ADMIN")
             .and()
             .httpBasic()
             .and()
@@ -48,11 +51,22 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
             .permitAll();
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authentication) throws Exception {
-        authentication.inMemoryAuthentication()
-            .withUser(username)
-            .password(encoder.encode(password))
-            .roles("USER");
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth)
+        throws Exception {
+        auth.
+            jdbcAuthentication()
+            .usersByUsernameQuery(usersQuery)
+            .authoritiesByUsernameQuery(rolesQuery)
+            .dataSource(dataSource)
+            .passwordEncoder(bCryptPasswordEncoder);
     }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+            .ignoring()
+            .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
+    }
+
 }
