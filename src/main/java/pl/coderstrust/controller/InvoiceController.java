@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,8 @@ import pl.coderstrust.service.ServiceOperationException;
 @Api(value = "/invoices")
 public class InvoiceController {
 
+    private Logger log = LoggerFactory.getLogger(InvoiceController.class);
+
     private InvoiceService invoiceService;
     private InvoiceEmailService invoiceEmailService;
     private InvoicePdfService invoicePdfService;
@@ -57,14 +61,17 @@ public class InvoiceController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> add(@RequestBody(required = false) Invoice invoice) {
         if (invoice == null) {
+            log.error("Attempt to add null invoice.");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
             if (invoice.getId() != null && invoiceService.exists(invoice.getId())) {
+                log.error("Attempt to add invoice already existing in database.");
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
             Invoice addedInvoice = invoiceService.add(invoice);
             invoiceEmailService.sendMailWithInvoice(addedInvoice);
+            log.debug("New invoice added with id: {}", addedInvoice.getId());
             return new ResponseEntity<>(addedInvoice, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,15 +92,19 @@ public class InvoiceController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody(required = false) Invoice invoice) {
         if (invoice == null) {
+            log.error("Attempt to update invoice with null id.");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
             if (!id.equals(invoice.getId())) {
+                log.error("An Attempt to update invoice with different invoice id occured");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             if (!invoiceService.exists(id)) {
+                log.error("An attempt to update not existing invoice occured");
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+            log.debug("invoice updated with id: {}", invoice.getId());
             return new ResponseEntity<>(invoiceService.update(invoice), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -108,6 +119,7 @@ public class InvoiceController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAll() {
         try {
+            log.debug("successfully retrieved all users");
             return new ResponseEntity<>(invoiceService.getAll(), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -126,10 +138,13 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getById(id);
             if (invoice.isPresent()) {
+                log.debug("invoice with given id found");
                 return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
             }
+            log.debug("invoice with given id not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            log.error("An error occured during getting invoice by id");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -139,6 +154,7 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getById(id);
             if (invoice.isPresent()) {
+                log.debug("invoice with given id found");
                 return getResponsePdfEntity(invoice.get());
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -186,10 +202,12 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
+                log.debug("Successfully retrieved invoice by number {}  as pdf", invoice.get().getNumber());
                 return getResponsePdfEntity(invoice.get());
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            log.error("An error occured during getting invoice by number ");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -203,8 +221,10 @@ public class InvoiceController {
     public ResponseEntity<?> deleteAll() {
         try {
             invoiceService.deleteAll();
+            log.debug("Successfully deleted all users from database");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            log.error("An error occured during deleting invoices from database");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -225,6 +245,7 @@ public class InvoiceController {
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            log.error("An error occured during removing invoice by id");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
