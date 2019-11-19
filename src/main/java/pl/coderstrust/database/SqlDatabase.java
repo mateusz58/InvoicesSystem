@@ -1,7 +1,22 @@
 package pl.coderstrust.database;
 
 
-import static pl.coderstrust.database.SqlQueries.*;
+import static pl.coderstrust.database.SqlQueries.COUNT_INVOICES;
+import static pl.coderstrust.database.SqlQueries.DELETE_ALL_DATA;
+import static pl.coderstrust.database.SqlQueries.DELETE_INVOICE_BY_ID;
+import static pl.coderstrust.database.SqlQueries.EXISTS_COMPANY;
+import static pl.coderstrust.database.SqlQueries.EXISTS_INVOICE;
+import static pl.coderstrust.database.SqlQueries.EXISTS_INVOICE_ENTRY;
+import static pl.coderstrust.database.SqlQueries.GET_ALL_INVOICES;
+import static pl.coderstrust.database.SqlQueries.GET_INVOICE_BY_ID;
+import static pl.coderstrust.database.SqlQueries.GET_INVOICE_BY_NUMBER;
+import static pl.coderstrust.database.SqlQueries.GET_INVOICE_ENTRIES;
+import static pl.coderstrust.database.SqlQueries.INSERT_COMPANY;
+import static pl.coderstrust.database.SqlQueries.INSERT_INVOICE;
+import static pl.coderstrust.database.SqlQueries.INSERT_INVOICE_ENTRIES;
+import static pl.coderstrust.database.SqlQueries.INSERT_INVOICE_ENTRY;
+import static pl.coderstrust.database.SqlQueries.UPDATE_INVOICE;
+import static pl.coderstrust.database.SqlQueries.UPDATE_INVOICE_ENTRY;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -13,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -26,7 +40,6 @@ import pl.coderstrust.model.Invoice;
 import pl.coderstrust.model.InvoiceEntry;
 
 @Repository
-@ConditionalOnProperty(name = "pl.coderstrust.database", havingValue = "postgresql")
 public class SqlDatabase implements Database {
 
     private final JdbcTemplate jdbcTemplate;
