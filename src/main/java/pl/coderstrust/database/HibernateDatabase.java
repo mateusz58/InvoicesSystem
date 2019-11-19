@@ -45,8 +45,9 @@ public class HibernateDatabase implements Database {
             log.debug("Invoice has been successfully added to database.");
             return modelMapper.mapToInvoice(savedInvoice);
         } catch (NonTransientDataAccessException e) {
-            log.error("An error occurred during saving invoice", e);
-            throw new DatabaseOperationException("An error occurred during saving invoice.", e);
+            String message = "An error occurred during saving invoice.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -64,8 +65,9 @@ public class HibernateDatabase implements Database {
             invoiceRepository.deleteById(id);
             log.debug("Invoice with id {} has been successfully deleted.", id);
         } catch (NonTransientDataAccessException | NoSuchElementException e) {
-            log.error("An error occurred during deleting invoice.",e);
-            throw new DatabaseOperationException("An error occurred during deleting invoice.", e);
+            String message = "An error occurred during deleting invoice.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -84,8 +86,9 @@ public class HibernateDatabase implements Database {
             log.debug("Invoice with id {} is not found.", id);
             return Optional.empty();
         } catch (NoSuchElementException e) {
-            log.error("An error occurred during getting invoice by id.",e);
-            throw new DatabaseOperationException("An error occurred during getting invoice by id.", e);
+            String message = "An error occurred during getting invoice by id.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -105,8 +108,9 @@ public class HibernateDatabase implements Database {
             log.debug("Invoice with number {} is not found.", number);
             return Optional.empty();
         } catch (NonTransientDataAccessException e) {
-            log.error("An error occurred during getting invoice by number.",e);
-            throw new DatabaseOperationException("An error occurred during getting invoice by number.", e);
+            String message = "An error occurred during getting invoice by number.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -116,8 +120,9 @@ public class HibernateDatabase implements Database {
             log.debug("Successfully downloaded all invoices.");
             return modelMapper.mapToInvoices(invoiceRepository.findAll());
         } catch (NonTransientDataAccessException e) {
-            log.error("An error occurred during getting all invoices.");
-            throw new DatabaseOperationException("An error occurred during getting all invoices.", e);
+            String message = "An error occurred during getting all invoices.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -127,8 +132,9 @@ public class HibernateDatabase implements Database {
             invoiceRepository.deleteAll();
             log.debug("All invoices have been successfully deleted.");
         } catch (NonTransientDataAccessException e) {
-            log.error("An error occurred during deleting all invoices.",e);
-            throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
+            String message = "An error occurred during deleting all invoices.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -141,8 +147,9 @@ public class HibernateDatabase implements Database {
         try {
             return invoiceRepository.existsById(id);
         } catch (NonTransientDataAccessException e) {
-            log.error("An error occurred during checking if invoice exist.",e);
-            throw new DatabaseOperationException("An error occurred during checking if invoice exists.", e);
+            String message = "An error occurred during checking if invoice exists.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -151,8 +158,9 @@ public class HibernateDatabase implements Database {
         try {
             return invoiceRepository.count();
         } catch (NonTransientDataAccessException e) {
-            log.error("An error occurred during counting invoices.",e);
-            throw new DatabaseOperationException("An error occurred during getting number of invoices.", e);
+            String message = "An error occurred during counting invoices.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 }

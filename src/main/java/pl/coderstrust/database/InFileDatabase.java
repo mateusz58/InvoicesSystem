@@ -50,8 +50,9 @@ public class InFileDatabase implements Database {
             log.debug("Invoice has been successfully updated.");
             return updateInvoice(invoice);
         } catch (IOException e) {
-            log.error("An error occurred during saving invoice.",e);
-            throw new DatabaseOperationException("An error occurred while saving invoice to database.");
+            String message = "An error occurred during saving invoice.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -65,8 +66,9 @@ public class InFileDatabase implements Database {
             fileHelper.removeLine(filePath, getPositionInDatabase(id));
             log.debug("Invoice with id {} has been successfully deleted.", id);
         } catch (IOException e) {
-            log.error("An error occurred during deleting invoice.",e);
-            throw new DatabaseOperationException(String.format("An error occurred while deleting invoice with id: %d from database.", id));
+            String message = "An error occurred during deleting invoice.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -81,8 +83,9 @@ public class InFileDatabase implements Database {
                 .filter(s -> s.getId().equals(id))
                 .findFirst();
         } catch (IOException e) {
-            log.error("An error occurred during getting invoice by id.",e);
-            throw new DatabaseOperationException(String.format("An error occurred while getting invoice with id: %d from database.", id));
+            String message = "An error occurred during getting invoice by id.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -97,8 +100,9 @@ public class InFileDatabase implements Database {
                 .filter(s -> s.getNumber().equals(number))
                 .findFirst();
         } catch (IOException e) {
-            log.error("An error occurred during getting invoice by number.",e);
-            throw new DatabaseOperationException(String.format("An error occurred while getting invoice with number: %s from database.", number));
+            String message = "An error occurred during getting invoice by number.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
 
     }
@@ -108,8 +112,9 @@ public class InFileDatabase implements Database {
         try {
             return getInvoices();
         } catch (IOException e) {
-            log.error("An error occurred during getting all invoices.",e);
-            throw new DatabaseOperationException("An error occurred while getting all invoices from database.");
+            String message = "An error occurred during getting all invoices.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -119,8 +124,9 @@ public class InFileDatabase implements Database {
             fileHelper.clear(filePath);
             log.debug("All invoices have been successfully deleted.");
         } catch (IOException e) {
-            log.error("An error occurred during deleting all invoices.");
-            throw new DatabaseOperationException("An error occurred while deleting all invoices from database.");
+            String message = "An error occurred during deleting all invoices.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -135,8 +141,9 @@ public class InFileDatabase implements Database {
                 .stream()
                 .anyMatch(invoice -> invoice.getId().equals(id));
         } catch (IOException e) {
-            log.error("An error occurred during checking if invoice exist.", e);
-            throw new DatabaseOperationException("An error occurred while checking if invoice exists in database.");
+            String message = "An error occurred during checking if invoice exists.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -145,8 +152,9 @@ public class InFileDatabase implements Database {
         try {
             return getInvoices().size();
         } catch (IOException e) {
-            log.error("An error occurred during counting invoices.", e);
-            throw new DatabaseOperationException("An error occurred during getting number of invoices.");
+            String message = "An error occurred during counting invoices.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 

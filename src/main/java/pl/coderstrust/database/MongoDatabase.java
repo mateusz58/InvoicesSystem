@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -53,8 +52,9 @@ public class MongoDatabase implements Database {
             log.debug("Invoice has been successfully updated.");
             return updateInvoice(invoice, invoiceInDatabase.getMongoId());
         } catch (Exception e) {
-            log.error("An error occurred during saving invoice.",e);
-            throw new DatabaseOperationException("An error occurred during saving invoice.", e);
+            String message = "An error occurred during saving invoice.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -93,8 +93,9 @@ public class MongoDatabase implements Database {
                 throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
             }
         } catch (Exception e) {
-            log.error("An error occurred during deleting invoice.",e);
-            throw new DatabaseOperationException("An error occurred during deleting invoice.", e);
+            String message = "An error occurred during deleting invoice.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -112,8 +113,9 @@ public class MongoDatabase implements Database {
             log.debug("There is no invoice with id {}.", id);
             return Optional.empty();
         } catch (Exception e) {
-            log.error("An error occurred during getting invoice by id.",e);
-            throw new DatabaseOperationException("An error occurred during getting invoice by id.", e);
+            String message = "An error occurred during getting invoice by id.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -135,8 +137,9 @@ public class MongoDatabase implements Database {
             log.debug("There is no invoice with number {}.", number);
             return Optional.empty();
         } catch (Exception e) {
-            log.error("An error occurred during getting invoice by number.",e);
-            throw new DatabaseOperationException("An error occurred during getting invoice by number.", e);
+            String message = "An error occurred during getting invoice by number.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -145,8 +148,9 @@ public class MongoDatabase implements Database {
         try {
             return modelMapper.mapToInvoices(mongoTemplate.findAll(MongoInvoice.class));
         } catch (Exception e) {
-            log.error("An error occurred during getting all invoices.");
-            throw new DatabaseOperationException("An error occurred during getting all invoices.", e);
+            String message = "An error occurred during getting all invoices.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -155,8 +159,9 @@ public class MongoDatabase implements Database {
         try {
             mongoTemplate.dropCollection(MongoInvoice.class);
         } catch (Exception e) {
-            log.error("An error occurred during deleting all invoices.");
-            throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
+            String message = "An error occurred during deleting all invoice.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -169,8 +174,9 @@ public class MongoDatabase implements Database {
         try {
             return mongoTemplate.exists(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
         } catch (Exception e) {
-            log.error("An error occurred during checking if invoice exists.",e);
-            throw new DatabaseOperationException("An error occurred during checking if invoice exists.", e);
+            String message = "An error occurred during checking if invoice exists.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
@@ -179,8 +185,9 @@ public class MongoDatabase implements Database {
         try {
             return mongoTemplate.count(new Query(), MongoInvoice.class);
         } catch (Exception e) {
-            log.error("An error occurred during counting invoices.",e);
-            throw new DatabaseOperationException("An error occurred during getting number of invoices.", e);
+            String message = "An error occurred during counting invoices.";
+            log.error(message, e);
+            throw new DatabaseOperationException(message, e);
         }
     }
 
