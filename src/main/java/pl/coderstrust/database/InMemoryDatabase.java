@@ -20,7 +20,7 @@ public class InMemoryDatabase implements Database {
 
     public InMemoryDatabase(Map<Long, Invoice> database) {
         if (database == null) {
-            log.error("Database is empty");
+            log.error("Database is empty.");
             throw new IllegalArgumentException("Database is empty.");
         }
         this.database = database;
@@ -29,14 +29,14 @@ public class InMemoryDatabase implements Database {
     @Override
     public synchronized Invoice save(Invoice invoice) {
         if (invoice == null) {
-            log.error("Attempt to add null invoice to database");
+            log.error("Attempt to save null invoice to database.");
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
         if (invoice.getId() == null || !database.containsKey(invoice.getId())) {
-            log.error("Attempt to add existing invoice to database");
+            log.debug("Invoice has been successfully added to database.");
             return insertInvoice(invoice);
         }
-        log.info("Invoice has been successfully added to database");
+        log.debug("Invoice has been successfully updated.");
         return updateInvoice(invoice);
     }
 
@@ -61,21 +61,21 @@ public class InMemoryDatabase implements Database {
     @Override
     public synchronized void delete(Long id) throws DatabaseOperationException {
         if (id == null) {
-            log.error("Attempt to get invoice by null id");
+            log.error("Attempt to delete invoice by null id.");
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
         if (!database.containsKey(id)) {
-            log.error("Attempt to delete not existing invoice to database");
-            throw new DatabaseOperationException(String.format("No invoice with id: %s", id));
+            log.error("Attempt to delete not existing invoice.");
+            throw new DatabaseOperationException(String.format("There is no invoice with id: %s in database.", id));
         }
         database.remove(id);
-        log.info("Invoice has been successfully deleted");
+        log.debug("Invoice has been successfully deleted.");
     }
 
     @Override
     public Optional<Invoice> getById(Long id) {
         if (id == null) {
-            log.error("Attempt to get invoice by null id");
+            log.error("Attempt to get invoice by null id.");
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
         return Optional.ofNullable(database.get(id));
@@ -84,8 +84,8 @@ public class InMemoryDatabase implements Database {
     @Override
     public Optional<Invoice> getByNumber(String number) {
         if (number == null) {
-            log.error("Attempt to get invoice by null number");
-            throw new IllegalArgumentException("Invoice number cannot be null");
+            log.error("Attempt to get invoice by null number.");
+            throw new IllegalArgumentException("Invoice number cannot be null.");
         }
         return database.values()
             .stream()
@@ -100,14 +100,14 @@ public class InMemoryDatabase implements Database {
 
     @Override
     public synchronized void deleteAll() {
-        log.error("All invoices have been successfully deleted");
+        log.debug("All invoices have been successfully deleted.");
         database.clear();
     }
 
     @Override
     public boolean exists(Long id) {
         if (id == null) {
-            log.error("Attempt to check if null invoice exists");
+            log.error("Attempt to check if invoice exists by null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
         return database.containsKey(id);

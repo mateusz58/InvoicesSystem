@@ -27,7 +27,7 @@ public class MongoDatabase implements Database {
 
     public MongoDatabase(MongoTemplate mongoTemplate, MongoModelMapper modelMapper) {
         if (mongoTemplate == null) {
-            log.error("Database is empty");
+            log.error("Database is empty.");
             throw new IllegalArgumentException("Mongo template cannot be null.");
         }
         if (modelMapper == null) {
@@ -41,18 +41,19 @@ public class MongoDatabase implements Database {
     @Override
     public Invoice save(Invoice invoice) throws DatabaseOperationException {
         if (invoice == null) {
-            log.error("Attempt to add null invoice to database");
+            log.error("Attempt to add null invoice to database.");
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
         try {
             MongoInvoice invoiceInDatabase = getInvoiceById(invoice.getId());
             if (invoiceInDatabase == null) {
-                log.info("Invoice has been successfully added to database");
+                log.debug("Invoice has been successfully added to database.");
                 return insertInvoice(invoice);
             }
+            log.debug("Invoice has been successfully updated.");
             return updateInvoice(invoice, invoiceInDatabase.getMongoId());
         } catch (Exception e) {
-            log.error("An error occurred during adding invoice",e);
+            log.error("An error occurred during saving invoice.",e);
             throw new DatabaseOperationException("An error occurred during saving invoice.", e);
         }
     }
@@ -82,17 +83,17 @@ public class MongoDatabase implements Database {
     @Override
     public void delete(Long id) throws DatabaseOperationException {
         if (id == null) {
-            log.error("Attempt to delete null invoice");
+            log.error("Attempt to delete invoice by null id.");
             throw new IllegalArgumentException("Invoice id cannot be null.");
         }
         try {
             MongoInvoice invoice = mongoTemplate.findAndRemove(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
             if (invoice == null) {
-                log.error("Attempt to delete not existing invoice to database");
+                log.error("Attempt to delete not existing invoice.");
                 throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
             }
         } catch (Exception e) {
-            log.error("An error occurred during deleting invoice",e);
+            log.error("An error occurred during deleting invoice.",e);
             throw new DatabaseOperationException("An error occurred during deleting invoice.", e);
         }
     }
@@ -100,7 +101,7 @@ public class MongoDatabase implements Database {
     @Override
     public Optional<Invoice> getById(Long id) throws DatabaseOperationException {
         if (id == null) {
-            log.error("Attempt to get invoice by null id");
+            log.error("Attempt to get invoice by null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
@@ -108,9 +109,10 @@ public class MongoDatabase implements Database {
             if (invoice != null) {
                 return Optional.of(modelMapper.mapToInvoice(invoice));
             }
+            log.debug("There is no invoice with id {}.", id);
             return Optional.empty();
         } catch (Exception e) {
-            log.error("An error occurred during getting invoice by id",e);
+            log.error("An error occurred during getting invoice by id.",e);
             throw new DatabaseOperationException("An error occurred during getting invoice by id.", e);
         }
     }
@@ -122,7 +124,7 @@ public class MongoDatabase implements Database {
     @Override
     public Optional<Invoice> getByNumber(String number) throws DatabaseOperationException {
         if (number == null) {
-            log.error("Attempt to get invoice by null number");
+            log.error("Attempt to get invoice by null number.");
             throw new IllegalArgumentException("Number cannot be null.");
         }
         try {
@@ -130,9 +132,10 @@ public class MongoDatabase implements Database {
             if (invoice != null) {
                 return Optional.of(modelMapper.mapToInvoice(invoice));
             }
+            log.debug("There is no invoice with number {}.", number);
             return Optional.empty();
         } catch (Exception e) {
-            log.error("An error occurred during getting invoice by number",e);
+            log.error("An error occurred during getting invoice by number.",e);
             throw new DatabaseOperationException("An error occurred during getting invoice by number.", e);
         }
     }
@@ -142,7 +145,7 @@ public class MongoDatabase implements Database {
         try {
             return modelMapper.mapToInvoices(mongoTemplate.findAll(MongoInvoice.class));
         } catch (Exception e) {
-            log.error("An error occurred during getting all invoices");
+            log.error("An error occurred during getting all invoices.");
             throw new DatabaseOperationException("An error occurred during getting all invoices.", e);
         }
     }
@@ -152,6 +155,7 @@ public class MongoDatabase implements Database {
         try {
             mongoTemplate.dropCollection(MongoInvoice.class);
         } catch (Exception e) {
+            log.error("An error occurred during deleting all invoices.");
             throw new DatabaseOperationException("An error occurred during deleting all invoices.", e);
         }
     }
@@ -159,13 +163,13 @@ public class MongoDatabase implements Database {
     @Override
     public boolean exists(Long id) throws DatabaseOperationException {
         if (id == null) {
-            log.error("Attempt to check if null invoice exists");
+            log.error("Attempt to check if invoice exists by null id.");
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
             return mongoTemplate.exists(Query.query(Criteria.where("id").is(id)), MongoInvoice.class);
         } catch (Exception e) {
-            log.error("An error occurred during checking if invoice exist",e);
+            log.error("An error occurred during checking if invoice exists.",e);
             throw new DatabaseOperationException("An error occurred during checking if invoice exists.", e);
         }
     }
@@ -175,7 +179,7 @@ public class MongoDatabase implements Database {
         try {
             return mongoTemplate.count(new Query(), MongoInvoice.class);
         } catch (Exception e) {
-            log.error("An error occurred during counting invoices",e);
+            log.error("An error occurred during counting invoices.",e);
             throw new DatabaseOperationException("An error occurred during getting number of invoices.", e);
         }
     }

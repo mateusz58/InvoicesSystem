@@ -70,10 +70,12 @@ public class InvoiceController {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
             Invoice addedInvoice = invoiceService.add(invoice);
+            log.debug("New invoice added with id: {}.", addedInvoice.getId());
             invoiceEmailService.sendMailWithInvoice(addedInvoice);
-            log.debug("New invoice added with id: {}", addedInvoice.getId());
+            log.debug("Sent email with new invoice.");
             return new ResponseEntity<>(addedInvoice, HttpStatus.CREATED);
         } catch (Exception e) {
+            log.error("An error occured during adding new invoice.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -97,16 +99,17 @@ public class InvoiceController {
         }
         try {
             if (!id.equals(invoice.getId())) {
-                log.error("An Attempt to update invoice with different invoice id occured");
+                log.error("Attempt to update invoice with wrong id.");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             if (!invoiceService.exists(id)) {
-                log.error("An attempt to update not existing invoice occured");
+                log.error("Attempt to update not existing invoice.");
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            log.debug("invoice updated with id: {}", invoice.getId());
+            log.debug("invoice updated with id: {}.", invoice.getId());
             return new ResponseEntity<>(invoiceService.update(invoice), HttpStatus.CREATED);
         } catch (Exception e) {
+            log.error("An error occured during updating invoice.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -119,9 +122,10 @@ public class InvoiceController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAll() {
         try {
-            log.debug("successfully retrieved all users");
+            log.debug("Successfully downloaded all invoices.");
             return new ResponseEntity<>(invoiceService.getAll(), HttpStatus.OK);
         } catch (Exception e) {
+            log.error("An error occured during getting all invoices.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -138,13 +142,13 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getById(id);
             if (invoice.isPresent()) {
-                log.debug("invoice with given id found");
+                log.debug("Found invoice with id {}.", id);
                 return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
             }
-            log.debug("invoice with given id not found");
+            log.debug("Invoice with id {} is not found.", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            log.error("An error occured during getting invoice by id");
+            log.error("An error occured during getting invoice by id.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -154,11 +158,13 @@ public class InvoiceController {
         try {
             Optional<Invoice> invoice = invoiceService.getById(id);
             if (invoice.isPresent()) {
-                log.debug("invoice with given id found");
+                log.debug("Found invoice with given id.");
                 return getResponsePdfEntity(invoice.get());
             }
+            log.debug("Invoice with given id is not found.");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            log.error("An error occured during getting pdf invoice by id.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -181,15 +187,19 @@ public class InvoiceController {
     @GetMapping(value = "/byNumber", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getByNumber(@RequestParam(required = false) String number) {
         if (number == null) {
+            log.error("Attempt to get invoice with null number.");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
+                log.debug("Found invoice with number {}.", number);
                 return new ResponseEntity<>(invoice.get(), HttpStatus.OK);
             }
+            log.debug("Invoice with number {} is not found.", number);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            log.error("An error occured during getting invoice by number.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -197,17 +207,19 @@ public class InvoiceController {
     @GetMapping(value = "/pdf/byNumber", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<?> getByNumberAsPdf(@RequestParam(required = false) String number) {
         if (number == null) {
+            log.error("Attempt to get invoice with null number.");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
             Optional<Invoice> invoice = invoiceService.getByNumber(number);
             if (invoice.isPresent()) {
-                log.debug("Successfully retrieved invoice by number {}  as pdf", invoice.get().getNumber());
+                log.debug("Found invoice with number {}.", number);
                 return getResponsePdfEntity(invoice.get());
             }
+            log.debug("Invoice with number {} is not found.", number);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            log.error("An error occured during getting invoice by number ");
+            log.error("An error occured during getting invoice by number.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -221,10 +233,10 @@ public class InvoiceController {
     public ResponseEntity<?> deleteAll() {
         try {
             invoiceService.deleteAll();
-            log.debug("Successfully deleted all users from database");
+            log.debug("Successfully deleted all invoices from database.");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            log.error("An error occured during deleting invoices from database");
+            log.error("An error occured during deleting all invoices.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -241,11 +253,13 @@ public class InvoiceController {
         try {
             if (invoiceService.exists(id)) {
                 invoiceService.deleteById(id);
+                log.debug("Successfully deleted invoice with id {}.", id);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
+            log.debug("Invoice with id {} is not found. ", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            log.error("An error occured during removing invoice by id");
+            log.error("An error occured during deleting invoice by id.");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
