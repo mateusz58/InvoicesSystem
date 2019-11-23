@@ -93,7 +93,7 @@ public class InvoiceService {
             return database.getById(id);
         } catch (DatabaseOperationException e) {
             String message = "An error occurred during getting invoice by id.";
-            log.error(message, e);
+            log.error("An error occurred during getting invoice by id.", e);
             throw new ServiceOperationException(message, e);
         }
     }

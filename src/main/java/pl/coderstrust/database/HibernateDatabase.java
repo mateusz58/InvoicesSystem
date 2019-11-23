@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Repository;
-import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.HibernateModelMapper;
 import pl.coderstrust.model.Invoice;
 
@@ -41,7 +40,7 @@ public class HibernateDatabase implements Database {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }
         try {
-            HibernateInvoice savedInvoice = invoiceRepository.save(modelMapper.mapToHibernateInvoice(invoice));
+            pl.coderstrust.database.hibernate.Invoice savedInvoice = invoiceRepository.save(modelMapper.mapToHibernateInvoice(invoice));
             log.debug("Invoice has been successfully added to database.");
             return modelMapper.mapToInvoice(savedInvoice);
         } catch (NonTransientDataAccessException e) {
@@ -78,7 +77,7 @@ public class HibernateDatabase implements Database {
             throw new IllegalArgumentException("Id cannot be null.");
         }
         try {
-            Optional<HibernateInvoice> invoice = invoiceRepository.findById(id);
+            Optional<pl.coderstrust.database.hibernate.Invoice> invoice = invoiceRepository.findById(id);
             if (invoice.isPresent()) {
                 log.debug("Found invoice with id {}.", id);
                 return Optional.of(modelMapper.mapToInvoice(invoice.get()));
@@ -99,8 +98,8 @@ public class HibernateDatabase implements Database {
             throw new IllegalArgumentException("Number cannot be null.");
         }
         try {
-            Example<HibernateInvoice> example = Example.of(modelMapper.mapToHibernateInvoice(new Invoice.Builder().withNumber(number).build()));
-            Optional<HibernateInvoice> invoice = invoiceRepository.findOne(example);
+            Example<pl.coderstrust.database.hibernate.Invoice> example = Example.of(modelMapper.mapToHibernateInvoice(new Invoice.Builder().withNumber(number).build()));
+            Optional<pl.coderstrust.database.hibernate.Invoice> invoice = invoiceRepository.findOne(example);
             if (invoice.isPresent()) {
                 log.debug("Found invoice with number {}.", number);
                 return Optional.of(modelMapper.mapToInvoice(invoice.get()));
