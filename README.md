@@ -23,6 +23,7 @@
 There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need.
 
 Here's why:
+
 * Your time should be focused on creating something amazing. A project that solves a problem and helps others
 * You shouldn't be doing the same tasks over and over like creating a README from scratch
 * You should element DRY principles to the rest of your life :smile:
@@ -46,7 +47,8 @@ A list of commonly used resources that I find helpful are listed in the acknowle
 <img src="https://zdnet3.cbsistatic.com/hub/i/r/2018/02/16/8abdb3e1-47bc-446e-9871-c4e11a46f680/resize/370xauto/8a68280fd20eebfa7789cdaa6fb5eff1/mongo-db-logo.png" width="200"><img src="http://mapstruct.org/images/mapstruct.png" width="200"><img src="https://miro.medium.com/max/494/0*QWNG5EAnPSaUSAHH.png"  width="200">
 <img src="https://solidsoft.files.wordpress.com/2014/04/awaitility_logo_red_small.png?w=584"  width="200"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSwSU80GnkMvuNnZxrl2NZQcfaKY9etA5QmMSZHlDSlxWhSpGMb"  width="200">
 <img src="https://zdnet4.cbsistatic.com/hub/i/r/2018/04/19/092cbf81-acac-4f3a-91a1-5a26abc1721f/resize/370xauto/ce84e38cb1c1a7c5a2c9e4c337e108ba/postgresql-logo.png"  width="200"><img src="https://miro.medium.com/max/630/1*j_zP74-cpvXRcs8dM_pkMQ.jpeg"  width="200">
-<img src="https://jrebel.com/wp-content/uploads/2017/07/test-containers-java-logo.png"  width="200"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/250px-Angular_full_color_logo.svg.png"  width="200">
+<img src="https://jrebel.com/wp-content/uploads/2017/07/test-containers-java-logo.png"  width="200">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/250px-Angular_full_color_logo.svg.png"  width="200">
 
 
 
