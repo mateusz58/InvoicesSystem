@@ -35,9 +35,7 @@ A list of commonly used resources that I find helpful are listed in the acknowle
 ## Technology stack
 
 
-<img src="https://whirly.pl/wp-content/uploads/2017/05/spring.png" width="200">
-<img src="https://miro.medium.com/max/1150/1*SXzqtB1jDTP46FJsPAnFew.jpeg" width="200">
-<img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Mockito_Logo.png" width="200">
+<img src="https://whirly.pl/wp-content/uploads/2017/05/spring.png" width="200"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Mockito_Logo.png" width="200">
 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNkximiwITI1smJcOkn_bx2Zk_RnNKnmDq23Ua26wTVd_YNJcWgw" width="200">
 <img src="https://junit.org/junit4/images/junit5-banner.png" width="200">
 <img src="https://jules-grospeiller.fr/media/logo_competences/lang/json.png" width="200">
