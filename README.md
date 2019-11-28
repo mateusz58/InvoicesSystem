@@ -19,9 +19,7 @@
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
-  - [Usage](#usage)
-  - [Roadmap](#roadmap)
-  - [Contributing](#contributing)
+  - [API Reference](#api-reference)
   - [License](#license)
   - [Contact](#contact)
 ## About The Project
@@ -69,19 +67,12 @@ $ cd InvoiceSystem
 $ mvn build
 ```
 
-3. Modify application.properties value of "server.port" to port on which you wish to launch application
-4. Modify application.properties value of "pl.coderstrust.database" to one of the possible databases which project implements which are: in-memory, in-file, hibernate, jdbc, mongo
+3. Modify application.properties value of “server.port” to port on which you wish to launch application
+4. Modify application.properties value of “pl.coderstrust.database” to one of the possible databases which project implements which are: in-memory, in-file, hibernate, jdbc, mongo
 5. Launch application with the following command
 ```sh
 $ mvn run
 ```
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
 
 ## API Reference
 
@@ -93,7 +84,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 - `/invoices/`<br> display/add/delete/modify invoices stored in database
 - `invoices/{id}`<br> get/delete/modify invoice based on given id
-- `invoices/byNumber?=`<br> display/delete/modify invoice based on its number for logged user
+- `invoices/byNumber?=<number>`<br> display/delete/modify invoice based on its number
   
 ### User management related
 
@@ -106,6 +97,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Contact
 
-  - Email:  matp321@gmail.com
+  - Email: matp321@gmail.com
 
 - Project Link: [https://github.com/mateusz58/Parking_Server.git](https://github.com/your_username/repo_name)
