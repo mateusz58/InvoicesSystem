@@ -1,35 +1,24 @@
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <a href="">
-    <img src="https://ibb.co/FnNd7S8" width="80" height="80">
-  </a>
-  <h3 align="center">Best-README-Template</h3>
-
-  <p align="center">
-    An awesome README template to jumpstart your projects!
-    <br />
 
 
+<img src="https://i.ibb.co/d657Mz0/logo.png" width = 200 align="right" />
 
-<!-- TABLE OF CONTENTS -->
+# Invoice manager
+
 ## Table of Contents
-
-- [Table of Contents](#table-of-contents)
-- [About The Project](#about-the-project)
-- [Technology stack](#technology-stack)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
-- [Acknowledgements](#acknowledgements)
+  - [Table of Contents](#table-of-contents)
+  - [About The Project](#about-the-project)
+  - [Technology stack](#technology-stack)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+  - [Usage](#usage)
+  - [Roadmap](#roadmap)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Contact](#contact)
 ## About The Project
 
-![](https://ibb.co/T0KBXkc.png)
+![](https://i.ibb.co/pKWvDx2/Screenshot-5.png)
 
 There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need.
 
