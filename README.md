@@ -1,6 +1,14 @@
 
 
-<img src="https://i.ibb.co/d657Mz0/logo.png" width = 200 align="right" />
+
+![js-standard-style](https://img.shields.io/badge/code%20style-Google_Style-brightgreen.svg?style=flat)
+![js-standard-style](https://img.shields.io/badge/coverage-80%25-green)
+![js-standard-style](https://img.shields.io/badge/build-passing-green)
+![js-standard-style](https://img.shields.io/badge/release-v1.0.0-blue)
+![js-standard-style](https://img.shields.io/badge/license-MIT-green)
+
+
+<img src="https://i.ibb.co/sHqWSB6/logoinvoice2.png" width = 200 align="right" />
 
 # Invoice manager
 
@@ -20,20 +28,9 @@
 
 ![](https://i.ibb.co/pKWvDx2/Screenshot-5.png)
 
-There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need.
-
-Here's why:
-
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should element DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue.
-
-A list of commonly used resources that I find helpful are listed in the acknowledgements.
+An open-source invoicing system built with modern spring boot backend technology along with front end created with one of the most popular front-end framework Angular.js. The system allows adding, removing, modifying invoices to the system with the possibility of generating pdf documents based on informations received via REST API and sending pdf documents on given email. Additionally, the system support authentication and authorization of multiple users based on their ascribed roles using tokenization method provided by OAuth 2.0 technology witch each user role having a different kind of permissions of invoices management.
 
 ## Technology stack
-
 
 <img src="https://whirly.pl/wp-content/uploads/2017/05/spring.png" width="200"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Mockito_Logo.png" width="200">
 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNkximiwITI1smJcOkn_bx2Zk_RnNKnmDq23Ua26wTVd_YNJcWgw" width="200">
@@ -47,42 +44,37 @@ A list of commonly used resources that I find helpful are listed in the acknowle
 <img src="https://zdnet4.cbsistatic.com/hub/i/r/2018/04/19/092cbf81-acac-4f3a-91a1-5a26abc1721f/resize/370xauto/ce84e38cb1c1a7c5a2c9e4c337e108ba/postgresql-logo.png"  width="200"><img src="https://miro.medium.com/max/630/1*j_zP74-cpvXRcs8dM_pkMQ.jpeg"  width="200">
 <img src="https://jrebel.com/wp-content/uploads/2017/07/test-containers-java-logo.png"  width="200">
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/250px-Angular_full_color_logo.svg.png"  width="200">
+<img src="https://i.ibb.co/bzf4Hnv/itext.png"  width="200">
 
 
 
-
-
-
-<!-- GETTING STARTED -->
 ## Getting Started
-
-Invoice manager app 
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-```sh
-npm install npm@latest -g
-```
+* [java 11](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)
+* [PostgreSql version 11.5](https://www.postgresql.org/download/)
+* [MongoDb](https://docs.mongodb.com/manual/release-notes/4.0/)
+* [Maven 3.6.3](https://maven.apache.org/download.cgi)
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
 ```sh
-git clone https://github.com/your_username_/Project-Name.git
+$ git clone https://github.com/mateusz58/InvoicesSystem.git
+$ cd InvoiceSystem
 ```
-3. Install NPM packages
+2. Set up initial build of project
 ```sh
-npm install
-```
-4. Enter your API in `config.js`
-```JS
-const API_KEY = 'ENTER YOUR API';
+$ mvn build
 ```
 
-
+3. Modify application.properties value of "server.port" to port on which you wish to launch application
+4. Modify application.properties value of "pl.coderstrust.database" to one of the possible databases which project implements which are: in-memory, in-file, hibernate, jdbc, mongo
+5. Launch application with the following command
+```sh
+$ mvn run
+```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -91,33 +83,29 @@ Use this space to show useful examples of how a project can be used. Additional 
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
+## API Reference
 
+### Admin panel
 
-<!-- ROADMAP -->
-## Roadmap
+  - `admin/*` administration panel for managing users
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
+### invoice related
 
+- `/invoices/`<br> display/add/delete/modify invoices stored in database
+- `invoices/{id}`<br> get/delete/modify invoice based on given id
+- `invoices/byNumber?=`<br> display/delete/modify invoice based on its number for logged user
+  
+### User management related
 
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- `/users/`<br> get/delete/add users
+- `/users/byEmail?=`<br> get/delete/modify user by email
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+[MIT](https://tldrlegal.com/license/mit-license)
 
-<!-- CONTACT -->
 ## Contact
 
-email - matp321@gmail.com
+  - Email:  matp321@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name]( https://github.com/mateusz58/InvoicesSystem.git)
+- Project Link: [https://github.com/mateusz58/Parking_Server.git](https://github.com/your_username/repo_name)
