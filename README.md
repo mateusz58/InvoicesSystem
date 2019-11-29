@@ -38,8 +38,7 @@ An open-source invoicing system built with modern spring boot backend technology
 <img src="https://cdn.bulldogjob.com/system/readables/covers/000/001/571/thumb/27-02-2019.png" width="200">
 <img src="https://i2.wp.com/bykowski.pl/wp-content/uploads/2018/07/hibernate-2.png?w=300" width="200">
 <img src="https://zdnet3.cbsistatic.com/hub/i/r/2018/02/16/8abdb3e1-47bc-446e-9871-c4e11a46f680/resize/370xauto/8a68280fd20eebfa7789cdaa6fb5eff1/mongo-db-logo.png" width="200"><img src="http://mapstruct.org/images/mapstruct.png" width="200"><img src="https://miro.medium.com/max/494/0*QWNG5EAnPSaUSAHH.png"  width="200">
-<img src="https://solidsoft.files.wordpress.com/2014/04/awaitility_logo_red_small.png?w=584"  width="200"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSwSU80GnkMvuNnZxrl2NZQcfaKY9etA5QmMSZHlDSlxWhSpGMb"  width="200">
-<img src="https://zdnet4.cbsistatic.com/hub/i/r/2018/04/19/092cbf81-acac-4f3a-91a1-5a26abc1721f/resize/370xauto/ce84e38cb1c1a7c5a2c9e4c337e108ba/postgresql-logo.png"  width="200"><img src="https://miro.medium.com/max/630/1*j_zP74-cpvXRcs8dM_pkMQ.jpeg"  width="200">
+<img src="https://solidsoft.files.wordpress.com/2014/04/awaitility_logo_red_small.png?w=584"  width="200"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSwSU80GnkMvuNnZxrl2NZQcfaKY9etA5QmMSZHlDSlxWhSpGMb"  width="200"><img src="https://miro.medium.com/max/630/1*j_zP74-cpvXRcs8dM_pkMQ.jpeg"  width="200">
 <img src="https://jrebel.com/wp-content/uploads/2017/07/test-containers-java-logo.png"  width="200">
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/250px-Angular_full_color_logo.svg.png"  width="200">
 <img src="https://i.ibb.co/bzf4Hnv/itext.png"  width="200">
