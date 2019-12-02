@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-@ConditionalOnExpression("'${pl.coderstrust.database}' == 'hibernate'")
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Value("${spring.security.user.name}")
