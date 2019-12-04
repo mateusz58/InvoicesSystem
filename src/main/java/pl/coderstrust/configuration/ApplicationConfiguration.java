@@ -33,11 +33,4 @@ public class ApplicationConfiguration {
         return mapper;
     }
 
-
-    @Primary
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
-    }
 }

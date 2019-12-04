@@ -23,10 +23,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Example;
-import pl.coderstrust.database.hibernate.HibernateInvoice;
 import pl.coderstrust.database.hibernate.HibernateModelMapper;
 import pl.coderstrust.database.hibernate.HibernateModelMapperImpl;
-import pl.coderstrust.database.hibernate.InvoiceRepository;
 import pl.coderstrust.generators.InvoiceGenerator;
 import pl.coderstrust.model.Invoice;
 
@@ -59,7 +57,7 @@ class HibernateDatabaseTest {
     void shouldSave() throws DatabaseOperationException {
         //given
         Invoice invoiceToBeSaved = InvoiceGenerator.generateRandomInvoice();
-        HibernateInvoice hibernateInvoiceToBeSaved = modelMapper.mapToHibernateInvoice(invoiceToBeSaved);
+        pl.coderstrust.database.hibernate.Invoice hibernateInvoiceToBeSaved = modelMapper.mapToHibernateInvoice(invoiceToBeSaved);
         doReturn(hibernateInvoiceToBeSaved).when(invoiceRepository).save(hibernateInvoiceToBeSaved);
 
         //when
@@ -79,7 +77,7 @@ class HibernateDatabaseTest {
     void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenSavingInvoice() {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        pl.coderstrust.database.hibernate.Invoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
         doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).save(hibernateInvoice);
 
         //then
@@ -141,7 +139,7 @@ class HibernateDatabaseTest {
     void shouldReturnInvoiceById() throws DatabaseOperationException {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        pl.coderstrust.database.hibernate.Invoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
         doReturn(Optional.of(hibernateInvoice)).when(invoiceRepository).findById(hibernateInvoice.getId());
 
         //when
@@ -185,7 +183,7 @@ class HibernateDatabaseTest {
     void shouldReturnInvoiceByNumber() throws DatabaseOperationException {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        HibernateInvoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
+        pl.coderstrust.database.hibernate.Invoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
         when(invoiceRepository.findOne(any(Example.class))).thenReturn(Optional.of(hibernateInvoice));
 
         //when
@@ -228,7 +226,7 @@ class HibernateDatabaseTest {
         Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
         Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
         Collection<Invoice> invoiceList = List.of(invoice1, invoice2);
-        Collection<HibernateInvoice> hibernateInvoiceList = modelMapper.mapToHibernateInvoices(invoiceList);
+        Collection<pl.coderstrust.database.hibernate.Invoice> hibernateInvoiceList = modelMapper.mapToHibernateInvoices(invoiceList);
         doReturn(hibernateInvoiceList).when(invoiceRepository).findAll();
 
         //when
