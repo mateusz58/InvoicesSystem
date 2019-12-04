@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import pl.coderstrust.database.mongo.MongoInvoice;
 import pl.coderstrust.database.mongo.MongoModelMapper;
 import pl.coderstrust.database.mongo.MongoModelMapperImpl;
 import pl.coderstrust.generators.InvoiceGenerator;
@@ -58,14 +57,14 @@ class MongoDatabaseTest {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         Query findId = Query.query(Criteria.where("id").is(invoice.getId()));
-        doReturn(null).when(mongoTemplate).findOne(findId, MongoInvoice.class);
+        doReturn(null).when(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
         Invoice invoiceToBeInserted = Invoice.builder().withInvoice(invoice).withId(1L).build();
         doReturn(modelMapper.mapToMongoInvoice(invoiceToBeInserted)).when(mongoTemplate).insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted));
         //when
         Invoice insertedInvoice = database.save(invoice);
         //then
         assertEquals(invoiceToBeInserted, insertedInvoice);
-        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
         verify(mongoTemplate).insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted));
     }
 
@@ -73,17 +72,17 @@ class MongoDatabaseTest {
     void shouldUpdate() throws DatabaseOperationException {
         //given
         Invoice invoiceInDatabase = InvoiceGenerator.generateRandomInvoice();
-        MongoInvoice mongoInvoiceInDatabase = modelMapper.mapToMongoInvoice(invoiceInDatabase);
+        pl.coderstrust.database.mongo.Invoice mongoInvoiceInDatabase = modelMapper.mapToMongoInvoice(invoiceInDatabase);
         Query findId = Query.query(Criteria.where("id").is(invoiceInDatabase.getId()));
-        doReturn(mongoInvoiceInDatabase).when(mongoTemplate).findOne(findId, MongoInvoice.class);
+        doReturn(mongoInvoiceInDatabase).when(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
         Invoice invoiceUpdate = InvoiceGenerator.getRandomInvoiceWithSpecificId(invoiceInDatabase.getId());
-        MongoInvoice mongoInvoiceUpdate = modelMapper.mapToMongoInvoice(invoiceUpdate);
+        pl.coderstrust.database.mongo.Invoice mongoInvoiceUpdate = modelMapper.mapToMongoInvoice(invoiceUpdate);
         doReturn(mongoInvoiceUpdate).when(mongoTemplate).save(mongoInvoiceUpdate);
         //when
         Invoice updatedInvoice = database.save(invoiceUpdate);
         //then
         assertEquals(invoiceUpdate, updatedInvoice);
-        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
         verify(mongoTemplate).save(mongoInvoiceUpdate);
     }
 
@@ -98,18 +97,18 @@ class MongoDatabaseTest {
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         Query findId = Query.query(Criteria.where("id").is(invoice.getId()));
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findOne(findId, MongoInvoice.class);
+        }).when(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
-        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void saveMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringInsertingInvoice() {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        MongoInvoice addedInvoice = modelMapper.mapToMongoInvoice(Invoice.builder().withInvoice(invoice).withId(1L).build());
-        MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
+        pl.coderstrust.database.mongo.Invoice addedInvoice = modelMapper.mapToMongoInvoice(Invoice.builder().withInvoice(invoice).withId(1L).build());
+        pl.coderstrust.database.mongo.Invoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
         doThrow(new MockitoException("") {
         }).when(mongoTemplate).insert(mongoInvoice);
         //then
@@ -121,14 +120,14 @@ class MongoDatabaseTest {
     void saveMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringUpdatingInvoice() {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
+        pl.coderstrust.database.mongo.Invoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
         Query findId = Query.query(Criteria.where("id").is(invoice.getId()));
-        doReturn(mongoInvoice).when(mongoTemplate).findOne(findId, MongoInvoice.class);
+        doReturn(mongoInvoice).when(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
         doThrow(new MockitoException("") {
         }).when(mongoTemplate).save(mongoInvoice);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.save(invoice));
-        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
         verify(mongoTemplate).save(mongoInvoice);
     }
 
@@ -136,14 +135,14 @@ class MongoDatabaseTest {
     void shouldDelete() throws DatabaseOperationException {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
+        pl.coderstrust.database.mongo.Invoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
         Long id = invoice.getId();
         Query findId = Query.query(Criteria.where("id").is(id));
-        when(mongoTemplate.findAndRemove(findId, MongoInvoice.class)).thenReturn(mongoInvoice);
+        when(mongoTemplate.findAndRemove(findId, pl.coderstrust.database.mongo.Invoice.class)).thenReturn(mongoInvoice);
         //when
         database.delete(id);
         //then
-        verify(mongoTemplate).findAndRemove(findId, MongoInvoice.class);
+        verify(mongoTemplate).findAndRemove(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
@@ -155,10 +154,10 @@ class MongoDatabaseTest {
     void deleteMethodShouldThrowExceptionDuringDeletingNotExistingInvoice() {
         //given
         Query findId = Query.query(Criteria.where("id").is(10L));
-        when(mongoTemplate.findAndRemove(findId, MongoInvoice.class)).thenReturn(null);
+        when(mongoTemplate.findAndRemove(findId, pl.coderstrust.database.mongo.Invoice.class)).thenReturn(null);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.delete(10L));
-        verify(mongoTemplate).findAndRemove(findId, MongoInvoice.class);
+        verify(mongoTemplate).findAndRemove(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
@@ -166,37 +165,37 @@ class MongoDatabaseTest {
         //given
         Query findId = Query.query(Criteria.where("id").is(10L));
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findAndRemove(findId, MongoInvoice.class);
+        }).when(mongoTemplate).findAndRemove(findId, pl.coderstrust.database.mongo.Invoice.class);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.delete(10L));
-        verify(mongoTemplate).findAndRemove(findId, MongoInvoice.class);
+        verify(mongoTemplate).findAndRemove(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void shouldReturnInvoiceById() throws DatabaseOperationException {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
+        pl.coderstrust.database.mongo.Invoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
         Query findId = Query.query(Criteria.where("id").is(invoice.getId()));
-        doReturn(mongoInvoice).when(mongoTemplate).findOne(findId, MongoInvoice.class);
+        doReturn(mongoInvoice).when(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
         //when
         Optional<Invoice> gotInvoice = database.getById(invoice.getId());
         //then
         assertTrue(gotInvoice.isPresent());
         assertEquals(invoice, gotInvoice.get());
-        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void shouldReturnEmptyOptionalWhileGettingNonExistingInvoiceById() throws DatabaseOperationException {
         //given
         Query findId = Query.query(Criteria.where("id").is(10L));
-        when(mongoTemplate.findOne(findId, MongoInvoice.class)).thenReturn(null);
+        when(mongoTemplate.findOne(findId, pl.coderstrust.database.mongo.Invoice.class)).thenReturn(null);
         //when
         Optional<Invoice> gotInvoice = database.getById(10L);
         //then
         assertTrue(gotInvoice.isEmpty());
-        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
@@ -204,10 +203,10 @@ class MongoDatabaseTest {
         //given
         Query findId = Query.query(Criteria.where("id").is(10L));
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findOne(findId, MongoInvoice.class);
+        }).when(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getById(10L));
-        verify(mongoTemplate).findOne(findId, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
@@ -220,14 +219,14 @@ class MongoDatabaseTest {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         Query findByNumber = Query.query(Criteria.where("number").is(invoice.getNumber()));
-        MongoInvoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
-        when(mongoTemplate.findOne(findByNumber, MongoInvoice.class)).thenReturn(mongoInvoice);
+        pl.coderstrust.database.mongo.Invoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
+        when(mongoTemplate.findOne(findByNumber, pl.coderstrust.database.mongo.Invoice.class)).thenReturn(mongoInvoice);
         //when
         Optional<Invoice> gotInvoice = database.getByNumber(invoice.getNumber());
         //then
         assertTrue(gotInvoice.isPresent());
         assertEquals(invoice, gotInvoice.get());
-        verify(mongoTemplate).findOne(findByNumber, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findByNumber, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
@@ -235,12 +234,12 @@ class MongoDatabaseTest {
         //given
         String number = "123";
         Query findByNumber = Query.query(Criteria.where("number").is(number));
-        when(mongoTemplate.findOne(findByNumber, MongoInvoice.class)).thenReturn(null);
+        when(mongoTemplate.findOne(findByNumber, pl.coderstrust.database.mongo.Invoice.class)).thenReturn(null);
         //when
         Optional<Invoice> gotInvoice = database.getByNumber(number);
         //then
         assertTrue(gotInvoice.isEmpty());
-        verify(mongoTemplate).findOne(findByNumber, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findByNumber, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
@@ -253,10 +252,10 @@ class MongoDatabaseTest {
         //given
         Query findByNumber = Query.query(Criteria.where("number").is("123"));
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findOne(findByNumber, MongoInvoice.class);
+        }).when(mongoTemplate).findOne(findByNumber, pl.coderstrust.database.mongo.Invoice.class);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getByNumber("123"));
-        verify(mongoTemplate).findOne(findByNumber, MongoInvoice.class);
+        verify(mongoTemplate).findOne(findByNumber, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
@@ -265,63 +264,63 @@ class MongoDatabaseTest {
         Invoice invoice1 = InvoiceGenerator.generateRandomInvoice();
         Invoice invoice2 = InvoiceGenerator.generateRandomInvoice();
         Collection<Invoice> invoiceList = List.of(invoice1, invoice2);
-        Collection<MongoInvoice> mongoInvoiceList = modelMapper.mapToMongoInvoices(invoiceList);
-        doReturn(mongoInvoiceList).when(mongoTemplate).findAll(MongoInvoice.class);
+        Collection<pl.coderstrust.database.mongo.Invoice> mongoInvoiceList = modelMapper.mapToMongoInvoices(invoiceList);
+        doReturn(mongoInvoiceList).when(mongoTemplate).findAll(pl.coderstrust.database.mongo.Invoice.class);
         //when
         Collection<Invoice> gotList = database.getAll();
         //then
         assertEquals(gotList, invoiceList);
-        verify(mongoTemplate).findAll(MongoInvoice.class);
+        verify(mongoTemplate).findAll(pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void getAllMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringGettingAllInvoices() {
         //given
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).findAll(MongoInvoice.class);
+        }).when(mongoTemplate).findAll(pl.coderstrust.database.mongo.Invoice.class);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getAll());
-        verify(mongoTemplate).findAll(MongoInvoice.class);
+        verify(mongoTemplate).findAll(pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void shouldDeleteAllInvoices() throws DatabaseOperationException {
         //given
-        doNothing().when(mongoTemplate).dropCollection(MongoInvoice.class);
+        doNothing().when(mongoTemplate).dropCollection(pl.coderstrust.database.mongo.Invoice.class);
         //when
         database.deleteAll();
         //then
-        verify(mongoTemplate).dropCollection(MongoInvoice.class);
+        verify(mongoTemplate).dropCollection(pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void deleteAllMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringDeletingAllInvoices() {
         //given
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).dropCollection(MongoInvoice.class);
+        }).when(mongoTemplate).dropCollection(pl.coderstrust.database.mongo.Invoice.class);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.deleteAll());
-        verify(mongoTemplate).dropCollection(MongoInvoice.class);
+        verify(mongoTemplate).dropCollection(pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void shouldReturnTrueForExistingInvoice() throws DatabaseOperationException {
         //given
         Query findId = Query.query(Criteria.where("id").is(10L));
-        when(mongoTemplate.exists(findId, MongoInvoice.class)).thenReturn(true);
+        when(mongoTemplate.exists(findId, pl.coderstrust.database.mongo.Invoice.class)).thenReturn(true);
         //then
         assertTrue(database.exists(10L));
-        verify(mongoTemplate).exists(findId, MongoInvoice.class);
+        verify(mongoTemplate).exists(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void shouldReturnFalseForNotExistingInvoice() throws DatabaseOperationException {
         //given
         Query findId = Query.query(Criteria.where("id").is(10L));
-        when(mongoTemplate.exists(findId, MongoInvoice.class)).thenReturn(false);
+        when(mongoTemplate.exists(findId, pl.coderstrust.database.mongo.Invoice.class)).thenReturn(false);
         //then
         assertFalse(database.exists(10L));
-        verify(mongoTemplate).exists(findId, MongoInvoice.class);
+        verify(mongoTemplate).exists(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
@@ -334,30 +333,30 @@ class MongoDatabaseTest {
         //given
         Query findId = Query.query(Criteria.where("id").is(10L));
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).exists(findId, MongoInvoice.class);
+        }).when(mongoTemplate).exists(findId, pl.coderstrust.database.mongo.Invoice.class);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.exists(10L));
-        verify(mongoTemplate).exists(findId, MongoInvoice.class);
+        verify(mongoTemplate).exists(findId, pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void shouldReturnNumberOfInvoices() throws DatabaseOperationException {
         //given
-        when(mongoTemplate.count(new Query(), MongoInvoice.class)).thenReturn(10L);
+        when(mongoTemplate.count(new Query(), pl.coderstrust.database.mongo.Invoice.class)).thenReturn(10L);
         //when
         long numberOfInvoices = database.count();
         //then
         assertEquals(10L, numberOfInvoices);
-        verify(mongoTemplate).count(new Query(), MongoInvoice.class);
+        verify(mongoTemplate).count(new Query(), pl.coderstrust.database.mongo.Invoice.class);
     }
 
     @Test
     void countMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringGettingNumberOfInvoices() {
         //given
         doThrow(new MockitoException("") {
-        }).when(mongoTemplate).count(new Query(), MongoInvoice.class);
+        }).when(mongoTemplate).count(new Query(), pl.coderstrust.database.mongo.Invoice.class);
         //then
         assertThrows(DatabaseOperationException.class, () -> database.count());
-        verify(mongoTemplate).count(new Query(), MongoInvoice.class);
+        verify(mongoTemplate).count(new Query(), pl.coderstrust.database.mongo.Invoice.class);
     }
 }

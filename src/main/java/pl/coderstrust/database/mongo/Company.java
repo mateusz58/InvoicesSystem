@@ -3,7 +3,7 @@ package pl.coderstrust.database.mongo;
 import java.util.Objects;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-public final class MongoCompany {
+public final class Company {
 
     private final String name;
     private final String address;
@@ -13,7 +13,7 @@ public final class MongoCompany {
     private final String email;
 
     @PersistenceConstructor
-    private MongoCompany(String name, String address, String taxId, String accountNumber, String phoneNumber, String email) {
+    private Company(String name, String address, String taxId, String accountNumber, String phoneNumber, String email) {
         this.name = name;
         this.address = address;
         this.taxId = taxId;
@@ -22,7 +22,7 @@ public final class MongoCompany {
         this.email = email;
     }
 
-    private MongoCompany(Builder builder) {
+    private Company(Builder builder) {
         name = builder.name;
         address = builder.address;
         taxId = builder.taxId;
@@ -31,8 +31,8 @@ public final class MongoCompany {
         email = builder.email;
     }
 
-    public static MongoCompany.Builder builder() {
-        return new MongoCompany.Builder();
+    public static Company.Builder builder() {
+        return new Company.Builder();
     }
 
     public String getName() {
@@ -72,7 +72,7 @@ public final class MongoCompany {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MongoCompany company = (MongoCompany) o;
+        Company company = (Company) o;
         return Objects.equals(name, company.name)
             && Objects.equals(address, company.address)
             && Objects.equals(taxId, company.taxId)
@@ -83,7 +83,7 @@ public final class MongoCompany {
 
     @Override
     public String toString() {
-        return "MongoCompany{"
+        return "Company{"
             + ", name='" + name + '\''
             + ", address='" + address + '\''
             + ", taxId='" + taxId + '\''
@@ -102,38 +102,38 @@ public final class MongoCompany {
         private String phoneNumber;
         private String email;
 
-        public MongoCompany.Builder withName(String name) {
+        public Company.Builder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public MongoCompany.Builder withAddress(String address) {
+        public Company.Builder withAddress(String address) {
             this.address = address;
             return this;
         }
 
-        public MongoCompany.Builder withTaxId(String taxId) {
+        public Company.Builder withTaxId(String taxId) {
             this.taxId = taxId;
             return this;
         }
 
-        public MongoCompany.Builder withAccountNumber(String accountNumber) {
+        public Company.Builder withAccountNumber(String accountNumber) {
             this.accountNumber = accountNumber;
             return this;
         }
 
-        public MongoCompany.Builder withPhoneNumber(String phoneNumber) {
+        public Company.Builder withPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
             return this;
         }
 
-        public MongoCompany.Builder withEmail(String email) {
+        public Company.Builder withEmail(String email) {
             this.email = email;
             return this;
         }
 
-        public MongoCompany build() {
-            return new MongoCompany(this);
+        public Company build() {
+            return new Company(this);
         }
     }
 }

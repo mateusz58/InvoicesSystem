@@ -12,7 +12,7 @@ import pl.coderstrust.model.Company;
 import pl.coderstrust.model.InvoiceEntry;
 
 @Document
-public final class MongoInvoice {
+public final class Invoice {
 
     @Id
     private final String mongoId;
@@ -27,7 +27,7 @@ public final class MongoInvoice {
     private final List<InvoiceEntry> entries;
 
     @PersistenceConstructor
-    private MongoInvoice(String mongoId, Long id, String number, LocalDate issuedDate, LocalDate dueDate, Company seller, Company buyer, List<InvoiceEntry> entries) {
+    private Invoice(String mongoId, Long id, String number, LocalDate issuedDate, LocalDate dueDate, Company seller, Company buyer, List<InvoiceEntry> entries) {
         this.mongoId = mongoId;
         this.id = id;
         this.number = number;
@@ -38,7 +38,7 @@ public final class MongoInvoice {
         this.entries = entries;
     }
 
-    private MongoInvoice(Builder builder) {
+    private Invoice(Builder builder) {
         mongoId = builder.mongoId;
         id = builder.id;
         number = builder.number;
@@ -49,8 +49,8 @@ public final class MongoInvoice {
         entries = builder.entries;
     }
 
-    public static MongoInvoice.Builder builder() {
-        return new MongoInvoice.Builder();
+    public static Invoice.Builder builder() {
+        return new Invoice.Builder();
     }
 
     public String getMongoId() {
@@ -98,7 +98,7 @@ public final class MongoInvoice {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MongoInvoice invoice = (MongoInvoice) o;
+        Invoice invoice = (Invoice) o;
         return Objects.equals(id, invoice.id)
             && Objects.equals(mongoId, invoice.mongoId)
             && Objects.equals(number, invoice.number)
@@ -111,7 +111,7 @@ public final class MongoInvoice {
 
     @Override
     public String toString() {
-        return "MongoInvoice{"
+        return "Invoice{"
             + "mongoId=" + mongoId
             + ", id=" + id
             + ", number='" + number + '\''
@@ -133,48 +133,48 @@ public final class MongoInvoice {
         private Company buyer;
         private List<InvoiceEntry> entries;
 
-        public MongoInvoice.Builder withMongoId(String mongoId) {
+        public Invoice.Builder withMongoId(String mongoId) {
             this.mongoId = mongoId;
             return this;
         }
 
-        public MongoInvoice.Builder withId(Long id) {
+        public Invoice.Builder withId(Long id) {
             this.id = id;
             return this;
         }
 
-        public MongoInvoice.Builder withNumber(String number) {
+        public Invoice.Builder withNumber(String number) {
             this.number = number;
             return this;
         }
 
-        public MongoInvoice.Builder withIssuedDate(LocalDate issuedDate) {
+        public Invoice.Builder withIssuedDate(LocalDate issuedDate) {
             this.issuedDate = issuedDate;
             return this;
         }
 
-        public MongoInvoice.Builder withDueDate(LocalDate dueDate) {
+        public Invoice.Builder withDueDate(LocalDate dueDate) {
             this.dueDate = dueDate;
             return this;
         }
 
-        public MongoInvoice.Builder withSeller(Company seller) {
+        public Invoice.Builder withSeller(Company seller) {
             this.seller = seller;
             return this;
         }
 
-        public MongoInvoice.Builder withBuyer(Company buyer) {
+        public Invoice.Builder withBuyer(Company buyer) {
             this.buyer = buyer;
             return this;
         }
 
-        public MongoInvoice.Builder withEntries(List<InvoiceEntry> entries) {
+        public Invoice.Builder withEntries(List<InvoiceEntry> entries) {
             this.entries = entries;
             return this;
         }
 
-        public MongoInvoice build() {
-            return new MongoInvoice(this);
+        public Invoice build() {
+            return new Invoice(this);
         }
     }
 }

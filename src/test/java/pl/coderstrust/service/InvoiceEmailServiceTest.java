@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
@@ -66,23 +68,29 @@ public class InvoiceEmailServiceTest {
     }
 
     @Test
-    void shouldSendEmail() throws MessagingException, IOException {
+    void shouldSendEmail() throws MessagingException, IOException, ServiceOperationException {
         // When
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
+        doReturn("blablabla".getBytes()).when(invoicePdfService).createPdf(any());
         emailSender.sendMailWithInvoice(invoice);
+
         // Then
         await().atMost(Duration.ofSeconds(5))
             .untilAsserted(
                 () -> assertEquals(1, server.getReceivedMessages().length));
+
         MimeMessage receivedMessage = server.getReceivedMessages()[0];
         assertEquals(mailProperties.getProperties().get("to"), receivedMessage.getAllRecipients()[0].toString());
         assertEquals(mailProperties.getProperties().get("title"), receivedMessage.getSubject());
+
         assertTrue(receivedMessage.getContentType().startsWith("multipart/mixed"));
         MimeMultipart body = (MimeMultipart) receivedMessage.getContent();
         assertTrue(body.getContentType().startsWith("multipart/mixed"));
         assertEquals(2, body.getCount());
-        String textPart = (String) ((MimeMultipart) body.getBodyPart(0).getContent()).getBodyPart(0).getContent();
+
+        String textPart = (String)((MimeMultipart)body.getBodyPart(0).getContent()).getBodyPart(0).getContent();
         assertEquals(mailProperties.getProperties().get("content"), textPart);
+
         BodyPart attachmentPart = body.getBodyPart(1);
         assertTrue(attachmentPart.getContentType().equalsIgnoreCase(String.format("application/pdf; name=%s.pdf", invoice.getNumber())));
         InputStream attachmentStream = (InputStream) attachmentPart.getContent();

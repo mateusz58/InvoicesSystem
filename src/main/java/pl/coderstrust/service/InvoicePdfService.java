@@ -37,7 +37,7 @@ import pl.coderstrust.model.Vat;
 @Service
 public class InvoicePdfService {
 
-    public static byte[] createPdf(Invoice invoice) throws ServiceOperationException {
+    public  byte[] createPdf(Invoice invoice) throws ServiceOperationException {
         if (invoice == null) {
             throw new IllegalArgumentException("Invoice cannot be null.");
         }

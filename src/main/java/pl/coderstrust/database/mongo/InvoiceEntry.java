@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import org.springframework.data.annotation.PersistenceConstructor;
 
-public final class MongoInvoiceEntry {
+public final class InvoiceEntry {
 
     private final String description;
     private final Long quantity;
     private final BigDecimal price;
     private final BigDecimal netValue;
     private final BigDecimal grossValue;
-    private final MongoVat vatRate;
+    private final Vat vatRate;
 
     @PersistenceConstructor
-    private MongoInvoiceEntry(String description, Long quantity, BigDecimal price, BigDecimal netValue, BigDecimal grossValue, MongoVat vatRate) {
+    private InvoiceEntry(String description, Long quantity, BigDecimal price, BigDecimal netValue, BigDecimal grossValue, Vat vatRate) {
         this.description = description;
         this.quantity = quantity;
         this.price = price;
@@ -23,7 +23,7 @@ public final class MongoInvoiceEntry {
         this.vatRate = vatRate;
     }
 
-    private MongoInvoiceEntry(Builder builder) {
+    private InvoiceEntry(Builder builder) {
         description = builder.description;
         quantity = builder.quantity;
         price = builder.price;
@@ -32,8 +32,8 @@ public final class MongoInvoiceEntry {
         vatRate = builder.vatRate;
     }
 
-    public static MongoInvoiceEntry.Builder builder() {
-        return new MongoInvoiceEntry.Builder();
+    public static InvoiceEntry.Builder builder() {
+        return new InvoiceEntry.Builder();
     }
 
     public String getDescription() {
@@ -56,7 +56,7 @@ public final class MongoInvoiceEntry {
         return grossValue;
     }
 
-    public MongoVat getVatRate() {
+    public Vat getVatRate() {
         return vatRate;
     }
 
@@ -73,7 +73,7 @@ public final class MongoInvoiceEntry {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MongoInvoiceEntry that = (MongoInvoiceEntry) o;
+        InvoiceEntry that = (InvoiceEntry) o;
         return Objects.equals(description, that.description)
             && Objects.equals(quantity, that.quantity)
             && Objects.equals(price, that.price)
@@ -84,7 +84,7 @@ public final class MongoInvoiceEntry {
 
     @Override
     public String toString() {
-        return "MongoInvoiceEntry{"
+        return "InvoiceEntry{"
             + ", description='" + description + '\''
             + ", quantity=" + quantity
             + ", price=" + price
@@ -101,44 +101,44 @@ public final class MongoInvoiceEntry {
         private BigDecimal price;
         private BigDecimal netValue;
         private BigDecimal grossValue;
-        private MongoVat vatRate;
+        private Vat vatRate;
 
-        public MongoInvoiceEntry.Builder withId(Long id) {
+        public InvoiceEntry.Builder withId(Long id) {
             return this;
         }
 
-        public MongoInvoiceEntry.Builder withDescription(String description) {
+        public InvoiceEntry.Builder withDescription(String description) {
             this.description = description;
             return this;
         }
 
-        public MongoInvoiceEntry.Builder withQuantity(Long quantity) {
+        public InvoiceEntry.Builder withQuantity(Long quantity) {
             this.quantity = quantity;
             return this;
         }
 
-        public MongoInvoiceEntry.Builder withPrice(BigDecimal price) {
+        public InvoiceEntry.Builder withPrice(BigDecimal price) {
             this.price = price;
             return this;
         }
 
-        public MongoInvoiceEntry.Builder withNetValue(BigDecimal netValue) {
+        public InvoiceEntry.Builder withNetValue(BigDecimal netValue) {
             this.netValue = netValue;
             return this;
         }
 
-        public MongoInvoiceEntry.Builder withGrossValue(BigDecimal grossValue) {
+        public InvoiceEntry.Builder withGrossValue(BigDecimal grossValue) {
             this.grossValue = grossValue;
             return this;
         }
 
-        public MongoInvoiceEntry.Builder withVatRate(MongoVat vatRate) {
+        public InvoiceEntry.Builder withVatRate(Vat vatRate) {
             this.vatRate = vatRate;
             return this;
         }
 
-        public MongoInvoiceEntry build() {
-            return new MongoInvoiceEntry(this);
+        public InvoiceEntry build() {
+            return new InvoiceEntry(this);
         }
     }
 }

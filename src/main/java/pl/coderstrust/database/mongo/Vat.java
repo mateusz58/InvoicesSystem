@@ -1,6 +1,6 @@
 package pl.coderstrust.database.mongo;
 
-public enum MongoVat {
+public enum Vat {
 
     VAT_0(0.00f),
     VAT_5(0.05f),
@@ -9,7 +9,7 @@ public enum MongoVat {
 
     private final float value;
 
-    MongoVat(float value) {
+    Vat(float value) {
         this.value = value;
     }
 

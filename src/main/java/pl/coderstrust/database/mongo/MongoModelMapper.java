@@ -3,26 +3,14 @@ package pl.coderstrust.database.mongo;
 import java.util.Collection;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import pl.coderstrust.model.Company;
-import pl.coderstrust.model.Invoice;
-import pl.coderstrust.model.InvoiceEntry;
-import pl.coderstrust.model.Vat;
+
 
 @Mapper(componentModel = "spring")
 public interface MongoModelMapper {
 
-    Collection<MongoInvoice> mapToMongoInvoices(Collection<Invoice> invoices);
+    Collection<Invoice> mapToMongoInvoices(Collection<pl.coderstrust.model.Invoice> invoices);
 
-    Collection<Invoice> mapToInvoices(Collection<MongoInvoice> invoices);
-
-    @Mapping(target = "withId", source = "id")
-    @Mapping(target = "withNumber", source = "number")
-    @Mapping(target = "withIssuedDate", source = "issuedDate")
-    @Mapping(target = "withDueDate", source = "dueDate")
-    @Mapping(target = "withSeller", source = "seller")
-    @Mapping(target = "withBuyer", source = "buyer")
-    @Mapping(target = "withEntries", source = "entries")
-    MongoInvoice mapToMongoInvoice(Invoice invoice);
+    Collection<pl.coderstrust.model.Invoice> mapToInvoices(Collection<Invoice> invoices);
 
     @Mapping(target = "withId", source = "id")
     @Mapping(target = "withNumber", source = "number")
@@ -31,7 +19,16 @@ public interface MongoModelMapper {
     @Mapping(target = "withSeller", source = "seller")
     @Mapping(target = "withBuyer", source = "buyer")
     @Mapping(target = "withEntries", source = "entries")
-    Invoice mapToInvoice(MongoInvoice invoice);
+    Invoice mapToMongoInvoice(pl.coderstrust.model.Invoice invoice);
+
+    @Mapping(target = "withId", source = "id")
+    @Mapping(target = "withNumber", source = "number")
+    @Mapping(target = "withIssuedDate", source = "issuedDate")
+    @Mapping(target = "withDueDate", source = "dueDate")
+    @Mapping(target = "withSeller", source = "seller")
+    @Mapping(target = "withBuyer", source = "buyer")
+    @Mapping(target = "withEntries", source = "entries")
+    pl.coderstrust.model.Invoice mapToInvoice(Invoice invoice);
 
     @Mapping(target = "withName", source = "name")
     @Mapping(target = "withAddress", source = "address")
@@ -39,7 +36,7 @@ public interface MongoModelMapper {
     @Mapping(target = "withAccountNumber", source = "accountNumber")
     @Mapping(target = "withPhoneNumber", source = "phoneNumber")
     @Mapping(target = "withEmail", source = "email")
-    MongoCompany mapToMongoCompany(Company company);
+    Company mapToMongoCompany(pl.coderstrust.model.Company company);
 
     @Mapping(target = "withName", source = "name")
     @Mapping(target = "withAddress", source = "address")
@@ -47,7 +44,7 @@ public interface MongoModelMapper {
     @Mapping(target = "withAccountNumber", source = "accountNumber")
     @Mapping(target = "withPhoneNumber", source = "phoneNumber")
     @Mapping(target = "withEmail", source = "email")
-    Company mapToCompany(MongoCompany company);
+    pl.coderstrust.model.Company mapToCompany(Company company);
 
     @Mapping(target = "withDescription", source = "description")
     @Mapping(target = "withQuantity", source = "quantity")
@@ -55,7 +52,7 @@ public interface MongoModelMapper {
     @Mapping(target = "withNetValue", source = "netValue")
     @Mapping(target = "withGrossValue", source = "grossValue")
     @Mapping(target = "withVatRate", source = "vatRate")
-    MongoInvoiceEntry mapToMongoInvoiceEntry(InvoiceEntry invoiceEntry);
+    InvoiceEntry mapToMongoInvoiceEntry(pl.coderstrust.model.InvoiceEntry invoiceEntry);
 
     @Mapping(target = "withDescription", source = "description")
     @Mapping(target = "withQuantity", source = "quantity")
@@ -63,9 +60,9 @@ public interface MongoModelMapper {
     @Mapping(target = "withNetValue", source = "netValue")
     @Mapping(target = "withGrossValue", source = "grossValue")
     @Mapping(target = "withVatRate", source = "vatRate")
-    InvoiceEntry mapToInvoiceEntry(MongoInvoiceEntry invoiceEntry);
+    pl.coderstrust.model.InvoiceEntry mapToInvoiceEntry(InvoiceEntry invoiceEntry);
 
-    MongoVat mapToMongoVat(Vat vat);
+   Vat mapToMongoVat(pl.coderstrust.model.Vat vat);
 
-    Vat maptoVat(MongoVat vat);
+    pl.coderstrust.model.Vat maptoVat(Vat vat);
 }
