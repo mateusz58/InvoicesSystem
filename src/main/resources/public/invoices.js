@@ -20,5 +20,5 @@ angular.module('invoices', [])
 });
 
 function getBaseApiAddress() {
-    return 'http://localhost:8097/invoices/';
+    return 'http://localhost:8081/invoices';
 }
