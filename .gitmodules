@@ -1,0 +1,3 @@
+[submodule "React-Invoices"]
+	path = React-Invoices
+	url = https://github.com/mateusz58/InvoiceManagementFrontEnd.git
