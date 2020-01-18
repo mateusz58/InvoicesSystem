@@ -25,13 +25,13 @@ public class InvoiceEntryGenerator {
         BigDecimal vatValue = netValue.multiply(BigDecimal.valueOf(vatRate.getValue())).setScale(2, RoundingMode.HALF_EVEN);
         BigDecimal grossValue = netValue.add(vatValue).setScale(2, RoundingMode.HALF_EVEN);
         return InvoiceEntry.builder()
-            .withId(id)
-            .withDescription(faker.commerce().productName())
-            .withQuantity(quantity)
-            .withPrice(price)
-            .withNetValue(netValue)
-            .withGrossValue(grossValue)
-            .withVatRate(vatRate)
+            .id(id)
+            .description(faker.commerce().productName())
+            .quantity(quantity)
+            .price(price)
+            .netValue(netValue)
+            .grossValue(grossValue)
+            .vatRate(vatRate)
             .build();
     }
 }

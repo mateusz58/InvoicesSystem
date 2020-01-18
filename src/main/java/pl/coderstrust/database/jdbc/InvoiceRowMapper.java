@@ -12,36 +12,36 @@ public class InvoiceRowMapper implements RowMapper<Invoice> {
     public Invoice mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Invoice
             .builder()
-            .withId(rs.getLong("ID"))
-            .withSeller(getCompanySeller(rs))
-            .withBuyer(getCompanyBuyer(rs))
-            .withNumber(rs.getString("number"))
-            .withIssuedDate(rs.getDate("issued_date").toLocalDate())
-            .withDueDate(rs.getDate("due_date").toLocalDate())
+            .id(rs.getLong("ID"))
+            .seller(getCompanySeller(rs))
+            .buyer(getCompanyBuyer(rs))
+            .number(rs.getString("number"))
+            .issuedDate(rs.getDate("issued_date").toLocalDate())
+            .dueDate(rs.getDate("due_date").toLocalDate())
             .build();
     }
 
     private Company getCompanySeller(ResultSet rs) throws SQLException {
         return Company.builder()
-            .withId(rs.getLong("seller_id"))
-            .withEmail(rs.getString("seller_email"))
-            .withAddress(rs.getString("seller_address"))
-            .withAccountNumber(String.valueOf(rs.getString("seller_account_number")))
-            .withName(rs.getString("seller_name"))
-            .withPhoneNumber(rs.getString("seller_phone_number"))
-            .withTaxId(rs.getString("seller_tax_id"))
+            .id(rs.getLong("seller_id"))
+            .email(rs.getString("seller_email"))
+            .address(rs.getString("seller_address"))
+            .accountNumber(String.valueOf(rs.getString("seller_account_number")))
+            .name(rs.getString("seller_name"))
+            .phoneNumber(rs.getString("seller_phone_number"))
+            .taxId(rs.getString("seller_tax_id"))
             .build();
     }
 
     private Company getCompanyBuyer(ResultSet rs) throws SQLException {
         return Company.builder()
-            .withId(rs.getLong("buyer_id"))
-            .withEmail(rs.getString("buyer_email"))
-            .withAddress(rs.getString("buyer_address"))
-            .withAccountNumber(String.valueOf(rs.getString("buyer_account_number")))
-            .withName(rs.getString("buyer_name"))
-            .withPhoneNumber(rs.getString("buyer_phone_number"))
-            .withTaxId(rs.getString("buyer_tax_id"))
+            .id(rs.getLong("buyer_id"))
+            .email(rs.getString("buyer_email"))
+            .address(rs.getString("buyer_address"))
+            .accountNumber(String.valueOf(rs.getString("buyer_account_number")))
+            .name(rs.getString("buyer_name"))
+            .phoneNumber(rs.getString("buyer_phone_number"))
+            .taxId(rs.getString("buyer_tax_id"))
             .build();
     }
 }

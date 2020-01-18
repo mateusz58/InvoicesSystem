@@ -13,13 +13,13 @@ public class InvoiceGenerator {
         LocalDate dateGenerated = LocalDateGenerator.generateRandomLocalDate();
         Company company = CompanyGenerator.generateRandomCompanyWithSpecificId(5L);
         return Invoice.builder()
-            .withId(IdGenerator.getRandomId())
-            .withNumber(WordGenerator.generateRandomWord())
-            .withBuyer(company)
-            .withSeller(company)
-            .withDueDate(dateGenerated.plusDays(10L))
-            .withIssuedDate(dateGenerated)
-            .withEntries(generateEntries(5))
+            .id(IdGenerator.getRandomId())
+            .number(WordGenerator.generateRandomWord())
+            .buyer(company)
+            .seller(company)
+            .dueDate(dateGenerated.plusDays(10L))
+            .issuedDate(dateGenerated)
+            .entries(generateEntries(5))
             .build();
     }
 
@@ -34,13 +34,13 @@ public class InvoiceGenerator {
     public static Invoice generateRandomInvoiceWithGreaterIssuedDate() {
         LocalDate dateGenerated = LocalDateGenerator.generateRandomLocalDate();
         return Invoice.builder()
-            .withId(IdGenerator.getRandomId())
-            .withNumber(WordGenerator.generateRandomWord())
-            .withBuyer(CompanyGenerator.generateRandomCompany())
-            .withSeller(CompanyGenerator.generateRandomCompany())
-            .withDueDate(dateGenerated)
-            .withIssuedDate(dateGenerated.plusDays(10L))
-            .withEntries(generateEntries(5))
+            .id(IdGenerator.getRandomId())
+            .number(WordGenerator.generateRandomWord())
+            .buyer(CompanyGenerator.generateRandomCompany())
+            .seller(CompanyGenerator.generateRandomCompany())
+            .dueDate(dateGenerated)
+            .issuedDate(dateGenerated.plusDays(10L))
+            .entries(generateEntries(5))
             .build();
     }
 
@@ -51,13 +51,13 @@ public class InvoiceGenerator {
     private static Invoice generateInvoice(Long id) {
         LocalDate dateGenerated = LocalDateGenerator.generateRandomLocalDate();
         return Invoice.builder()
-            .withId(id)
-            .withNumber(WordGenerator.generateRandomWord())
-            .withBuyer(CompanyGenerator.generateRandomCompany())
-            .withSeller(CompanyGenerator.generateRandomCompany())
-            .withDueDate(dateGenerated.plusDays(10L))
-            .withIssuedDate(dateGenerated)
-            .withEntries(generateEntries(5))
+            .id(id)
+            .number(WordGenerator.generateRandomWord())
+            .buyer(CompanyGenerator.generateRandomCompany())
+            .seller(CompanyGenerator.generateRandomCompany())
+            .dueDate(dateGenerated.plusDays(10L))
+            .issuedDate(dateGenerated)
+            .entries(generateEntries(5))
             .build();
     }
 

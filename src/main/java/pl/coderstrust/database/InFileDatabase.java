@@ -188,8 +188,13 @@ public class InFileDatabase implements Database {
     private Invoice insertInvoice(Invoice invoice) throws IOException {
         Long id = nextId.incrementAndGet();
         Invoice insertedInvoice = Invoice.builder()
-            .withInvoice(invoice)
-            .withId(id)
+            .id(id)
+            .number(invoice.getNumber())
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
+            .buyer(invoice.getBuyer())
+            .seller(invoice.getSeller())
+            .entries(invoice.getEntries())
             .build();
         fileHelper.writeLine(filePath, mapper.writeValueAsString(insertedInvoice));
         return insertedInvoice;
@@ -197,7 +202,13 @@ public class InFileDatabase implements Database {
 
     private Invoice updateInvoice(Invoice invoice) throws IOException, DatabaseOperationException {
         Invoice updatedInvoice = Invoice.builder()
-            .withInvoice(invoice)
+            .id(invoice.getId())
+            .number(invoice.getNumber())
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
+            .buyer(invoice.getBuyer())
+            .seller(invoice.getSeller())
+            .entries(invoice.getEntries())
             .build();
         fileHelper.replaceLine(filePath, getPositionInDatabase(invoice.getId()), mapper.writeValueAsString(updatedInvoice));
         return updatedInvoice;

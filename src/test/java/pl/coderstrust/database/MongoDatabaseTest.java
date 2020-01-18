@@ -55,13 +55,13 @@ class MongoDatabaseTest {
     @Test
     void shouldInsert() throws DatabaseOperationException {
         //given
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        Query findId = Query.query(Criteria.where("id").is(invoice.getId()));
+        Invoice invoiceToBeInserted = InvoiceGenerator.getRandomInvoiceWithSpecificId(1L);
+        Query findId = Query.query(Criteria.where("id").is(1L));
         doReturn(null).when(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
-        Invoice invoiceToBeInserted = Invoice.builder().withInvoice(invoice).withId(1L).build();
+
         doReturn(modelMapper.mapToMongoInvoice(invoiceToBeInserted)).when(mongoTemplate).insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted));
         //when
-        Invoice insertedInvoice = database.save(invoice);
+        Invoice insertedInvoice = database.save(invoiceToBeInserted);
         //then
         assertEquals(invoiceToBeInserted, insertedInvoice);
         verify(mongoTemplate).findOne(findId, pl.coderstrust.database.mongo.Invoice.class);
@@ -106,8 +106,8 @@ class MongoDatabaseTest {
     @Test
     void saveMethodShouldThrowDatabaseOperationExceptionWhenErrorOccurDuringInsertingInvoice() {
         //given
-        Invoice invoice = InvoiceGenerator.generateRandomInvoice();
-        pl.coderstrust.database.mongo.Invoice addedInvoice = modelMapper.mapToMongoInvoice(Invoice.builder().withInvoice(invoice).withId(1L).build());
+        Invoice invoice = InvoiceGenerator.getRandomInvoiceWithSpecificId(1L);
+        pl.coderstrust.database.mongo.Invoice addedInvoice = modelMapper.mapToMongoInvoice(invoice);
         pl.coderstrust.database.mongo.Invoice mongoInvoice = modelMapper.mapToMongoInvoice(invoice);
         doThrow(new MockitoException("") {
         }).when(mongoTemplate).insert(mongoInvoice);

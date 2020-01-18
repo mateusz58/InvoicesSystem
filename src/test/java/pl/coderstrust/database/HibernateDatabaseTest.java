@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -22,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.data.domain.Example;
 import pl.coderstrust.database.hibernate.HibernateModelMapper;
 import pl.coderstrust.database.hibernate.HibernateModelMapperImpl;
 import pl.coderstrust.generators.InvoiceGenerator;
@@ -184,7 +182,7 @@ class HibernateDatabaseTest {
         //given
         Invoice invoice = InvoiceGenerator.generateRandomInvoice();
         pl.coderstrust.database.hibernate.Invoice hibernateInvoice = modelMapper.mapToHibernateInvoice(invoice);
-        when(invoiceRepository.findOne(any(Example.class))).thenReturn(Optional.of(hibernateInvoice));
+        when(invoiceRepository.getFirstByNumber(invoice.getNumber())).thenReturn(Optional.of(hibernateInvoice));
 
         //when
         Optional<Invoice> gotInvoice = database.getByNumber(invoice.getNumber());
@@ -192,7 +190,7 @@ class HibernateDatabaseTest {
         //then
         assertTrue(gotInvoice.isPresent());
         assertEquals(invoice, gotInvoice.get());
-        verify(invoiceRepository).findOne(any(Example.class));
+        verify(invoiceRepository).getFirstByNumber(invoice.getNumber());
     }
 
     @Test
@@ -202,7 +200,7 @@ class HibernateDatabaseTest {
 
         //then
         assertTrue(gotInvoice.isEmpty());
-        verify(invoiceRepository).findOne(any(Example.class));
+        verify(invoiceRepository).getFirstByNumber("123");
     }
 
     @Test
@@ -213,11 +211,11 @@ class HibernateDatabaseTest {
     @Test
     void shouldThrowDatabaseOperationExceptionWhenNonTransientDataAccessExceptionIsThrownWhenGettingByNumber() {
         //given
-        doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).findOne(any(Example.class));
+        doThrow(new NonTransientDataAccessException("") {}).when(invoiceRepository).getFirstByNumber("123");
 
         //then
         assertThrows(DatabaseOperationException.class, () -> database.getByNumber("123"));
-        verify(invoiceRepository).findOne(any(Example.class));
+        verify(invoiceRepository).getFirstByNumber("123");
     }
 
     @Test

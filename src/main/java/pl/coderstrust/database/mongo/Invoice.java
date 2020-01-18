@@ -4,6 +4,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -11,20 +15,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import pl.coderstrust.model.Company;
 import pl.coderstrust.model.InvoiceEntry;
 
+@Data
+@Builder(builderClassName = "InvoiceBuilder", toBuilder = true)
+@NoArgsConstructor
 @Document
-public final class Invoice {
+public  class Invoice{
 
     @Id
-    private final String mongoId;
+    private  String mongoId;
 
     @Indexed(unique = true)
-    private final Long id;
-    private final String number;
-    private final LocalDate issuedDate;
-    private final LocalDate dueDate;
-    private final Company seller;
-    private final Company buyer;
-    private final List<InvoiceEntry> entries;
+    private Long id;
+    private String number;
+    private LocalDate issuedDate;
+    private LocalDate dueDate;
+    private Company seller;
+    private Company buyer;
+    private List<InvoiceEntry> entries;
 
     @PersistenceConstructor
     private Invoice(String mongoId, Long id, String number, LocalDate issuedDate, LocalDate dueDate, Company seller, Company buyer, List<InvoiceEntry> entries) {
@@ -38,143 +45,6 @@ public final class Invoice {
         this.entries = entries;
     }
 
-    private Invoice(Builder builder) {
-        mongoId = builder.mongoId;
-        id = builder.id;
-        number = builder.number;
-        issuedDate = builder.issuedDate;
-        dueDate = builder.dueDate;
-        seller = builder.seller;
-        buyer = builder.buyer;
-        entries = builder.entries;
-    }
-
-    public static Invoice.Builder builder() {
-        return new Invoice.Builder();
-    }
-
-    public String getMongoId() {
-        return mongoId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public LocalDate getIssuedDate() {
-        return issuedDate;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public Company getSeller() {
-        return seller;
-    }
-
-    public Company getBuyer() {
-        return buyer;
-    }
-
-    public List<InvoiceEntry> getEntries() {
-        return entries != null ? new ArrayList(entries) : new ArrayList();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(mongoId, id, number, issuedDate, dueDate, seller, buyer, entries);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Invoice invoice = (Invoice) o;
-        return Objects.equals(id, invoice.id)
-            && Objects.equals(mongoId, invoice.mongoId)
-            && Objects.equals(number, invoice.number)
-            && Objects.equals(issuedDate, invoice.issuedDate)
-            && Objects.equals(dueDate, invoice.dueDate)
-            && Objects.equals(seller, invoice.seller)
-            && Objects.equals(buyer, invoice.buyer)
-            && Objects.equals(entries, invoice.entries);
-    }
-
-    @Override
-    public String toString() {
-        return "Invoice{"
-            + "mongoId=" + mongoId
-            + ", id=" + id
-            + ", number='" + number + '\''
-            + ", issuedDate=" + issuedDate
-            + ", dueDate=" + dueDate
-            + ", seller=" + seller
-            + ", buyer=" + buyer
-            + ", entries=" + entries
-            + '}';
-    }
-
-    public static class Builder {
-        private String mongoId;
-        private Long id;
-        private String number;
-        private LocalDate issuedDate;
-        private LocalDate dueDate;
-        private Company seller;
-        private Company buyer;
-        private List<InvoiceEntry> entries;
-
-        public Invoice.Builder withMongoId(String mongoId) {
-            this.mongoId = mongoId;
-            return this;
-        }
-
-        public Invoice.Builder withId(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Invoice.Builder withNumber(String number) {
-            this.number = number;
-            return this;
-        }
-
-        public Invoice.Builder withIssuedDate(LocalDate issuedDate) {
-            this.issuedDate = issuedDate;
-            return this;
-        }
-
-        public Invoice.Builder withDueDate(LocalDate dueDate) {
-            this.dueDate = dueDate;
-            return this;
-        }
-
-        public Invoice.Builder withSeller(Company seller) {
-            this.seller = seller;
-            return this;
-        }
-
-        public Invoice.Builder withBuyer(Company buyer) {
-            this.buyer = buyer;
-            return this;
-        }
-
-        public Invoice.Builder withEntries(List<InvoiceEntry> entries) {
-            this.entries = entries;
-            return this;
-        }
-
-        public Invoice build() {
-            return new Invoice(this);
-        }
+    public static class InvoiceBuilder {
     }
 }

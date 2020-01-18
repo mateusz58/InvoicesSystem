@@ -10,13 +10,13 @@ public class InvoiceEntriesRowMapper implements RowMapper<InvoiceEntry> {
     @Override
     public InvoiceEntry mapRow(ResultSet rs, int i) throws SQLException {
         return InvoiceEntry.builder()
-            .withId(rs.getLong("id"))
-            .withDescription(rs.getString("description"))
-            .withQuantity(rs.getLong("quantity"))
-            .withPrice(rs.getBigDecimal("price"))
-            .withNetValue(rs.getBigDecimal("net_value"))
-            .withGrossValue(rs.getBigDecimal("gross_value"))
-            .withVatRate(Vat.getVatType(rs.getFloat("vat_rate")))
+            .id(rs.getLong("id"))
+            .description(rs.getString("description"))
+            .quantity(rs.getLong("quantity"))
+            .price(rs.getBigDecimal("price"))
+            .netValue(rs.getBigDecimal("net_value"))
+            .grossValue(rs.getBigDecimal("gross_value"))
+            .vatRate(Vat.getVatType(rs.getFloat("vat_rate")))
             .build();
     }
 }

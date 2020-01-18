@@ -11,6 +11,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Repository;
 import pl.coderstrust.database.hibernate.HibernateModelMapper;
 import pl.coderstrust.model.Invoice;
+import pl.coderstrust.model.Invoice.InvoiceBuilder;
 
 @Repository
 @ConditionalOnProperty(name = "pl.coderstrust.database", havingValue = "hibernate")
@@ -98,8 +99,7 @@ public class HibernateDatabase implements Database {
             throw new IllegalArgumentException("Number cannot be null.");
         }
         try {
-            Example<pl.coderstrust.database.hibernate.Invoice> example = Example.of(modelMapper.mapToHibernateInvoice(new Invoice.Builder().withNumber(number).build()));
-            Optional<pl.coderstrust.database.hibernate.Invoice> invoice = invoiceRepository.findOne(example);
+            Optional<pl.coderstrust.database.hibernate.Invoice> invoice = invoiceRepository.getFirstByNumber(number);
             if (invoice.isPresent()) {
                 log.debug("Found invoice with number {}.", number);
                 return Optional.of(modelMapper.mapToInvoice(invoice.get()));

@@ -21,7 +21,7 @@ public class MongoDatabase implements Database {
     private final MongoModelMapper modelMapper;
     private AtomicLong lastId;
 
-    private static Logger log = LoggerFactory.getLogger(HibernateDatabase.class);
+    private static Logger log = LoggerFactory.getLogger(MongoDatabase.class);
 
     public MongoDatabase(MongoTemplate mongoTemplate, MongoModelMapper modelMapper) {
         if (mongoTemplate == null) {
@@ -182,22 +182,27 @@ public class MongoDatabase implements Database {
 
     private Invoice insertInvoice(Invoice invoice) {
         Invoice invoiceToBeInserted = Invoice.builder()
-            .withInvoice(invoice)
-            .withId(lastId.incrementAndGet())
+            .id(invoice.getId())
+            .number(invoice.getNumber())
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
+            .buyer(invoice.getBuyer())
+            .seller(invoice.getSeller())
+            .entries(invoice.getEntries())
             .build();
         return modelMapper.mapToInvoice(mongoTemplate.insert(modelMapper.mapToMongoInvoice(invoiceToBeInserted)));
     }
 
     private Invoice updateInvoice(Invoice invoice, String mongoId) {
         pl.coderstrust.database.mongo.Invoice updatedInvoice = pl.coderstrust.database.mongo.Invoice.builder()
-            .withMongoId(mongoId)
-            .withId(invoice.getId())
-            .withNumber(invoice.getNumber())
-            .withBuyer(invoice.getBuyer())
-            .withSeller(invoice.getSeller())
-            .withDueDate(invoice.getDueDate())
-            .withIssuedDate(invoice.getIssuedDate())
-            .withEntries(invoice.getEntries())
+            .mongoId(mongoId)
+            .id(invoice.getId())
+            .number(invoice.getNumber())
+            .buyer(invoice.getBuyer())
+            .seller(invoice.getSeller())
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
+            .entries(invoice.getEntries())
             .build();
         return modelMapper.mapToInvoice(mongoTemplate.save(updatedInvoice));
     }

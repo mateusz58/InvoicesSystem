@@ -10,25 +10,25 @@ public class CompanyGenerator {
 
     public static Company generateRandomCompany() {
         return Company.builder()
-            .withId(IdGenerator.getRandomId())
-            .withEmail(faker.internet().emailAddress())
-            .withAddress(AddressGenerator.generateRandomAddress())
-            .withAccountNumber(String.valueOf(NumberGenerator.generateRandomNumber(11)))
-            .withName(faker.company().name())
-            .withPhoneNumber(faker.phoneNumber().phoneNumber())
-            .withTaxId(faker.regexify("[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}"))
+            .id(IdGenerator.getRandomId())
+            .email(faker.internet().emailAddress())
+            .address(AddressGenerator.generateRandomAddress())
+            .accountNumber(String.valueOf(NumberGenerator.generateRandomNumber(11)))
+            .name(faker.company().name())
+            .phoneNumber(faker.phoneNumber().phoneNumber())
+            .taxId(faker.regexify("[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}"))
             .build();
     }
 
     public static Company generateRandomCompanyWithSpecificId(Long id) {
         return Company.builder()
-            .withId(id)
-            .withEmail(faker.internet().emailAddress())
-            .withAddress(AddressGenerator.generateRandomAddress())
-            .withAccountNumber(String.valueOf(NumberGenerator.generateRandomNumber(11)))
-            .withName(faker.company().name())
-            .withPhoneNumber(faker.phoneNumber().phoneNumber())
-            .withTaxId(faker.regexify("[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}"))
+            .id(id)
+            .email(faker.internet().emailAddress())
+            .address(AddressGenerator.generateRandomAddress())
+            .accountNumber(String.valueOf(NumberGenerator.generateRandomNumber(11)))
+            .name(faker.company().name())
+            .phoneNumber(faker.phoneNumber().phoneNumber())
+            .taxId(faker.regexify("[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}"))
             .build();
     }
 }

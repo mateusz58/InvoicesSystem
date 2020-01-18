@@ -121,37 +121,37 @@ public class SqlDatabaseIT {
 
     private InvoiceEntry buildInvoiceEntry(Long id, InvoiceEntry invoiceEntry) {
         return InvoiceEntry.builder()
-            .withId(id)
-            .withDescription(invoiceEntry.getDescription())
-            .withGrossValue(invoiceEntry.getGrossValue())
-            .withNetValue(invoiceEntry.getNetValue())
-            .withPrice(invoiceEntry.getPrice())
-            .withQuantity(invoiceEntry.getQuantity())
-            .withVatRate(invoiceEntry.getVatRate())
+            .id(id)
+            .description(invoiceEntry.getDescription())
+            .grossValue(invoiceEntry.getGrossValue())
+            .netValue(invoiceEntry.getNetValue())
+            .price(invoiceEntry.getPrice())
+            .quantity(invoiceEntry.getQuantity())
+            .vatRate(invoiceEntry.getVatRate())
             .build();
     }
 
     private Invoice buildInvoice(long invoiceId, Invoice invoice, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries) {
         return Invoice.builder()
-            .withId(invoiceId)
-            .withEntries(invoiceEntries)
-            .withNumber(invoice.getNumber())
-            .withBuyer(buyer)
-            .withSeller(seller)
-            .withDueDate(invoice.getDueDate())
-            .withIssuedDate(invoice.getIssuedDate())
+            .id(invoiceId)
+            .entries(invoiceEntries)
+            .number(invoice.getNumber())
+            .buyer(buyer)
+            .seller(seller)
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
             .build();
     }
 
     private Company buildCompany(long id, Company company) {
         return Company.builder()
-            .withId(id)
-            .withAccountNumber(company.getAccountNumber())
-            .withAddress(company.getAddress())
-            .withEmail(company.getEmail())
-            .withName(company.getName())
-            .withPhoneNumber(company.getPhoneNumber())
-            .withTaxId(company.getTaxId())
+            .id(id)
+            .accountNumber(company.getAccountNumber())
+            .address(company.getAddress())
+            .email(company.getEmail())
+            .name(company.getName())
+            .phoneNumber(company.getPhoneNumber())
+            .taxId(company.getTaxId())
             .build();
     }
 
@@ -180,13 +180,13 @@ public class SqlDatabaseIT {
     void saveMethodShouldReturnAddedInvoiceWhenGivenInvoiceDoesNotExistInDatabase() throws DatabaseOperationException {
         //Given
         Invoice expected = Invoice.builder()
-            .withId(6L)
-            .withNumber("Number")
-            .withBuyer(CompanyGenerator.generateRandomCompanyWithSpecificId(11L))
-            .withSeller(CompanyGenerator.generateRandomCompanyWithSpecificId(12L))
-            .withIssuedDate(LocalDate.now().minusDays(10))
-            .withDueDate(LocalDate.now().plusDays(10))
-            .withEntries(List.of(InvoiceEntryGenerator.getRandomEntryWithSpecificId(27L)))
+            .id(6L)
+            .number("Number")
+            .buyer(CompanyGenerator.generateRandomCompanyWithSpecificId(11L))
+            .seller(CompanyGenerator.generateRandomCompanyWithSpecificId(12L))
+            .issuedDate(LocalDate.now().minusDays(10))
+            .dueDate(LocalDate.now().plusDays(10))
+            .entries(List.of(InvoiceEntryGenerator.getRandomEntryWithSpecificId(27L)))
             .build();
 
         //When

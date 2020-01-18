@@ -28,6 +28,11 @@
                             <artifactId>mapstruct-processor</artifactId>
                             <version>${org.mapstruct.version}</version>
                         </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.10</version>
+                        </path>
                     </annotationProcessorPaths>
                     <release>${java.version}</release>
                 </configuration>
@@ -287,6 +292,11 @@
             <artifactId>postgresql</artifactId>
             <version>1.12.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.10</version>
         </dependency>
     </dependencies>
 </project>

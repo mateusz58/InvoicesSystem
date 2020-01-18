@@ -76,7 +76,7 @@ public class SqlDatabase implements Database {
         try {
             int result = jdbcTemplate.update(DELETE_INVOICE_BY_ID, id, id);
             if (result == 0) {
-                throw new DatabaseOperationException(String.format("There is no invoice with id: %s", id));
+                throw new DatabaseOperationException(String.format("There is no invoice  id: %s", id));
             }
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("An error occured during deleting invoice by Id");
@@ -148,25 +148,25 @@ public class SqlDatabase implements Database {
 
     private Invoice buildInvoice(long invoiceId, Invoice invoice, Company buyer, Company seller, List<InvoiceEntry> invoiceEntries) {
         return Invoice.builder()
-            .withId(invoiceId)
-            .withEntries(invoiceEntries)
-            .withNumber(invoice.getNumber())
-            .withBuyer(buyer)
-            .withSeller(seller)
-            .withDueDate(invoice.getDueDate())
-            .withIssuedDate(invoice.getIssuedDate())
+            .id(invoiceId)
+            .entries(invoiceEntries)
+            .number(invoice.getNumber())
+            .buyer(buyer)
+            .seller(seller)
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
             .build();
     }
 
     private Invoice buildInvoice(Invoice invoice, List<InvoiceEntry> invoiceEntries) {
         return Invoice.builder()
-            .withId(invoice.getId())
-            .withEntries(invoiceEntries)
-            .withNumber(invoice.getNumber())
-            .withBuyer(invoice.getBuyer())
-            .withSeller(invoice.getSeller())
-            .withDueDate(invoice.getDueDate())
-            .withIssuedDate(invoice.getIssuedDate())
+            .id(invoice.getId())
+            .entries(invoiceEntries)
+            .number(invoice.getNumber())
+            .buyer(invoice.getBuyer())
+            .seller(invoice.getSeller())
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
             .build();
     }
 
@@ -280,7 +280,14 @@ public class SqlDatabase implements Database {
             invoice.getDueDate(), invoice.getIssuedDate(), invoice.getNumber(), buyer.getId(), seller.getId(), invoice.getId());
         insertInvoiceEntriesTable(invoice.getId(), invoiceEntries);
         return Invoice.builder()
-            .withInvoice(invoice).build();
+            .id(invoice.getId())
+            .number(invoice.getNumber())
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
+            .buyer(invoice.getBuyer())
+            .seller(invoice.getSeller())
+            .entries(invoice.getEntries())
+            .build();
     }
 
     private List<InvoiceEntry> insertAllInvoiceEntries(List<InvoiceEntry> invoiceEntries) {
@@ -305,25 +312,25 @@ public class SqlDatabase implements Database {
 
     private Company buildCompany(Company company, Long id) {
         return Company.builder()
-            .withId(id)
-            .withAccountNumber(company.getAccountNumber())
-            .withAddress(company.getAddress())
-            .withEmail(company.getEmail())
-            .withName(company.getName())
-            .withPhoneNumber(company.getPhoneNumber())
-            .withTaxId(company.getTaxId())
+            .id(id)
+            .accountNumber(company.getAccountNumber())
+            .address(company.getAddress())
+            .email(company.getEmail())
+            .name(company.getName())
+            .phoneNumber(company.getPhoneNumber())
+            .taxId(company.getTaxId())
             .build();
     }
 
     private InvoiceEntry buildInvoiceEntry(InvoiceEntry invoiceEntry, Long id) {
         return InvoiceEntry.builder()
-            .withId(id)
-            .withDescription(invoiceEntry.getDescription())
-            .withGrossValue(invoiceEntry.getGrossValue())
-            .withNetValue(invoiceEntry.getNetValue())
-            .withPrice(invoiceEntry.getPrice())
-            .withQuantity(invoiceEntry.getQuantity())
-            .withVatRate(invoiceEntry.getVatRate())
+            .id(id)
+            .description(invoiceEntry.getDescription())
+            .grossValue(invoiceEntry.getGrossValue())
+            .netValue(invoiceEntry.getNetValue())
+            .price(invoiceEntry.getPrice())
+            .quantity(invoiceEntry.getQuantity())
+            .vatRate(invoiceEntry.getVatRate())
             .build();
     }
 }

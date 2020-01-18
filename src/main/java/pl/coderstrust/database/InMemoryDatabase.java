@@ -43,8 +43,13 @@ public class InMemoryDatabase implements Database {
     private Invoice insertInvoice(Invoice invoice) {
         Long id = nextId.incrementAndGet();
         Invoice insertedInvoice = Invoice.builder()
-            .withInvoice(invoice)
-            .withId(id)
+            .id(id)
+            .number(invoice.getNumber())
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
+            .buyer(invoice.getBuyer())
+            .seller(invoice.getSeller())
+            .entries(invoice.getEntries())
             .build();
         database.put(id, insertedInvoice);
         return insertedInvoice;
@@ -52,7 +57,13 @@ public class InMemoryDatabase implements Database {
 
     private Invoice updateInvoice(Invoice invoice) {
         Invoice updatedInvoice = Invoice.builder()
-            .withInvoice(invoice)
+            .id(invoice.getId())
+            .number(invoice.getNumber())
+            .dueDate(invoice.getDueDate())
+            .issuedDate(invoice.getIssuedDate())
+            .buyer(invoice.getBuyer())
+            .seller(invoice.getSeller())
+            .entries(invoice.getEntries())
             .build();
         database.put(invoice.getId(), updatedInvoice);
         return updatedInvoice;
