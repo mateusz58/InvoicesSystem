@@ -19,6 +19,28 @@ services:
       ports:
         - 5454:5454/tcp
       environment:
-        - PGADMIN_DEFAULT_EMAIL=admin@mydomain.com
+        - PGADMIN_DEFAULT_EMAIL= admin@mydomain.com
         - PGADMIN_DEFAULT_PASSWORD=admin
         - PGADMIN_LISTEN_PORT=5454
+  keycloak:
+    image: jboss/keycloak:6.0.1
+    container_name: keycloak
+    environment:
+      - DB_DATABASE=keycloak
+      - DB_PASSWORD=admin
+      - DB_ADDR=database
+      - DB_USER=admin
+      - DB_VENDOR=postgres
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - JDBC_PARAMS=useSSL=false
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "9990:9990"
+    depends_on:
+      - database
+    healthcheck:
+      test: "curl -f http://localhost:8080/auth || exit 1"
+    volumes:
+      - ./keycloak:/data
