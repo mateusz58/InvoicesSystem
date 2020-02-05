@@ -70,7 +70,7 @@ $ mvn build
 4. Modify application.properties value of “pl.coderstrust.database” to one of the possible databases which project implements which are: in-memory, in-file, hibernate, jdbc, mongo
 5. Launch application with the following command
 ```sh
-$ mvn run
+$ mvn springboot:run
 ```
 
 ## API Reference
