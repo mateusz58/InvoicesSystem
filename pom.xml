@@ -88,6 +88,10 @@
                 </configuration>
             </plugin>
             <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.4</version>
@@ -97,6 +101,7 @@
                         <exclude>/pl/coderstrust/database/hibernate/*.class</exclude>
                         <exclude>/pl/coderstrust/database/mongo/*.class</exclude>
                         <exclude>/pl/coderstrust/Application.class</exclude>
+                        <exclude>/pl/coderstrust/configuration/Application.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>
