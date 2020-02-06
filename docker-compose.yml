@@ -44,26 +44,3 @@ services:
       test: "curl -f http://localhost:8080/auth || exit 1"
     volumes:
       - ./keycloak:/data
-
-  ldap-host:
-    image: osixia/openldap:1.3.0
-    container_name: ldap-host
-    environment:
-      - LDAP_ORGANISATION="MyCompany Inc."
-      - LDAP_DOMAIN=mycompany.com
-    ports:
-      - "389:389"
-    volumes:
-      - ./ldap-host:/data
-
-  phpldapadmin-service:
-      image: osixia/phpldapadmin:0.9.0
-      container_name: phpldapadmin-service
-      environment:
-        - PHPLDAPADMIN_LDAP_HOSTS=ldap-host
-      ports:
-        - "6443:443"
-      depends_on:
-        - ldap-host
-      volumes:
-        - ./phpldapadmin-service:/data
