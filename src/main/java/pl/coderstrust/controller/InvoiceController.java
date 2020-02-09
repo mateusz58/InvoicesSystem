@@ -31,8 +31,8 @@ import pl.coderstrust.service.InvoiceService;
 import pl.coderstrust.service.ServiceOperationException;
 
 @RestController
-@RequestMapping("/invoices")
-@Api(value = "/invoices")
+@RequestMapping("api/invoices")
+@Api(value = "api/invoices")
 public class InvoiceController {
 
     private Logger log = LoggerFactory.getLogger(InvoiceController.class);

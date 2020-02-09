@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.coderstrust.generators.InvoiceGenerator;
@@ -39,7 +38,6 @@ import pl.coderstrust.service.ServiceOperationException;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(InvoiceController.class)
-@WithMockUser(roles = "USER")
 class InvoiceControllerTest {
 
     @MockBean
@@ -61,21 +59,21 @@ class InvoiceControllerTest {
     String urlPdf = "/invoices/pdf/";
     byte[] invoiceAsPdf = "xc45#2f".getBytes();
 
-    @Test
-    @WithMockUser(roles = "InvalidRole")
-    void shouldReturnStatusForbiddenWhileGettingInvoiceByIdWithIncorrectAuthenticationRole() throws Exception {
-        //Given
-        Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
-        doReturn(Optional.of(invoiceToGet)).when(invoiceService).getById(invoiceToGet.getId());
-
-        //When
-        mockMvc.perform(get(String.format("%s%d", url, invoiceToGet.getId()))
-            .accept(MediaType.APPLICATION_JSON_UTF8))
-            .andExpect(status().isForbidden());
-
-        //Then
-        verify(invoiceService, never()).getById(invoiceToGet.getId());
-    }
+//    @Test
+//    @WithMockUser(roles = "InvalidRole")
+//    void shouldReturnStatusForbiddenWhileGettingInvoiceByIdWithIncorrectAuthenticationRole() throws Exception {
+//        //Given
+//        Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
+//        doReturn(Optional.of(invoiceToGet)).when(invoiceService).getById(invoiceToGet.getId());
+//
+//        //When
+//        mockMvc.perform(get(String.format("%s%d", url, invoiceToGet.getId()))
+//            .accept(MediaType.APPLICATION_JSON_UTF8))
+//            .andExpect(status().isForbidden());
+//
+//        //Then
+//        verify(invoiceService, never()).getById(invoiceToGet.getId());
+//    }
 
     @Test
     void shouldReturnInvoiceById() throws Exception {
