@@ -55,25 +55,9 @@ class InvoiceControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    String url = "/invoices/";
-    String urlPdf = "/invoices/pdf/";
+    String url = "/api/invoices/";
+    String urlPdf = "/api/invoices/pdf/";
     byte[] invoiceAsPdf = "xc45#2f".getBytes();
-
-//    @Test
-//    @WithMockUser(roles = "InvalidRole")
-//    void shouldReturnStatusForbiddenWhileGettingInvoiceByIdWithIncorrectAuthenticationRole() throws Exception {
-//        //Given
-//        Invoice invoiceToGet = InvoiceGenerator.generateRandomInvoice();
-//        doReturn(Optional.of(invoiceToGet)).when(invoiceService).getById(invoiceToGet.getId());
-//
-//        //When
-//        mockMvc.perform(get(String.format("%s%d", url, invoiceToGet.getId()))
-//            .accept(MediaType.APPLICATION_JSON_UTF8))
-//            .andExpect(status().isForbidden());
-//
-//        //Then
-//        verify(invoiceService, never()).getById(invoiceToGet.getId());
-//    }
 
     @Test
     void shouldReturnInvoiceById() throws Exception {
@@ -143,7 +127,7 @@ class InvoiceControllerTest {
         doReturn(invoiceAsPdf).when(invoicePdfService).createPdf(invoiceToGet);
 
         //When
-        mockMvc.perform(get(String.format("%s%d", "/invoices/pdf/", invoiceToGet.getId()))
+        mockMvc.perform(get(String.format("%s%d", "/api/invoices/pdf/", invoiceToGet.getId()))
             .accept(MediaType.APPLICATION_PDF_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_PDF_VALUE))
@@ -280,7 +264,7 @@ class InvoiceControllerTest {
         doReturn(invoiceAsPdf).when(invoicePdfService).createPdf(invoiceToGet);
 
         //When
-        mockMvc.perform(get(String.format("%s%s", "/invoices/pdf/", endPoint))
+        mockMvc.perform(get(String.format("%s%s", "/api/invoices/pdf/", endPoint))
             .accept(MediaType.APPLICATION_PDF_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_PDF_VALUE))

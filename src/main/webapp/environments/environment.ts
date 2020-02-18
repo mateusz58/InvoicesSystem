@@ -6,8 +6,8 @@ import { KeycloakConfig, KeycloakInitOptions, KeycloakOptions } from 'keycloak-a
 // Add here your keycloak configuration information
 const keycloakConfig: KeycloakConfig = {
   url: 'http://localhost:8080/auth',
-  realm: 'demo',
-  clientId: 'my-app'
+  realm: 'company-services',
+  clientId: 'invoices'
 };
 
 const keycloakInitOptions: KeycloakInitOptions = {
