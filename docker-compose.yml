@@ -1,46 +1,45 @@
 version: '3'
 
 services:
-  database:
+  postgres:
     image: postgres:11.5
-    container_name: postgres
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    expose:
-      - "5432"
-    ports:
-      - 8000:5432
     volumes:
-      - ./services/database/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
-      - ./services/database/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
-  pgadmin:
-      image: dpage/pgadmin4
-      ports:
-        - 5454:5454/tcp
-      environment:
-        - PGADMIN_DEFAULT_EMAIL= "admin@mydomain.com"
-        - PGADMIN_DEFAULT_PASSWORD="admin"
-        - PGADMIN_LISTEN_PORT=5454
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    networks:
+      - db
+    ports:
+      - 5432:5432
   keycloak:
-    image: jboss/keycloak:6.0.1
-    container_name: keycloak
+    image: jboss/keycloak:latest
     environment:
-      - DB_DATABASE=keycloak
-      - DB_PASSWORD=admin
-      - DB_ADDR=database
-      - DB_USER=admin
-      - DB_VENDOR=postgres
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - JDBC_PARAMS=useSSL=false
+      DB_PORT: 5432
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+    networks:
+      - db
     ports:
-      - "8080:8080"
-      - "8443:8443"
-      - "9990:9990"
+      - 8080:8080
+      - 8543:8543
+      - 10090:10090
     depends_on:
-      - database
+      - postgres
     healthcheck:
-      test: "curl -f http://localhost:8080/auth || exit 1"
-    volumes:
-      - ./keycloak:/data
+      test: "exit 0"
+networks:
+  db:
+    driver: bridge
+volumes:
+  postgres_data:
+    driver: local

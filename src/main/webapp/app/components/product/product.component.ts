@@ -9,9 +9,9 @@ import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product';
 import { Order } from '../../models/order';
 import { Observable } from 'rxjs';
-import { CustomerInfo } from 'src/app/models/customer.info';
-import { CustomerStore } from 'src/app/stores/customer.store';
-import { AlertService } from 'src/app/services/alert.service';
+import { CustomerInfo } from 'src/main/webapp/app/models/customer.info';
+import { CustomerStore } from 'src/main/webapp/app/stores/customer.store';
+import { AlertService } from 'src/main/webapp/app/services/alert.service';
 
 @Component({
   selector: 'app-product',

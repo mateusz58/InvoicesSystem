@@ -8,8 +8,8 @@ import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 import { Order } from '../../models/order';
 import { CustomerInfo } from '../../models/customer.info';
-import { CustomerStore } from 'src/app/stores/customer.store';
-import { AlertService } from 'src/app/services/alert.service';
+import { CustomerStore } from 'src/main/webapp/app/stores/customer.store';
+import { AlertService } from 'src/main/webapp/app/services/alert.service';
 
 @Component({
   selector: 'app-cart',

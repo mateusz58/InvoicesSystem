@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:keycloak.properties")
-class SecurityConfig {
+class KeycloakConfig{
 
     @Bean
     public KeycloakSpringBootConfigResolver KeycloakConfigResolver() {

@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CollapseModule, TooltipModule, ModalModule, BsDropdownModule } from 'ngx-bootstrap';
 
 import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/main/webapp/environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
