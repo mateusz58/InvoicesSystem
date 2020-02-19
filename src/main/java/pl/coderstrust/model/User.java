@@ -1,6 +1,7 @@
 package pl.coderstrust.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.annotations.ApiModel;
 import java.io.Serializable;
 import lombok.Builder;
@@ -24,7 +25,8 @@ public class User implements Serializable{
 
     private String email;
 
-    public User() {
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class UserBuilder {
     }
 
 }
