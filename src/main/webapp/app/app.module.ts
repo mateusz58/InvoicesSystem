@@ -26,6 +26,7 @@ import { AlertComponent } from './components/alert/alert.component';
 import { InvoiceComponent } from './components/invoice/invoice.component';
 import { CompanyComponent } from './components/company/company.component';
 import { InvoiceEntryComponent } from './components/invoice-entry/invoice-entry.component';
+import { InvoiceListComponent } from './components/invoice-list/invoice-list.component';
 
 export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
   return (): Promise<any> => {
@@ -55,7 +56,8 @@ export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
     AlertComponent,
     InvoiceComponent,
     CompanyComponent,
-    InvoiceEntryComponent
+    InvoiceEntryComponent,
+    InvoiceListComponent
   ],
   imports: [
     BrowserModule,

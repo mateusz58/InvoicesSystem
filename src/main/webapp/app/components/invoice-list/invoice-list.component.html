@@ -1,6 +1,6 @@
 <div class='card'>
     <div class='card-header'>
-        BRACKET
+        Invoices List
     </div>
     <div class='card-body'>
         <div class='row'>
@@ -9,14 +9,8 @@
                 <input type='text'/>
             </div>
         </div>
-        <div class='row'>
-            <div class='col-md-6'>
-                <h3>Filtered by: BRACKET1</h3>
-            </div>
-        </div>
         <div class='table-responsive'>
-<!--            <table class='table' *ngIf="invoices && invoices.length">-->
-            <table class='table'>
+            <table class='table' *ngIf="invoices && invoices.length" >
                 <thead>
                 <tr>
                     <th>Number</th>
@@ -25,8 +19,20 @@
                     <th>Due date</th>
                     <th>Issued date</th>
                     <th>Total</th>
+                    <th>
+                        <button class="btn btn-primary">
+                            Show details
+                        </button>
+                    </th>
                 </tr>
                 </thead>
+                <tbody>
+                </tbody>
+                <tr *ngFor="let invoice of invoices">
+                    <td></td>
+                    <td>{{invoice.seller}}</td>
+                    <td>{{invoice.buyer}}</td>
+                </tr>
                 <tbody>
                 </tbody>
             </table>
