@@ -23,6 +23,9 @@ import { CustomerOrdersComponent } from './components/customer-orders/customer-o
 import { CartComponent } from './components/cart/cart.component';
 import { CustomerStore } from './stores/customer.store';
 import { AlertComponent } from './components/alert/alert.component';
+import { InvoiceComponent } from './components/invoice/invoice.component';
+import { CompanyComponent } from './components/company/company.component';
+import { InvoiceEntryComponent } from './components/invoice-entry/invoice-entry.component';
 
 export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
   return (): Promise<any> => {
@@ -49,7 +52,10 @@ export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
     TwoDigitDecimalNumberDirective,
     CustomerOrdersComponent,
     CartComponent,
-    AlertComponent
+    AlertComponent,
+    InvoiceComponent,
+    CompanyComponent,
+    InvoiceEntryComponent
   ],
   imports: [
     BrowserModule,
