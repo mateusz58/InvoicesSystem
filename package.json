@@ -19,16 +19,22 @@
     "@angular/platform-browser": "~8.2.14",
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/router": "~8.2.14",
+    "all": "0.0.0",
     "bootstrap": "^4.4.1",
     "browser-sync": "^2.26.7",
+    "copy-webpack-plugin": "^5.1.1",
     "core-js": "^3.4.7",
+    "jquery": "^1.9.1",
     "keycloak-angular": "^7.0.1",
     "keycloak-js": "8.0.1",
     "ngx-bootstrap": "^5.2.0",
     "open-iconic": "^1.1.1",
+    "popper.js": "^1.16.1",
     "rxjs": "~6.5.3",
     "tslib": "^1.10.0",
-    "zone.js": "~0.10.2"
+    "webpack": "^4.41.6",
+    "webpack-dev-server": "^3.10.3",
+    "zone.js": "^0.9.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.20",
