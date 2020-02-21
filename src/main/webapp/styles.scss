@@ -3,12 +3,9 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import '~open-iconic/font/css/open-iconic-bootstrap.min.css';
 
-.table {
-  border: 1px solid black;
-  margin-top: 10px;
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
 }
 
 
-.table-responsive {
-  margin-top: 10px;
-}

@@ -28,6 +28,7 @@ import { CompanyComponent } from './components/company/company.component';
 import { InvoiceEntryComponent } from './components/invoice-entry/invoice-entry.component';
 import { InvoiceListComponent } from './components/invoice-list/invoice-list.component';
 
+
 export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
   return (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
