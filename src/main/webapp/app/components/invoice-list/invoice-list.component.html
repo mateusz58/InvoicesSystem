@@ -35,8 +35,8 @@
                     <td>{{invoice.number}}</td>
                     <td>{{invoice.seller}}</td>
                     <td>{{invoice.buyer}}</td>
-                    <td>{{invoice.due_date| date}}</td>
-                    <td>{{invoice.issued_date| date}}</td>
+                    <td>{{invoice.dueDate| date}}</td>
+                    <td>{{invoice.issuedDate| date}}</td>
                     <td>{{invoice.total | currency: 'PLN':'code':'1.2-2'}}</td>
                     <td>
                         <img src="./assets/images/icons8-invoice-64.png" (click)="toggleEvent()" align="left"
