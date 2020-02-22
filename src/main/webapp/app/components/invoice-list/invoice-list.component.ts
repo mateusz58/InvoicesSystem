@@ -11,6 +11,9 @@ import {Observable} from "rxjs";
   providers: [InvoiceService]
 })
 export class InvoiceListComponent implements OnInit {
+
+  private  errorMessage = '';
+
   toggleEvent() {
     console.log("triggered")
   }
@@ -57,8 +60,12 @@ export class InvoiceListComponent implements OnInit {
     invoice.number.toLowerCase().indexOf(filterBy)!=-1);
   }
 
-  ngOnInit() {
-    this.invoices = this._invoiceService.getInvoices();
+  // key and value pair here
+  ngOnInit(): void {
+    this.invoices = this._invoiceService.getInvoices().subscribe({
+      next: invoices => this.invoices = invoices,
+      error: err => this.errorMessage = err
+    });
     this.filteredInvoices = this.invoices;
   }
 

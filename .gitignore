@@ -49,3 +49,8 @@ hs_err_pid*
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### front end
+node_modules/
+.node_modules/
+dist/
