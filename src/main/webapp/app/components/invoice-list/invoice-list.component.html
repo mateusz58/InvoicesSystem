@@ -6,12 +6,12 @@
         <div class='row'>
             <div class='col-md-2'>Filter by:</div>
             <div class='col-md-4'>
-                <input type='text'
-                       [(ngModel)]='listFilter' />
+                <input [(ngModel)]='listFilter'
+                       type='text'/>
             </div>
         </div>
-        <div class='row'
-             *ngIf='listFilter'>
+        <div *ngIf='listFilter'
+             class='row'>
             <div class='col-md-6'>
                 <h4>Filtered by: {{listFilter}}</h4>
             </div>
@@ -25,22 +25,22 @@
                     <th>Seller</th>
                     <th>Due date</th>
                     <th>Issued date</th>
-                    <th>Total</th>
-                    <th>PDF</th>
+                    <!--                    <th>Total</th>-->
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 </tbody>
-                <tr *ngFor="let invoice of invoices">
-                    <td>{{invoice.number}}</td>
+                <tr *ngFor="let invoice of filteredInvoices">
+                    <td>{{invoice.number | convertToSpace:'-'}}</td>
                     <td>{{invoice.seller}}</td>
                     <td>{{invoice.buyer}}</td>
                     <td>{{invoice.dueDate| date}}</td>
                     <td>{{invoice.issuedDate| date}}</td>
-                    <td>{{invoice.total | currency: 'PLN':'code':'1.2-2'}}</td>
+                    <!--                    <td>{{invoice.total | currency: 'PLN':'code':'1.2-2'}}</td>-->
                     <td>
-                        <img src="./assets/images/icons8-invoice-64.png" (click)="toggleEvent()" align="left"
-                        [style.width.px]=45>
+                        <img (click)="toggleEvent()" [style.width.px]=45 align="left"
+                             src="./assets/images/icons8-invoice-64.png">
                     </td>
                 </tr>
                 <tbody>

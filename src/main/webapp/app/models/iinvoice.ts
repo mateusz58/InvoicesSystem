@@ -1,11 +1,11 @@
 import {IinvoiceEntry} from "./iinvoice-entry";
 
 export interface IInvoice {
-    id: string;
+    id?: string;
     number: string;
-    seller: ICompany;
-    buyer: ICompany;
+    seller: string;
+    buyer: string;
     issuedDate: Date;
     dueDate: Date;
-    entries: IinvoiceEntry[];
+    // entries?: IinvoiceEntry[];
 }
