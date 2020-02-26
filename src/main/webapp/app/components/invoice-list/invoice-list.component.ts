@@ -20,28 +20,26 @@ export class InvoiceListComponent implements OnInit {
 
   _listFilter: string;
 
-  _invoiceService
-
   filteredInvoices: IInvoice[] = [];
 
   invoices: IInvoice[] = [
-    {
-      "number": "2020/12/10",
-      "seller": "seller1",
-      "buyer": "buyer1",
-      "dueDate": new Date("2019-08-21"),
-      "issuedDate": new Date("2019-08-21")
-    },
-    {
-      "number": "2020/12/11",
-      "seller": "seller2",
-      "buyer": "buyer2",
-      "dueDate": new Date("2019-08-21"),
-      "issuedDate": new Date("2019-08-21"),
-    }
+    // {
+    //   "number": "2020/12/10",
+    //   "seller": "seller1",
+    //   "buyer": "buyer1",
+    //   "dueDate": new Date("2019-08-21"),
+    //   "issuedDate": new Date("2019-08-21")
+    // },
+    // {
+    //   "number": "2020/12/11",
+    //   "seller": "seller2",
+    //   "buyer": "buyer2",
+    //   "dueDate": new Date("2019-08-21"),
+    //   "issuedDate": new Date("2019-08-21"),
+    // }
   ]
 
-  constructor(invoiceService : InvoiceService) {
+  constructor(private invoiceService : InvoiceService) {
     this.listFilter =  '';
   }
 
@@ -62,7 +60,7 @@ export class InvoiceListComponent implements OnInit {
 
   // key and value pair here
   ngOnInit(): void {
-    this.invoices = this._invoiceService.getInvoices().subscribe({
+    this.invoiceService.getInvoices().subscribe({
       next: invoices => this.invoices = invoices,
       error: err => this.errorMessage = err
     });

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {IInvoice} from "../models/iinvoice";
 import {Observable, throwError} from "rxjs";
-import {catchError, tap} from "rxjs/operators";
+import {catchError, map, tap} from "rxjs/operators";
 
 const apiUrl = '/api/invoices';
 const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -12,7 +12,7 @@ const headers = new HttpHeaders().set('Content-Type', 'application/json');
 })
 export class InvoiceService {
 
-  private invoiceUrl = "https://pastebin.com/raw/53Nvc9CN"
+  // private invoiceUrl = "https://pastebin.com/raw/53Nvc9CN"
 
   // getInvoices(): IInvoice[] {
   // return [
@@ -31,6 +31,9 @@ export class InvoiceService {
   //     "issuedDate": new Date("2019-08-21"),
   //   }
   // ]}
+
+  private invoiceUrl = './api/invoices/invoices.json';
+
   constructor(private http: HttpClient) {}
 
   getInvoices(): Observable<IInvoice[]> {
@@ -39,6 +42,7 @@ export class InvoiceService {
             catchError(this.handleError)
     );
   }
+
 
   private handleError(err: HttpErrorResponse) {
     let errorMessage = '';

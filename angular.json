@@ -44,7 +44,8 @@
             "tsConfig": "src/main/webapp/tsconfig.app.json",
             "assets": [
               "src/main/webapp/wfavicon.ico",
-              "src/main/webapp/assets"
+              "src/main/webapp/assets",
+              "src/main/webapp/api"
             ],
             "styles": [
               "./node_modules/bootstrap/dist/css/bootstrap.min.css",
