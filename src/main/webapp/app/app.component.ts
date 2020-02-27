@@ -22,6 +22,7 @@ import { CustomerStore } from "./stores/customer.store";
 export class AppComponent implements OnInit {
 
   pageTitle: string = "Dashboard";
+  invoices: string = "Invoices";
   isCollapsed = true;
   customer$: Observable<CustomerInfo>;
 

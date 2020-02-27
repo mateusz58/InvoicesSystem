@@ -30,6 +30,7 @@ import { InvoiceListComponent } from './components/invoice-list/invoice-list.com
 import {ConvertToSpacesPipe} from "./shared/convert-to-spaces.pipe";
 import { StarsComponent } from './components/shared/stars/stars.component';
 import { InvoiceDetailsComponent } from './components/invoice-details/invoice-details.component';
+import { HomeComponent } from './components/home/home.component';
 
 
 export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
@@ -64,7 +65,8 @@ export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
     InvoiceListComponent,
       ConvertToSpacesPipe,
       StarsComponent,
-      InvoiceDetailsComponent
+      InvoiceDetailsComponent,
+      HomeComponent
   ],
   imports: [
     BrowserModule,

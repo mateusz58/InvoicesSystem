@@ -25,7 +25,8 @@
                     <th>Seller</th>
                     <th>Due date</th>
                     <th>Issued date</th>
-                    <!--                    <th>Total</th>-->
+                    <td>SUBTOTAL</td>
+                    <td>TOTAL</td>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -37,10 +38,16 @@
                     <td>{{invoice.buyer}}</td>
                     <td>{{invoice.dueDate| date}}</td>
                     <td>{{invoice.issuedDate| date}}</td>
+                    <td>{{20.05 | currency: 'PLN':'code':'1.2-2'}}</td>
+                    <td>{{20.05 | currency: 'PLN':'code':'1.2-2'}}</td>
                     <!--                    <td>{{invoice.total | currency: 'PLN':'code':'1.2-2'}}</td>-->
                     <td>
-                        <img (click)="toggleEvent()" [style.width.px]=45 align="left"
-                             src="./assets/images/icons8-invoice-64.png">
+<!--                        <button (click)="toggleEvent()" type="button" class="btn btn-primary">PDF</button>-->
+                        <div class="btn-group">
+                            <button (click)="toggleEvent()" type="button" class="btn btn-primary"><i class="fa fa-home">Home</i></button>
+                            <button (click)="toggleEvent()" type="button" class="btn btn-secondary">Details</button>
+                            <button (click)="toggleEvent()" type="button" class="btn btn-dark">Email</button>
+                        </div>
                     </td>
                 </tr>
                 <tbody>

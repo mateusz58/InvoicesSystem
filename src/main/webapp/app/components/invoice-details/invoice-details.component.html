@@ -1,1 +1,19 @@
-<p>invoice-details works!</p>
+<div class="card text-white bg-primary">
+    <img class="card-img-top" src="holder.js/100px180/" alt="">
+    <div class="card" *ngIf='invoice'>
+        <div class="card-header">
+            {{pagetTitle + ':  '+ invoice?.number}}
+        </div>
+        <div class="card-body">
+            <h4 class="card-title">Title</h4>
+            <p class="card-text">Text</p>
+        </div>
+        <div class="card-footer text-muted">
+            Footer
+        </div>
+    </div>
+    <div class="card-body">
+        <h4 class="card-title">Title</h4>
+        <p class="card-text">Text</p>
+    </div>
+</div>
