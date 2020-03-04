@@ -15,16 +15,9 @@ import { AppComponent } from './app.component';
 import { TwoDigitDecimalNumberDirective } from './directives/two-digit-decimal-number.directive';
 import { HttpErrorInterceptor} from './interceptor/http-error.interceptor';
 
-import { ProductCatalogComponent } from './components/product-catalog/product-catalog.component';
-import { ProductComponent } from './components/product/product.component';
-import { CustomersComponent } from './components/customers/customers.component';
-import { OrdersComponent } from './components/orders/orders.component';
-import { CustomerOrdersComponent } from './components/customer-orders/customer-orders.component';
-import { CartComponent } from './components/cart/cart.component';
 import { CustomerStore } from './stores/customer.store';
 import { AlertComponent } from './components/alert/alert.component';
 import { InvoiceComponent } from './components/invoice/invoice.component';
-import { CompanyComponent } from './components/company/company.component';
 import { InvoiceEntryComponent } from './components/invoice-entry/invoice-entry.component';
 import { InvoiceListComponent } from './components/invoice-list/invoice-list.component';
 import {ConvertToSpacesPipe} from "./shared/convert-to-spaces.pipe";
@@ -51,16 +44,9 @@ export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
 @NgModule({
   declarations: [
     AppComponent,
-    ProductCatalogComponent,
-    ProductComponent,
-    CustomersComponent,
-    OrdersComponent,
     TwoDigitDecimalNumberDirective,
-    CustomerOrdersComponent,
-    CartComponent,
     AlertComponent,
     InvoiceComponent,
-    CompanyComponent,
     InvoiceEntryComponent,
     InvoiceListComponent,
       ConvertToSpacesPipe,
