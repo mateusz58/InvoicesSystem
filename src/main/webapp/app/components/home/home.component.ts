@@ -4,5 +4,5 @@ import { Component } from '@angular/core';
   templateUrl: './home.component.html'
 })
 export class HomeComponent {
-  public pageTitle = 'Welcome';
+  public pageTitle = 'Home';
 }
