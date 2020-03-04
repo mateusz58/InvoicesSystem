@@ -8,7 +8,7 @@ import { CustomerStore } from "./stores/customer.store";
   selector: "app-root",
   templateUrl: "./app.component.html",
   styles: [
-    `
+    `      
       .count {
         padding: 2px 3px;
         z-index: 15;

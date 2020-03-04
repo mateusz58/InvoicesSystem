@@ -1,14 +1,10 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-secondary" title="Invoice management system">
-  <a class="navbar-brand" routerLink="/">
-    <i class="oi oi-aperture text-white h2 align-middle"></i>
-      {{pageTitle}}
-  </a>
-  <a class="navbar-brand" routerLink="/invoices">
-    <i class="oi oi-book text-white h2 align-middle"></i>
-    {{invoices}}
-  </a>
+<nav class='navbar navbar-expand navbar-light bg-light'>
+  <a class='navbar-brand'>{{pageTitle}}</a>
+  <ul class='nav nav-pills'>
+    <li><a class='nav-link' routerLinkActive='active' [routerLink]="['/welcome']">Home</a></li>
+    <li><a class='nav-link' routerLinkActive='active' [routerLink]="['/invoices']">Invoices list</a></li>
+  </ul>
 </nav>
-
-<div>
-  <app-invoice-list></app-invoice-list>
+<div class='container'>
+  <router-outlet></router-outlet>
 </div>
