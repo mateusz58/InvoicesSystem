@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "number": "2020/12/10",
     "seller": "seller1",
     "buyer": "buyer1",
@@ -7,6 +8,7 @@
     "issuedDate": "2019-08-21"
   },
   {
+    "id": 2,
     "number": "2020/12/11",
     "seller": "seller2",
     "buyer": "buyer2",

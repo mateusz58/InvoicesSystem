@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
-import java.util.Objects;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,19 +15,19 @@ import lombok.Data;
 public final class InvoiceEntry {
 
     @ApiModelProperty(value = "The unique identifier of the Invoice Entry", position = - 1, dataType = "Long")
-    private final Long id;
+    private  Long id;
     @ApiModelProperty(value = "Description of what is sold", example = "Siatka ogrodzeniowa")
-    private final String description;
+    private  String description;
     @ApiModelProperty(value = "How much is sold", example = "5")
-    private final Long quantity;
+    private  Long quantity;
     @ApiModelProperty(value = "Value per unit", example = "123")
-    private final BigDecimal price;
+    private  BigDecimal price;
     @ApiModelProperty(value = "Total value before taxation", example = "500")
-    private final BigDecimal netValue;
+    private  BigDecimal netValue;
     @ApiModelProperty(value = "Total value after taxation", example = "615")
-    private final BigDecimal grossValue;
+    private  BigDecimal grossValue;
     @ApiModelProperty(value = "Percentage level of taxation", example = "VAT_23")
-    private final Vat vatRate;
+    private  Vat vatRate;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class InvoiceEntryBuilder {

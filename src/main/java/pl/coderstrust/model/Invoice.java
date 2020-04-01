@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,22 +16,21 @@ import lombok.Data;
 public final class Invoice{
 
     @ApiModelProperty(value = "The unique identifier of the invoice", position = - 1, dataType = "Long")
-    private final Long id;
+    private  Long id;
     @ApiModelProperty(value = "Invoice number", example = "FV/1/05/2019")
-    private final String number;
+    private  String number;
     @ApiModelProperty(value = "Date of Invoice creation", example = "2019-11-21")
-    private final LocalDate issuedDate;
+    private  LocalDate issuedDate;
     @ApiModelProperty(value = "Term of payment", example = "2019-11-21")
-    private final LocalDate dueDate;
+    private  LocalDate dueDate;
     @ApiModelProperty(value = "Data of vendor")
-    private final Company seller;
+    private  Company seller;
     @ApiModelProperty(value = "Data of customer")
-    private final Company buyer;
+    private  Company buyer;
     @ApiModelProperty(value = "Merchandise")
-    private final List<InvoiceEntry> entries;
+    private  List<InvoiceEntry> entries;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class InvoiceBuilder{
     }
 }
-

@@ -23,6 +23,12 @@ export class InvoiceService {
     );
   }
 
+  getInvoice(id: number): Observable<IInvoice | undefined> {
+    return this.getInvoices()
+        .pipe(
+            map((products: IInvoice[]) => products.find(p => p.id === id))
+        );
+  }
 
   private handleError(err: HttpErrorResponse) {
     let errorMessage = '';

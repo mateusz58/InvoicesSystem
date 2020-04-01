@@ -15,19 +15,19 @@ import lombok.Data;
 public final class Company{
 
     @ApiModelProperty(value = "The unique identifier of the company.", position = - 1, dataType = "Long")
-    private final Long id;
+    private  Long id;
     @ApiModelProperty(value = "Company name.", example = "CodersTrust")
-    private final String name;
+    private  String name;
     @ApiModelProperty(value = "Company address.", example = "ul. Bukowińska 24 d/7, 02-703 Warszawa")
-    private final String address;
+    private  String address;
     @ApiModelProperty(value = "Company tax id.", example = "7010416384")
-    private final String taxId;
+    private  String taxId;
     @ApiModelProperty(value = "Company bank account number.", example = "27 1030 0019 0109 8503 0014 2668")
-    private final String accountNumber;
+    private  String accountNumber;
     @ApiModelProperty(value = "Company telephone number", example = "22 788-83-22")
-    private final String phoneNumber;
+    private  String phoneNumber;
     @ApiModelProperty(value = "Company email address", example = "example@post.com.pl")
-    private final String email;
+    private  String email;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class CompanyBuilder {

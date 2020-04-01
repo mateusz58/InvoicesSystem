@@ -30,7 +30,11 @@
                 <tbody>
                 </tbody>
                 <tr *ngFor="let invoice of filteredInvoices">
-                    <td>{{invoice.number | convertToSpace:'-'}}</td>
+                    <td>
+                        <a [routerLink]="['/invoices', invoice.id]">
+                            {{invoice.number | convertToSpace:'-'}}
+                        </a>
+                    </td>
                     <td>{{invoice.seller}}</td>
                     <td>{{invoice.buyer}}</td>
                     <td>{{invoice.dueDate| date}}</td>
@@ -41,8 +45,7 @@
                     <td>
 <!--                        <button (click)="toggleEvent()" type="button" class="btn btn-primary">PDF</button>-->
                         <div class="btn-group">
-                            <button (click)="toggleEvent()" type="button" class="btn btn-primary"><i class="fa fa-home">Home</i></button>
-                            <button (click)="toggleEvent()" type="button" class="btn btn-secondary">Details</button>
+                            <button (click)="toggleEvent()" type="button" class="btn btn-secondary">PDF</button>
                             <button (click)="toggleEvent()" type="button" class="btn btn-dark">Email</button>
                         </div>
                     </td>

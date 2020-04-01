@@ -25,7 +25,6 @@ import { StarsComponent } from './components/shared/stars/stars.component';
 import { InvoiceDetailsComponent } from './components/invoice-details/invoice-details.component';
 import { HomeComponent } from './components/home/home.component';
 
-
 export function kcInitializer(keycloak: KeycloakService): () => Promise<any> {
   return (): Promise<any> => {
     return new Promise(async (resolve, reject) => {
